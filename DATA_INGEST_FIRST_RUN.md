@@ -1,0 +1,1 @@
+## See the full guide in the repo after push. This is the one-step guide for the user to follow next (full content was written locally as DATA_INGEST_FIRST_RUN.md).

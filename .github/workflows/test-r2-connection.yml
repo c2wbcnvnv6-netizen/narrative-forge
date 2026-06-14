@@ -1,0 +1,19 @@
+name: Test R2 Raw-Data Bucket Connection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure R2 credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          aws-region: auto
+          aws-endpoint-url: ${{ secrets.R2_ENDPOINT }}
+
+      - name: List contents of babylon-raw-data (should be empty or show your raw objects)
+        run: aws s3 ls s3://babylon-raw-data --endpoint-url ${{ secrets.R2_ENDPOINT }}
