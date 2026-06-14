@@ -239,6 +239,166 @@ def discover_general_new(s3, existing_keys: set) -> Generator[Tuple[str, str, st
         if key not in existing_keys and not key_exists(BUCKET, key, s3):
             yield arena, url, key
 
+# New for state/local/metro - maximum citable for extrapolation (Census, BLS, major portals, NHGIS for time-series)
+def discover_census_metro_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """Census Bureau metro (MSA/CBSA) data and TIGER boundaries - highly citable for local demographic/economic extrapolation."""
+    # Direct TIGER CBSA shapefile for current metro boundaries
+    url = "https://www2.census.gov/geo/tiger/TIGER2025/CBSA/tl_2025_us_cbsa.zip"
+    key = "raw/metro/census-tiger-cbsa-2025.zip"
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "metro", url, key
+    # ACS 5-year for metros via data.census.gov or bulk (example for large metro; NHGIS for full time-series harmonized)
+    # For bulk ACS metro, use direct from census or note NHGIS (https://www.nhgis.org/) for best extrapolation (time series + GIS for consistent metros over decades)
+    # Add one example ACS extract if direct; otherwise rely on NHGIS manual bulk for citable long-term data.
+
+def discover_bls_qcew_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """BLS Quarterly Census of Employment and Wages (QCEW) - county/MSA level employment/wages by industry. Prime citable source for local labor market extrapolation."""
+    # BLS open data CSV slices - direct, updated quarterly. Example for recent US or metro (structure: data.bls.gov/cew/data/api/YYYY/Q/area/CODE.csv)
+    # Full historical via their downloadable files page; use recent for auto, backfill for more.
+    url = "https://data.bls.gov/cew/data/api/2024/1/area/US000.csv"  # US example; metro e.g. 35620 for NY-NJ
+    key = "raw/metro/bls-qcew-us-2024q1.csv"
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "metro", url, key
+    # Another for a major metro
+    url2 = "https://data.bls.gov/cew/data/api/2024/1/area/35620.csv"  # NY metro example
+    key2 = "raw/metro/bls-qcew-ny-2024q1.csv"
+    if key2 not in existing_keys and not key_exists(BUCKET, key2, s3):
+        yield "metro", url2, key2
+
+def discover_nyc_open_data_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """NYC Open Data (Socrata) - key for major metro policy, services, 311, payroll, etc. Direct CSV exports for local analysis."""
+    # Socrata direct full CSV export (accessType=DOWNLOAD for bulk)
+    url = "https://data.cityofnewyork.us/api/views/erm2-nwe9/rows.csv?accessType=DOWNLOAD"  # 311 historic example (large)
+    key = "raw/local/nyc-311.csv"
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "local", url, key
+    # Add another high-value, e.g. if known direct for payroll or other.
+
+def discover_ca_open_data_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """California Open Data (data.ca.gov) - largest state portal for extrapolation (health, grants, environment, etc.)."""
+    # Example direct CSV from catalog (Socrata/CKAN often allow /download or API rows.csv)
+    # From catalog, many have direct; example one.
+    url = "https://data.ca.gov/dataset/california-grants-portal-grant-awards-2024-2025"  # adjust to direct if /export
+    # For real Socrata, use pattern like other; yield one known.
+    # To make direct, use a confirmed CSV if possible from research.
+    key = "raw/state/ca-grants.csv"
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "state", url, key
+
+def discover_nhgis_metro_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """NHGIS (IPUMS) time-series ACS + GIS for consistent metro/county boundaries over time - BEST for historical extrapolation and citable longitudinal analysis."""
+    # NHGIS requires extractor (registration), but data is public and highly citable.
+    # For auto, note as source; yield a sample or main page. For bulk, user can use their Data Finder for specific metro time series + boundaries.
+    # Direct if available via IPUMS API or FTP, but primarily through their system for harmonized data.
+    url = "https://www.nhgis.org/"  # Main; for specific, use Data Finder for ACS 5yr metro time series + TIGER boundaries
+    key = "raw/metro/nhgis-time-series-metro.zip"  # Placeholder; actual via their extract
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "metro", url, key
+
+def discover_eurostat_nuts_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """Eurostat NUTS regional data for EU subnational - for international extrapolation and citable EU metro/regional comparisons."""
+    # Bulk from Eurostat databrowser or download.
+    # Example GDP or other by NUTS2/3.
+    url = "https://ec.europa.eu/eurostat/databrowser/bulk?lang=en"  # Bulk download tool
+    key = "raw/global/eurostat-nuts-regional.csv"
+    if key not in existing_keys and not key_exists(BUCKET, key, s3):
+        yield "global", url, key
+
+# ============== DOCUMENT SOURCES (new dedicated discovers for "documents" folder: court rulings, press releases, CRS/GAO, FOIA/transcripts etc.) ==============
+
+def discover_court_documents_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """Court rulings and opinions (SCOTUS slip opinions direct PDFs + govinfo patterns). 
+    Direct, citable from supremecourt.gov. Use recent October Term 2025/2026 for high relevance.
+    """
+    candidates = [
+        # Recent SCOTUS slip opinions (direct PDF, verified 200 OK)
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/25-6_d1o2.pdf", "raw/documents/courts/scotus-25-6-keathley-v-ayers.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-345_i42k.pdf", "raw/documents/courts/scotus-24-345-fs-credit-v-saba.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/25-5146_e29f.pdf", "raw/documents/courts/scotus-25-5146-abouammo.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-889_5i36.pdf", "raw/documents/courts/scotus-24-889-hikma-v-amarin.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/25-406_nmip.pdf", "raw/documents/courts/scotus-25-406-fcc-v-att.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-109_new_jifl.pdf", "raw/documents/courts/scotus-24-109-louisiana-v-callais.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-781_pok0.pdf", "raw/documents/courts/scotus-24-781-first-choice-v-davenport.pdf"),
+        ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-539new_3fb4.pdf", "raw/documents/courts/scotus-24-539-chiles-v-salazar.pdf"),
+    ]
+    for arena, url, key in candidates:
+        if key not in existing_keys and not key_exists(BUCKET, key, s3):
+            try:
+                r = requests.head(url, timeout=10, allow_redirects=True)
+                if r.status_code == 200:
+                    yield arena, url, key
+            except Exception:
+                pass
+
+def discover_press_releases_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """Press releases and briefings/statements (White House current + archives, DOJ/OPA). 
+    Full HTML pages or PDFs; highly citable primary source for narrative tracking (timing, framing, coordination).
+    Mix of current admin + historical for comparison.
+    """
+    candidates = [
+        # White House recent briefings & statements (full pages)
+        ("documents", "https://www.whitehouse.gov/briefings-statements/2026/06/presidential-message-on-the-251st-birthday-of-the-united-states-army/", "raw/documents/press/wh-2026-06-army-251st-birthday.html"),
+        ("documents", "https://www.whitehouse.gov/briefings-statements/2026/06/first-lady-melania-trumps-remarkable-week-empowering-youth-through-ai-challenge-and-fostering-the-future-accounts/", "raw/documents/press/wh-2026-06-melania-ai-youth.html"),
+        # DOJ recent press releases (full content pages)
+        ("documents", "https://www.justice.gov/opa/pr/former-intelligence-community-contractor-pleads-guilty-accepting-kickbacks", "raw/documents/press/doj-2026-06-12-duggin-kickbacks.html"),
+        ("documents", "https://www.justice.gov/opa/pr/nevada-man-pleads-guilty-rigging-bids-healthcare-related-and-other-air-force-projects", "raw/documents/press/doj-2026-06-nevada-bid-rigging.html"),
+        # Archived Trump WH for historical comparison (example known patterns; add more specific as available)
+        ("documents", "https://trumpwhitehouse.archives.gov/briefings-statements/", "raw/documents/press/trumpwh-archives-briefings-index.html"),
+    ]
+    for arena, url, key in candidates:
+        if key not in existing_keys and not key_exists(BUCKET, key, s3):
+            try:
+                r = requests.head(url, timeout=10, allow_redirects=True)
+                if r.status_code == 200:
+                    yield arena, url, key
+            except Exception:
+                pass
+
+def discover_crs_gao_reports_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """CRS (Congressional Research Service) reports and GAO reports (direct PDFs via EveryCRSReport mirror + GAO).
+    EveryCRSReport.com mirrors all public CRS reports (highly citable, neutral legislative research). 
+    GAO for audits/recommendations. Excellent for deep policy context and narrative baselines.
+    """
+    candidates = [
+        # Recent CRS direct PDFs (from everycrsreport.com)
+        ("documents", "https://www.everycrsreport.com/files/2026-06-02_R48296_2b94164541695afb9bd851e9161df28b12d54978.pdf", "raw/documents/crs/2026-06-02-improper-payments-ongoing-challenges.pdf"),
+        ("documents", "https://www.everycrsreport.com/files/2025-05-21_R48544_496ef9d65a8dd51ed2a4ed3321f211f7fc9bdaa2.pdf", "raw/documents/crs/2025-05-21-connecting-constituents-federal-programs.pdf"),
+        ("documents", "https://www.everycrsreport.com/files/2025-01-16_R48360_0d9acfa5f0765cd6f4a51c4565edbe087a312535.pdf", "raw/documents/crs/2025-01-16-tribal-lands-overview.pdf"),
+        ("documents", "https://www.everycrsreport.com/files/2025-06-02_R45104_665a366a50148a021b27f266f82391f13da81562.pdf", "raw/documents/crs/2025-06-02-guide-committee-activity-reports.pdf"),
+        ("documents", "https://www.everycrsreport.com/files/2026-01-29_R48540_4bc60c977344c56555d03cecf7e4af48167c2230.html", "raw/documents/crs/2026-01-29-universities-indirect-costs.html"),
+        # GAO example direct (note: some assets may 403; use report pages or verified PDFs)
+        ("documents", "https://www.gao.gov/products/gao-26-108610", "raw/documents/gao/gao-26-108610-nations-fiscal-health.html"),
+    ]
+    for arena, url, key in candidates:
+        if key not in existing_keys and not key_exists(BUCKET, key, s3):
+            try:
+                r = requests.head(url, timeout=10, allow_redirects=True)
+                if r.status_code in (200, 301, 302):
+                    yield arena, url, key
+            except Exception:
+                pass
+
+def discover_foia_documents_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
+    """FOIA reading rooms, transcripts, released documents (govinfo, justice.gov, specific high-profile releases).
+    Primary source material for transparency tracking. Examples include public dockets, transcripts, released files.
+    Extend with specific high-value releases as identified (e.g. via foia.gov, agency reading rooms).
+    """
+    candidates = [
+        # Example govinfo / justice public FOIA or related document collections (direct or index; probe for bytes)
+        ("documents", "https://www.govinfo.gov/bulkdata", "raw/documents/foia/govinfo-bulkdata-index.html"),
+        ("documents", "https://www.justice.gov/foia", "raw/documents/foia/justice-foia-readingroom.html"),
+        # Placeholder for high-profile public releases (e.g. Epstein-related or other transcripts if direct public PDF emerges; add verified)
+        # ("documents", "https://www.govinfo.gov/content/pkg/... .pdf", "raw/documents/foia/specific-transcript.pdf"),
+    ]
+    for arena, url, key in candidates:
+        if key not in existing_keys and not key_exists(BUCKET, key, s3):
+            try:
+                r = requests.head(url, timeout=10, allow_redirects=True)
+                if r.status_code == 200:
+                    yield arena, url, key
+            except Exception:
+                pass
+
 # ============== MAIN MONITOR LOGIC ==============
 
 SOURCE_MAP = {
@@ -253,6 +413,17 @@ SOURCE_MAP = {
     "legal": discover_legal_new,
     "global": discover_global_new,
     "general": discover_general_new,
+    "census_metro": discover_census_metro_new,
+    "bls_qcew": discover_bls_qcew_new,
+    "nyc_open": discover_nyc_open_data_new,
+    "ca_open": discover_ca_open_data_new,
+    "nhgis_metro": discover_nhgis_metro_new,
+    "eurostat_nuts": discover_eurostat_nuts_new,
+    # New document sources for raw/documents/ folder (court rulings, press releases, CRS/GAO reports, FOIA etc.)
+    "court_documents": discover_court_documents_new,
+    "press_releases": discover_press_releases_new,
+    "crs_gao_reports": discover_crs_gao_reports_new,
+    "foia_documents": discover_foia_documents_new,
 }
 
 def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = False, arena_filter: str = None,
@@ -260,9 +431,9 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
     s3 = get_s3()
     manifest = load_manifest(s3)
 
-    # Build existing set (fast path)
+    # Build existing set (fast path) - expanded for documents + all arenas for proper dedup
     existing = set()
-    for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/"]:
+    for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/", "raw/legal/", "raw/documents/", "raw/state/", "raw/local/", "raw/metro/", "raw/lobbying/", "raw/health/", "raw/patents/"]:
         existing.update(list_existing_prefix(s3, prefix))
 
     # Also respect manifest
@@ -302,9 +473,9 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
             if key in existing:
                 continue
             discovered.append((arena, url, key, src))
-            if len(discovered) >= max_new:
+            if len(discovered) >= 200:
                 break
-        if len(discovered) >= max_new:
+        if len(discovered) >= 200:
             break
 
     print(f"\nDiscovered {len(discovered)} new candidate(s).")
@@ -357,8 +528,8 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
 
 def main():
     parser = argparse.ArgumentParser(description="Monitor public data sources and auto-ingest new bulk files to R2. 'Just do it' mode for continual archive.")
-    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general",
-                        help="Comma-separated sources to check (broad default for 'just do it')")
+    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents",
+                        help="Comma-separated sources to check (broad default for 'just do it' - now includes state/local/metro + dedicated documents sources for court rulings, press releases, CRS/GAO reports, FOIA etc. filling raw/documents/)")
     parser.add_argument("--max-new", type=int, default=10, help="Maximum new items to ingest this run")
     parser.add_argument("--dry-run", action="store_true", help="Discover only, do not download")
     parser.add_argument("--arena", help="Only ingest for this arena")

@@ -1,4 +1,4 @@
- # DATA SOURCES TESTED — The Breaker of Babylon (11 Arenas)
+# DATA SOURCES TESTED — The Breaker of Babylon (11 Arenas)
 
 Curated, tested (where possible) public data sources for raw ingest + API pulls. Prioritizes **direct downloadable files** (for the streaming ingest script to R2 `babylon-raw-data`) and **keyless or easy API endpoints** for ongoing pulls/analysis.
 
@@ -109,3 +109,97 @@ Run the test workflow + the first ingest with the cfda URL. Report back the run 
 One micro-step at a time. You now have tested, ready parameters and verified the download path works. 
 
 — Ready for the first real R2 load.
+
+## Expanded State/Local/Metro & Additional Citable Sources (for Maximum Extrapolation Points)
+Added in latest research round for state/local (esp. metros) + more global for citable, longitudinal data. All official/gov sources for high credibility in narratives/extrapolation (e.g., consistent time-series for trends, correlations across policy domains).
+
+**Census Metro (MSA/CBSA) - Core for local demographic extrapolation, harmonized geographies:**
+- TIGER/Line CBSA shapefiles (direct ZIP for current metro boundaries): https://www2.census.gov/geo/tiger/TIGER2025/CBSA/tl_2025_us_cbsa.zip → raw/metro/census-tiger-cbsa-2025.zip
+- ACS 5-Year Estimates for MSAs (nation, states, metros, counties, tracts, block groups): Via data.census.gov or bulk FTP. Highly citable (U.S. Census Bureau).
+- NHGIS (IPUMS) time-series ACS + GIS boundaries (best for historical consistency/extrapolation over decades for same metro definitions): https://www.nhgis.org/ (Data Finder for bulk extracts; registration-free for many). Citable as IPUMS NHGIS. Includes 1790+ for long-term parallels.
+
+**BLS QCEW (Metro/County Employment & Wages) - Gold standard for local labor/economic extrapolation by industry:**
+- Quarterly Census of Employment and Wages bulk CSVs (county, MSA, state by 6-digit NAICS; open data slices + full historical): https://www.bls.gov/cew/downloadable-data-files.htm and https://www.bls.gov/cew/additional-resources/open-data/ (direct CSV via api/ or files, e.g. https://data.bls.gov/cew/data/api/2024/1/area/US000.csv). Updated quarterly, covers 95%+ jobs. Citable BLS source.
+
+**Major State Open Data Portals (for policy, grants, health, environment at state level - citable .gov):**
+- California (largest): https://data.ca.gov/ (Socrata/CKAN; direct CSVs for grants, health, water, etc., e.g. via catalog exports or /api/views/.../rows.csv?accessType=DOWNLOAD).
+- New York: https://data.ny.gov/ (Open NY; 1500+ items, bulk via API/export).
+- Texas: https://data.texas.gov/
+- Colorado: https://data.colorado.gov/
+- Illinois: https://data.illinois.gov/
+- Maryland: https://opendata.maryland.gov/
+- Full lists: data.gov (state section), dataportals.org, Forbes compilation of 50+ state portals (many Socrata/CKAN with bulk/API CSV). Add more states as needed for specific extrapolation.
+
+**Major Metro/Local City/County Portals (for hyper-local services, 311, housing, crime - citable for urban narratives):**
+- NYC Open Data (key metro): https://opendata.cityofnewyork.us/ (Socrata; direct CSV exports e.g. https://data.cityofnewyork.us/api/views/erm2-nwe9/rows.csv?accessType=DOWNLOAD for 311 historic; payroll, etc.).
+- LA County: https://data.lacounty.gov/
+- OpenDataPhilly: https://opendataphilly.org/
+- Many others via data.gov local or city search (Chicago data.cityofchicago.org, SF datasf.org, etc.). Focus on top 20 metros for volume.
+
+**Additional for Global Extrapolation (citable international/regional for parallels to US state/local):**
+- Eurostat NUTS (EU subnational/regional - NUTS1/2/3 for metro-like): Bulk downloads via https://ec.europa.eu/eurostat/databrowser/bulk (GDP, population, labor by NUTS; TSV/CSV/SMDX). Complements US metros.
+- data.europa.eu (EU + national open data, subnational).
+
+**Notes for Pipeline & Citability:**
+- Added as new discover_ functions (census_metro, bls_qcew, nyc_open, ca_open, nhgis_metro, eurostat_nuts) in monitor_and_ingest.py. Many use direct public ZIP/CSV (TIGER, BLS slices, Socrata exports, Census). Portals like state/CA/NYC use Socrata pattern for bulk CSV.
+- NHGIS: Best for "extrapolation points" (harmonized time series + boundaries for consistent metro comparisons 1790-present; highly citable from IPUMS). May require Data Finder for exact bulk (not fully auto-direct like others); prioritize for key metros.
+- Full state/local: 50 states + 1000s locals; script focuses on major/high-impact for volume (add specifics via manual ingest or extend discovers). Use data.gov US open data CSV list for more.
+- Citable: All from .gov (Census, BLS, HUD/EPA via data.gov), state .gov portals, Eurostat (official EU stats). Cite as "U.S. Census Bureau, [Year] ACS 5-Year Estimates via [source]" or "Bureau of Labor Statistics, QCEW [Quarter]".
+- This massively expands citable sources for the 11 arenas (e.g., local employment for finance/metro, health data for pharma/policy, legislative for congress). Enables strong extrapolation (time trends, cross-metro/state comparisons, historical mirrors like Rome parallels via long series).
+- "Huge": With backfill + these, hundreds/thousands of files over time. R2 handles storage cheaply; use incremental runs (cron + manual). Monitor for new releases (many quarterly/annual). Test with small max_new first.
+
+Dispatched new aggressive monitor runs (with expanded sources + backfill) + specific direct ingests (TIGER CBSA, BLS QCEW examples) to start downloading immediately. Check Actions for progress; new data will land in R2 under raw/metro/, raw/state/, raw/local/ etc. Local watcher will notify on completion.
+
+Next: Review specific new runs/logs, extend for more states (e.g., via dataportals.org list), or refine NHGIS automation if API direct found. This gives the max citable base for the project.
+
+## Documents Folder Sources (Court Rulings, Press Releases, CRS/GAO Reports, FOIA etc.)
+Added dedicated discover functions (court_documents, press_releases, crs_gao_reports, foia_documents) + direct ingest support. All target `raw/documents/` (with subpaths courts/, press/, crs/, foia/, gao/ etc.) for primary text/PDF/HTML sources. These are the "documents" requested: official rulings, contemporaneous press (for framing/timing analysis), neutral expert reports (CRS), audits (GAO), and transparency releases (FOIA/transcripts).
+
+**Key direct sources added (all public/official, citable, many verified HTTP 200 + direct bytes):**
+
+**SCOTUS / Court Rulings (slip opinions - direct PDF from supremecourt.gov, October Term 2025/2026):**
+- https://www.supremecourt.gov/opinions/25pdf/25-6_d1o2.pdf → raw/documents/courts/scotus-25-6-keathley-v-ayers.pdf (Keathley v. Buddy Ayers Construction, decided 2026-06-11)
+- https://www.supremecourt.gov/opinions/25pdf/24-345_i42k.pdf → .../scotus-24-345-fs-credit-v-saba.pdf (2026-06-11)
+- https://www.supremecourt.gov/opinions/25pdf/25-5146_e29f.pdf → .../scotus-25-5146-abouammo.pdf
+- https://www.supremecourt.gov/opinions/25pdf/24-889_5i36.pdf → .../scotus-24-889-hikma-v-amarin.pdf (2026-06-04)
+- https://www.supremecourt.gov/opinions/25pdf/25-406_nmip.pdf → .../scotus-25-406-fcc-v-att.pdf (2026-06-04)
+- https://www.supremecourt.gov/opinions/25pdf/24-109_new_jifl.pdf → .../scotus-24-109-louisiana-v-callais.pdf (2026-04-29)
+- https://www.supremecourt.gov/opinions/25pdf/24-781_pok0.pdf → .../scotus-24-781-first-choice-v-davenport.pdf
+- https://www.supremecourt.gov/opinions/25pdf/24-539new_3fb4.pdf → .../scotus-24-539-chiles-v-salazar.pdf (2026-03-31)
+- Additional older prelim prints available e.g. https://www.supremecourt.gov/opinions/preliminaryprint/592US1PP_web.pdf (for backfill). Citable: "Supreme Court of the United States, Slip Opinion No. XX-XXX (2026)".
+
+**Press Releases & Briefings (full pages for narrative framing/timing/synthesis):**
+- White House (current): https://www.whitehouse.gov/briefings-statements/2026/06/presidential-message-on-the-251st-birthday-of-the-united-states-army/ → raw/documents/press/wh-2026-06-army-251st-birthday.html
+- https://www.whitehouse.gov/briefings-statements/2026/06/first-lady-melania-trumps-remarkable-week-empowering-youth-through-ai-challenge-and-fostering-the-future-accounts/
+- DOJ/OPA recent: https://www.justice.gov/opa/pr/former-intelligence-community-contractor-pleads-guilty-accepting-kickbacks (2026-06-12) → .../doj-2026-06-12-duggin-kickbacks.html
+- https://www.justice.gov/opa/pr/nevada-man-pleads-guilty-rigging-bids-healthcare-related-and-other-air-force-projects
+- Historical: trumpwhitehouse.archives.gov (e.g. /briefings-statements/ index for 2017-2021 comparison). Citable: "The White House, Briefing Statement (2026-06-14)" or "U.S. Department of Justice, Office of Public Affairs Press Release (2026-06-12)".
+
+**CRS Reports (EveryCRSReport.com direct PDFs/HTML - complete public archive mirror of Congressional Research Service non-confidential reports):**
+- https://www.everycrsreport.com/files/2026-06-02_R48296_2b94164541695afb9bd851e9161df28b12d54978.pdf → raw/documents/crs/2026-06-02-improper-payments-ongoing-challenges.pdf (29p)
+- https://www.everycrsreport.com/files/2025-05-21_R48544_496ef9d65a8dd51ed2a4ed3321f211f7fc9bdaa2.pdf
+- https://www.everycrsreport.com/files/2025-01-16_R48360_0d9acfa5f0765cd6f4a51c4565edbe087a312535.pdf
+- https://www.everycrsreport.com/files/2025-06-02_R45104_665a366a50148a021b27f266f82391f13da81562.pdf
+- Index for discovery: https://www.everycrsreport.com/reports.csv + https://www.everycrsreport.com/all-reports.html (23k+ reports tracked). Citable: "Congressional Research Service, [Title] (RXXXXX, 2026)" via EveryCRSReport.com mirror of official CRS.
+
+**GAO Reports (audits, high-risk, duplication reviews - citable for waste/fraud/efficiency narratives):**
+- Example pages/PDFs via https://www.gao.gov/ (e.g. GAO-26-108610 "The Nation's Fiscal Health", GAO-26-108113 F-35, High-Risk Series GAO-25-107743). Direct assets like https://www.gao.gov/assets/gao-26-108742.pdf (some may require page context). Added via discover for reports pages + known PDFs. Citable: "U.S. Government Accountability Office, GAO-26-XXXX (2026)".
+
+**FOIA / Transcripts / Released Documents:**
+- https://www.govinfo.gov/bulkdata (courts/legislative bulk for released docs)
+- https://www.justice.gov/foia (reading room + specific releases)
+- Specific high-profile public releases (e.g. transcripts, dockets) to be added as direct PDFs surface (govinfo, agency FOIA libraries, or congressional). Extend discover with targeted e.g. Epstein-related public files or congressional hearing transcripts as identified.
+- Citable: "U.S. Department of Justice FOIA Release" or "GovInfo [collection]".
+
+**Notes for Pipeline & Citability:**
+- Added as discover_court_documents_new, discover_press_releases_new, discover_crs_gao_reports_new, discover_foia_documents_new in monitor_and_ingest.py (and to SOURCE_MAP + broad defaults + workflow). Functions use HEAD probes on direct links for idempotency (skip if key exists in R2/manifest). Arena="documents" for all; keys under raw/documents/courts|press|crs|foia|gao/.
+- Local mirror dirs created: raw-downloads/documents/{courts,press,crs,foia,gao,state-ag}.
+- Ingest handles any bytes (PDF binary, full HTML pages with content, text). Post-ingest process-data can summarize (title, date, key excerpts via future NLP for doublespeak/framing).
+- Why these: Primary sources for "exposing legacy media and political narrative tactics" - exact wording/timing of official releases vs. coverage; CRS/GAO for factual baselines to contrast spin; court docs for lawfare/SCOTUS patterns. All public, no keys, direct or near-direct, globally citable (gov + CRS mirrors).
+- "At all times": New sources included in daily cron defaults + manual dispatch with --sources court_documents,press_releases,... --backfill true --max-new 50 --auto-process. Will continually catch new slip opinions (weekly), new releases (daily), new CRS (as posted).
+- Volume: Dozens initial + ongoing (SCOTUS ~50-80/term, CRS thousands, press hundreds/week). Use backfill for historical depth. R2 + manifest tracks. Notifications fire on ingest (NOTIFY: marker watched by local script for phone + naomiseibt@gmx.de).
+- Future extensions: CourtListener RECAP bulk/tar (if direct), full state AG portals (ag.ny.gov, oag.ca.gov press PDFs), more govinfo SCD/USCOURTS specific, congressional hearing transcripts, FOIA.gov releases. Add via new candidates in discovers or direct gh ingest-raw-data dispatches.
+
+Dispatched initial document-focused monitor runs (broad + specific documents sources, backfill, high max_new, auto_process) + direct targeted ingests for verified SCOTUS/CRS/WH/DOJ URLs to begin filling raw/documents/ immediately. Check GitHub Actions (monitor-ingest.yml and ingest-raw-data.yml) for runs; local bg watchers will surface NOTIFYs and email+SMS. This directly continues the "all things at all times" + state/local expansion.
+
+Citable, primary, "go deep" sources now live in the archive pipeline.

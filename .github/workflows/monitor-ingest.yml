@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       sources:
-        description: 'Comma-separated sources (broad default covers everything)'
+        description: 'Comma-separated sources (broad default covers everything - now includes documents sources for court rulings/press/CRS/GAO/FOIA filling raw/documents/)'
         required: false
-        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general'
+        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents'
       max_new:
         description: 'Max new items to ingest this run'
         required: false
@@ -62,7 +62,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python scripts/monitor_and_ingest.py \
-            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general' }}" \
+            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents' }}" \
             --max-new "${{ github.event.inputs.max_new || 10 }}" \
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
             ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }} \
