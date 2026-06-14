@@ -1,0 +1,1 @@
+cat /tmp/monitor-ingest.yml | cat

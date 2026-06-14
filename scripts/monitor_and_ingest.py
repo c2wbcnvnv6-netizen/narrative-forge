@@ -1,0 +1,1 @@
+cat /tmp/monitor_and_ingest.py | cat
