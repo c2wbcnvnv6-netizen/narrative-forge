@@ -13,6 +13,9 @@ on:
       target_key:
         description: 'S3 key inside babylon-raw-data (e.g. raw/congress/2024/awards.csv)'
         required: true
+  push:
+    paths:
+      - '.github/workflows/ingest-raw-data.yml'
 
 jobs:
   ingest:
