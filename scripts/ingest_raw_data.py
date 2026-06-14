@@ -15,6 +15,13 @@ In GitHub Actions:
   - Auto: monitor-ingest.yml calls this script in batch mode.
 
 First: Test connection with "Test R2 Raw-Data Bucket Connection" workflow.
+
+Streaming design:
+  Uses requests.get(..., stream=True) + boto3 upload_fileobj on the raw stream.
+  This supports huge initial dumps (hundreds of MB – many GB) with low RAM usage.
+  No full file is held in memory.
+
+Local run (advanced testing only): export the R2_* vars + SOURCE_URL etc then python scripts/ingest_raw_data.py
 """
 import os
 import sys
@@ -102,6 +109,7 @@ def main():
         # Non-fatal for monitoring
         print("Ingest skipped (already present).")
     sys.exit(0)
+
 
 if __name__ == "__main__":
     try:
