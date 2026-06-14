@@ -1,0 +1,35 @@
+name: Build Individual Politician Profiles
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory_key:
+        description: 'Directory key (defaults to processed/directory/entities.json)'
+        required: false
+        default: 'processed/directory/entities.json'
+      dry_run:
+        description: 'Dry run'
+        required: false
+        default: 'false'
+
+jobs:
+  profiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: pip install boto3
+      - name: Run profile builder (aggregation from processed + analysis)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          BUCKET_NAME: babylon-raw-data
+        run: |
+          python scripts/build_politician_profiles.py --directory-key "${{ github.event.inputs.directory_key }}" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Notify
+        run: echo "Individual politician profile files generated in processed/politicians/. See index.json and per-slug .json (rich timelines, signals, sources, graphs from documents/analysis)."
