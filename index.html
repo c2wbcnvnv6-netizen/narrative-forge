@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrative Forge • Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #0A0A0A;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .domain-pill {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .domain-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .thought-step {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .narrative-card {
+            transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                       box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .narrative-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .graph-container {
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .meme-canvas {
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #1a1a1a;
+        }
+
+        .step-active {
+            border-color: #3b82f6;
+            background-color: #1e3a8a20;
+        }
+
+        .domain-tag {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+
+        .section-header {
+            letter-spacing: -0.025em;
+        }
+
+        .data-point {
+            transition: all 0.2s ease;
+        }
+
+        .data-point:hover {
+            background-color: #1f2937;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Top Bar -->
+    <div class="border-b border-zinc-800 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="flex items-center gap-x-2">
+                    <div class="w-8 h-8 bg-white rounded-xl flex items-center justify-center">
+                        <span class="text-zinc-950 font-bold text-xl tracking-tighter">NF</span>
+                    </div>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">Narrative Forge</span>
+                    </div>
+                </div>
+                <div class="px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-medium rounded-full flex items-center gap-x-1.5">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="font-mono text-[10px]">PREVIEW • 11 DOMAINS</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2 text-sm">
+                <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-3xl px-1 py-1">
+                    <div class="flex -space-x-1 px-2">
+                        <div class="w-6 h-6 bg-zinc-700 rounded-full border border-zinc-800 overflow-hidden"><img src="https://i.pravatar.cc/24?img=1" class="w-full h-full object-cover"></div>
+                        <div class="w-6 h-6 bg-zinc-700 rounded-full border border-zinc-800 overflow-hidden"><img src="https://i.pravatar.cc/24?img=2" class="w-full h-full object-cover"></div>
+                        <div class="w-6 h-6 bg-zinc-700 rounded-full border border-zinc-800 overflow-hidden"><img src="https://i.pravatar.cc/24?img=3" class="w-full h-full object-cover"></div>
+                    </div>
+                    <span class="text-xs text-zinc-400 px-3">Team active • 6 roles</span>
+                </div>
+                
+                <button onclick="window.location.reload()" 
+                        class="flex items-center gap-x-2 px-4 py-2 text-sm font-medium bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-3xl transition-colors">
+                    <i class="fa-solid fa-sync text-xs"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+        
+        <!-- Hero -->
+        <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-x-2 px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-full text-xs mb-4">
+                <span class="text-emerald-400">●</span> 
+                <span class="font-medium">First live iteration of the full vision</span>
+            </div>
+            
+            <h1 class="font-display text-6xl font-semibold tracking-tighter leading-none mb-3">
+                See the hidden<br>paths in the news.
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-md">
+                Walk your own thought bridge. 11 interconnected domains. 
+                Public data. Graphs. Memes. Truth.
+            </p>
+            
+            <div class="flex items-center gap-x-3 mt-6">
+                <button onclick="startExplorer()" 
+                        class="px-6 py-3.5 bg-white text-zinc-950 font-semibold rounded-3xl flex items-center gap-x-2 hover:bg-zinc-100 active:scale-[0.985] transition-all">
+                    <span>Start a 2-minute bridge</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                
+                <button onclick="showDomains()" 
+                        class="px-5 py-3.5 border border-zinc-700 hover:bg-zinc-900 rounded-3xl flex items-center gap-x-2 text-sm font-medium transition-colors">
+                    <span>Browse all 11 domains</span>
+                </button>
+            </div>
+            
+            <div class="mt-4 text-[10px] text-zinc-500 flex items-center gap-x-1.5">
+                <i class="fa-solid fa-info-circle"></i>
+                <span>Currently using mock data. Real public sources + crowdsourcing coming in next iteration.</span>
+            </div>
+        </div>
+
+        <!-- Quick Teasers -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- Teaser 1 -->
+            <div onclick="startExplorerWithStory('border-funding')" 
+                 class="narrative-card group cursor-pointer bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-3xl p-5 flex gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-x-2 mb-2">
+                        <div class="domain-tag bg-blue-500/10 text-blue-400">Media + Bills</div>
+                        <div class="domain-tag bg-orange-500/10 text-orange-400">#11 Pharma</div>
+                    </div>
+                    <div class="font-semibold leading-tight group-hover:text-white transition-colors">Border funding narrative whitewash</div>
+                    <div class="text-xs text-zinc-400 mt-1.5">How a media story hid committee amendments + Pharma-adjacent NGO funding.</div>
+                </div>
+                <div class="w-16 h-16 bg-zinc-800 rounded-2xl flex-shrink-0 overflow-hidden">
+                    <div class="w-full h-full bg-gradient-to-br from-blue-900/30 to-orange-900/30 flex items-center justify-center text-xs font-mono">→</div>
+                </div>
+            </div>
+
+            <!-- Teaser 2 -->
+            <div onclick="startExplorerWithStory('election-nutrition')" 
+                 class="narrative-card group cursor-pointer bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-3xl p-5 flex gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-x-2 mb-2">
+                        <div class="domain-tag bg-purple-500/10 text-purple-400">Elections + Nutrition</div>
+                    </div>
+                    <div class="font-semibold leading-tight group-hover:text-white transition-colors">“Healthy kids” bill &amp; election impact</div>
+                    <div class="text-xs text-zinc-400 mt-1.5">Federal nutrition guidelines, identity-framed programs, and demographic engineering.</div>
+                </div>
+                <div class="w-16 h-16 bg-zinc-800 rounded-2xl flex-shrink-0 overflow-hidden">
+                    <div class="w-full h-full bg-gradient-to-br from-purple-900/30 to-rose-900/30 flex items-center justify-center text-xs font-mono">→</div>
+                </div>
+            </div>
+
+            <div onclick="showDomains()" 
+                 class="narrative-card group cursor-pointer bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-3xl p-5 flex items-center gap-4">
+                <div>
+                    <div class="text-sm font-semibold">Explore the full map</div>
+                    <div class="text-xs text-zinc-400 mt-1">11 domains • 1 system</div>
+                    <div class="mt-3 text-xs px-3 py-1 bg-zinc-800 rounded-full w-fit">View all nodes &amp; connections →</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Explorer Section -->
+        <div id="explorer-section" class="mt-10 hidden">
+            <div class="flex items-end justify-between mb-4">
+                <div>
+                    <div class="uppercase tracking-[1.5px] text-[10px] font-medium text-zinc-400">CURRENT BRIDGE</div>
+                    <h2 id="bridge-title" class="font-display text-3xl font-semibold tracking-tight"></h2>
+                </div>
+                <button onclick="resetExplorer()" 
+                        class="text-xs flex items-center gap-x-1.5 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded-2xl hover:bg-zinc-900">
+                    <i class="fa-solid fa-times"></i>
+                    <span class="text-xs">Close bridge</span>
+                </button>
+            </div>
+
+            <!-- Progress -->
+            <div class="flex items-center gap-x-2 mb-6">
+                <div class="flex-1 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-1.5 bg-blue-500 transition-all" style="width: 20%"></div>
+                </div>
+                <div id="progress-text" class="text-xs font-mono text-zinc-400 w-12 text-right">1/5</div>
+            </div>
+
+            <!-- Step Content -->
+            <div id="step-content" class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Domain connections -->
+            <div class="mt-4">
+                <div class="text-xs uppercase tracking-widest text-zinc-400 mb-2 px-1">This layer touches these domains</div>
+                <div id="domain-pills" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
+        <!-- 11 Domains Overview -->
+        <div id="domains-section" class="mt-16">
+            <div class="flex items-baseline justify-between mb-5 px-1">
+                <div>
+                    <span class="text-xs uppercase tracking-[2px] text-zinc-400">THE COMPLETE SYSTEM</span>
+                    <h3 class="font-display text-3xl font-semibold tracking-tighter">11 First-Class Domains</h3>
+                </div>
+                <button onclick="hideDomains()" class="text-sm text-zinc-400 hover:text-white">Hide</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="domains-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Footer status -->
+        <div class="mt-12 pt-6 border-t border-zinc-800 text-xs flex items-center justify-between text-zinc-500">
+            <div>
+                Built by the 6-role team (Gabriel • Michael • Solomon • Bezalel • Nathan • Joshua).<br>
+                Using build-full-website skill + GitHub/Vercel MCP connectors.
+            </div>
+            <div class="text-right">
+                This is the <span class="font-medium text-zinc-400">first public preview</span>.<br>
+                Real data + crowdsourcing forms next.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initTailwind() {
+            document.documentElement.style.setProperty('--accent', '#3b82f6');
+        }
+
+        // Demo data for the 11-domain map
+        const domains = [
+            { id: 1, name: "SCOTUS / Legal / Lawfare", color: "rose", short: "Lawfare cases & key actors" },
+            { id: 2, name: "Congressional Bill Granulizer", color: "amber", short: "Appropriation → profiteers flow" },
+            { id: 3, name: "Foreign Nexus", color: "emerald", short: "NGOs & malign influence" },
+            { id: 4, name: "Mass Migration", color: "sky", short: "Funding, enforcement, impacts" },
+            { id: 5, name: "Societal Declination", color: "violet", short: "Rights erosion + historical mirrors" },
+            { id: 6, name: "Bureaucracy / Agencies", color: "slate", short: "Implementation & capture" },
+            { id: 7, name: "Elections & Demographics", color: "indigo", short: "Census, apportionment, integrity" },
+            { id: 8, name: "Media-Tech-Censorship", color: "red", short: "Narrative coordination engine" },
+            { id: 9, name: "Finance & Economic Levers", color: "yellow", short: "Money flows & central power" },
+            { id: 10, name: "Education & Culture", color: "fuchsia", short: "Long-game ideological capture" },
+            { id: 11, name: "Pharma / Nutrition & Health Capture", color: "teal", short: "Tax money, identity medicine, crippling outcomes" }
+        ];
+
+        const stories = {
+            "border-funding": {
+                title: "Border Funding Narrative Whitewash",
+                domainFocus: [1,2,6,11,8],
+                steps: [
+                    {
+                        num: 1,
+                        title: "Surface Story",
+                        content: "Mainstream coverage frames a funding bill as purely humanitarian with minor implementation hiccups.",
+                        chart: "bias",
+                        why: "Classic whitewashing. Hides the actual legislative path and downstream effects."
+                    },
+                    {
+                        num: 2,
+                        title: "Bill Granulizer",
+                        content: "The appropriation was heavily amended in committee. Lobbyists from pharma-adjacent NGOs added language for 'health infrastructure' that later funded specific contractors.",
+                        chart: "flow",
+                        why: "This is the core fraud flow: Congress money → amendments → private profit."
+                    },
+                    {
+                        num: 3,
+                        title: "Bureaucracy Layer",
+                        content: "DHS and HHS agencies turned the bill into rules that prioritized certain NGOs with known foreign ties. FDA-adjacent programs received supplemental funding.",
+                        chart: null,
+                        why: "Bureaucracy executes and expands what Congress started."
+                    },
+                    {
+                        num: 4,
+                        title: "Pharma / Nutrition & Health Capture (#11)",
+                        content: "Portions of the funding supported 'migrant health' programs that included experimental protocols and nutrition guidelines later criticized for ideological framing. Federal grants flowed to universities pushing identity-based medical training.",
+                        chart: "pharma",
+                        why: "Federal tax dollars used to advance both material interests (Pharma) and ideological goals (identity politics in health), contributing to long-term societal health and trust decline."
+                    },
+                    {
+                        num: 5,
+                        title: "Media + Societal Declination",
+                        content: "Coverage that questioned the funding was labeled 'far-right'. Trust in institutions continued to fall, especially among communities directly affected by the outcomes.",
+                        chart: null,
+                        why: "The whitewash protects the entire chain. This pattern mirrors historical declines in social cohesion."
+                    }
+                ]
+            },
+            "election-nutrition": {
+                title: "Election-Linked Nutrition & Health Policy",
+                domainFocus: [7,10,11,2,5],
+                steps: [
+                    {
+                        num: 1,
+                        title: "Surface Story",
+                        content: "New federal nutrition guidelines and school programs presented as purely scientific improvements for children.",
+                        chart: "bias",
+                        why: "Surface hides the political and funding incentives."
+                    },
+                    {
+                        num: 2,
+                        title: "Elections & Demographics",
+                        content: "Updated census methodology and apportionment effects intersect with migration-driven population shifts in key states. Nutrition programs tied to specific demographic outreach.",
+                        chart: null,
+                        why: "Health policy becomes a tool in demographic and electoral engineering."
+                    },
+                    {
+                        num: 3,
+                        title: "Pharma / Nutrition & Identity Capture (#11)",
+                        content: "Significant grant money went to medical schools and NGOs for 'culturally responsive' nutrition and health education that heavily incorporated identity frameworks. Some programs linked to pharmaceutical partnerships for 'equity' medications.",
+                        chart: "pharma",
+                        why: "Taxpayer money used to embed ideological capture in health systems that affect the next generation."
+                    },
+                    {
+                        num: 4,
+                        title: "Education & Cultural Institutions",
+                        content: "Curriculum in K-12 and universities aligned with the new guidelines. Dissenting nutrition researchers faced professional consequences.",
+                        chart: null,
+                        why: "Long-game capture of how society thinks about health and bodies."
+                    },
+                    {
+                        num: 5,
+                        title: "Societal Declination",
+                        content: "Rising rates of metabolic disease, mental health issues, and loss of trust in 'official' health guidance. Clear parallels to other historical periods of institutional overreach.",
+                        chart: null,
+                        why: "The compounding effect across domains accelerates societal erosion."
+                    }
+                ]
+            }
+        };
+
+        let currentStory = null;
+        let currentStep = 1;
+
+        function startExplorer() {
+            document.getElementById('explorer-section').classList.remove('hidden');
+            document.getElementById('domains-section').classList.add('hidden');
+            
+            // Default to first story
+            loadStory('border-funding');
+        }
+
+        function startExplorerWithStory(storyKey) {
+            document.getElementById('explorer-section').classList.remove('hidden');
+            document.getElementById('domains-section').classList.add('hidden');
+            loadStory(storyKey);
+        }
+
+        function loadStory(storyKey) {
+            currentStory = stories[storyKey];
+            currentStep = 1;
+            
+            document.getElementById('bridge-title').innerHTML = currentStory.title;
+            
+            renderStep();
+            updateDomainPills();
+        }
+
+        function renderStep() {
+            const step = currentStory.steps[currentStep - 1];
+            const container = document.getElementById('step-content');
+            
+            let html = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-x-3">
+                        <div class="w-8 h-8 rounded-2xl bg-zinc-800 flex items-center justify-center font-mono text-sm font-medium">${step.num}</div>
+                        <div class="font-semibold text-xl">${step.title}</div>
+                    </div>
+                    
+                    <div class="flex items-center gap-x-2 text-xs">
+                        <button onclick="prevStep()" class="px-4 py-1.5 rounded-2xl border border-zinc-700 hover:bg-zinc-800 flex items-center gap-x-1.5 ${currentStep === 1 ? 'opacity-40 pointer-events-none' : ''}">
+                            <i class="fa-solid fa-chevron-left text-xs"></i> <span>Back</span>
+                        </button>
+                        <button onclick="nextStep()" class="px-4 py-1.5 rounded-2xl bg-zinc-800 hover:bg-zinc-700 flex items-center gap-x-1.5 ${currentStep === currentStory.steps.length ? 'opacity-40 pointer-events-none' : ''}">
+                            <span>Next</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-zinc-300 leading-relaxed">${step.content}</div>
+            `;
+            
+            // Add chart if present
+            if (step.chart) {
+                html += `<div class="mt-6">`;
+                
+                if (step.chart === 'bias') {
+                    html += `
+                        <div class="text-xs mb-2 text-zinc-400">Bias Distribution (mock data)</div>
+                        <div class="h-40 bg-zinc-950 rounded-2xl p-4 flex items-end gap-3">
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-red-500 rounded-t" style="height: 68%"></div>
+                                <div class="text-[10px] mt-1 text-red-400">Left 42%</div>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-amber-400 rounded-t" style="height: 22%"></div>
+                                <div class="text-[10px] mt-1 text-amber-400">Center 19%</div>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="w-full bg-blue-500 rounded-t" style="height: 35%"></div>
+                                <div class="text-[10px] mt-1 text-blue-400">Right 39%</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (step.chart === 'flow' || step.chart === 'pharma') {
+                    html += `
+                        <div class="text-xs mb-2 text-zinc-400">${step.chart === 'pharma' ? 'Pharma/Nutrition Money Flow (mock)' : 'Bill Granulizer Flow (mock)'}</div>
+                        <div class="bg-zinc-950 p-4 rounded-2xl text-xs font-mono">
+                            <div class="flex justify-between text-emerald-400">
+                                <div>Congress Appropriation</div>
+                                <div class="text-right">$2.8B</div>
+                            </div>
+                            <div class="h-px bg-zinc-700 my-1"></div>
+                            <div class="pl-4">→ Committee Amendments + Lobbyists</div>
+                            <div class="pl-8 text-amber-400">→ Pharma-adjacent NGOs &amp; contractors (+$840M)</div>
+                            <div class="pl-12 text-teal-400">→ "Health Equity" &amp; Nutrition Programs</div>
+                            <div class="pl-4 mt-1 text-rose-400">→ Real-world outcomes: rising chronic conditions, eroded trust</div>
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+            }
+            
+            html += `
+                <div class="mt-6 pt-5 border-t border-zinc-700">
+                    <div class="text-xs uppercase tracking-widest text-zinc-400 mb-1">Why this matters</div>
+                    <div class="text-sm text-zinc-300">${step.why}</div>
+                </div>
+                
+                <div class="mt-5 flex flex-wrap gap-2">
+                    <button onclick="generateMeme()" class="text-xs px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-3xl flex items-center gap-x-2 text-white">
+                        <i class="fa-solid fa-image"></i>
+                        <span>Generate meme from this layer</span>
+                    </button>
+                    
+                    <button onclick="showDomains()" class="text-xs px-4 py-2 border border-zinc-700 hover:bg-zinc-900 rounded-3xl flex items-center gap-x-2">
+                        <span>Jump to full 11-domain map</span>
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Update progress
+            const progress = Math.round((currentStep / currentStory.steps.length) * 100);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').innerHTML = `${currentStep}/${currentStory.steps.length}`;
+        }
+
+        function nextStep() {
+            if (currentStep < currentStory.steps.length) {
+                currentStep++;
+                renderStep();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                renderStep();
+            }
+        }
+
+        function updateDomainPills() {
+            const container = document.getElementById('domain-pills');
+            container.innerHTML = '';
+            
+            currentStory.domainFocus.forEach(id => {
+                const domain = domains.find(d => d.id === id);
+                if (!domain) return;
+                
+                const pill = document.createElement('div');
+                pill.className = `domain-pill px-3 py-1 text-xs rounded-2xl border flex items-center gap-x-1.5 bg-zinc-900 border-zinc-700`;
+                pill.innerHTML = `
+                    <span class="font-medium">${domain.name}</span>
+                `;
+                pill.onclick = () => showDomainDetail(domain);
+                container.appendChild(pill);
+            });
+        }
+
+        function generateMeme() {
+            const step = currentStory.steps[currentStep - 1];
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-6';
+            modal.innerHTML = `
+                <div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-md w-full p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="font-semibold">Meme Generator</div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-zinc-400 hover:text-white">×</button>
+                    </div>
+                    
+                    <canvas id="meme-canvas" width="520" height="300" class="meme-canvas w-full"></canvas>
+                    
+                    <div class="mt-4 space-y-3">
+                        <input id="meme-text" type="text" value="${step.title} — The part they didn't show you" 
+                               class="w-full bg-zinc-950 border border-zinc-700 text-sm px-3 py-2 rounded-2xl focus:outline-none focus:border-zinc-400">
+                        
+                        <div class="flex gap-x-2">
+                            <button onclick="renderMemeCanvas()" 
+                                    class="flex-1 py-2 text-sm font-medium bg-zinc-800 hover:bg-zinc-700 rounded-3xl">Regenerate</button>
+                            <button onclick="downloadMeme()" 
+                                    class="flex-1 py-2 text-sm font-medium bg-white text-zinc-950 rounded-3xl">Download + Share</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                renderMemeCanvas();
+            }, 50);
+        }
+
+        function renderMemeCanvas() {
+            const canvas = document.getElementById('meme-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const textInput = document.getElementById('meme-text');
+            const text = textInput ? textInput.value : "The part they didn't show you";
+            
+            // Background
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Gradient bar at top
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            grad.addColorStop(0, '#3b82f6');
+            grad.addColorStop(1, '#f43f5e');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, 8);
+            
+            // Title
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+            ctx.fillText('NARRATIVE FORGE', 24, 48);
+            
+            ctx.font = '600 16px Inter, system-ui, sans-serif';
+            ctx.fillStyle = '#a1a1aa';
+            ctx.fillText(currentStory.title, 24, 72);
+            
+            // Main text box
+            ctx.fillStyle = '#1f2937';
+            ctx.fillRect(24, 95, canvas.width - 48, 110);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '500 18px Inter, system-ui, sans-serif';
+            
+            // Word wrap the text
+            const words = text.split(' ');
+            let line = '';
+            let y = 125;
+            
+            words.forEach(word => {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > canvas.width - 80 && line !== '') {
+                    ctx.fillText(line, 32, y);
+                    line = word + ' ';
+                    y += 28;
+                } else {
+                    line = testLine;
+                }
+            });
+            ctx.fillText(line, 32, y);
+            
+            // Bottom credit
+            ctx.fillStyle = '#52525b';
+            ctx.font = '12px Inter, system-ui, sans-serif';
+            ctx.fillText('11-domain system map • Public data synthesis', 24, 265);
+            
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillText('narrative-forge.preview', canvas.width - 160, 265);
+        }
+
+        function downloadMeme() {
+            const canvas = document.getElementById('meme-canvas');
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = `narrative-forge-meme-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            // Close modal
+            const modal = canvas.closest('.fixed');
+            if (modal) modal.remove();
+            
+            // Fun toast
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 text-sm px-4 py-2 rounded-3xl flex items-center gap-x-2';
+            toast.innerHTML = `Meme downloaded. Share with source link back to the bridge.`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 2600);
+        }
+
+        function updateDomainPills() {
+            // Already defined above
+        }
+
+        function showDomains() {
+            document.getElementById('domains-section').classList.remove('hidden');
+            document.getElementById('explorer-section').classList.add('hidden');
+            
+            const grid = document.getElementById('domains-grid');
+            grid.innerHTML = '';
+            
+            domains.forEach(domain => {
+                const div = document.createElement('div');
+                div.className = `bg-zinc-900 border border-zinc-800 rounded-3xl p-5 cursor-pointer hover:border-zinc-600 transition-colors`;
+                div.innerHTML = `
+                    <div class="font-semibold text-lg leading-none mb-1">${domain.name}</div>
+                    <div class="text-xs text-zinc-400">${domain.short}</div>
+                    <div class="mt-6 text-[10px] text-zinc-500">Click to see connections →</div>
+                `;
+                div.onclick = () => showDomainDetail(domain);
+                grid.appendChild(div);
+            });
+        }
+
+        function hideDomains() {
+            document.getElementById('domains-section').classList.add('hidden');
+        }
+
+        function showDomainDetail(domain) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-[110] p-4';
+            modal.innerHTML = `
+                <div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-lg w-full p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="text-xs tracking-[1.5px] text-zinc-400">DOMAIN #${domain.id}</div>
+                            <div class="text-2xl font-semibold mt-1">${domain.name}</div>
+                        </div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-3xl leading-none text-zinc-400 hover:text-white mt-[-4px]">×</button>
+                    </div>
+                    
+                    <div class="my-6 text-sm text-zinc-300">
+                        This domain is deeply interconnected with the others. In the full system it appears as nodes in graphs, segments in flowcharts, and layers in thought bridges.
+                    </div>
+                    
+                    <div class="text-xs text-zinc-400">Example connection in current preview:</div>
+                    <div class="mt-2 text-sm bg-zinc-950 border border-zinc-800 rounded-2xl p-3">
+                        ${currentStory ? `Used in the "${currentStory.title}" bridge as a key driver of outcomes.` : 'Visible across multiple bridges once real data is loaded.'}
+                    </div>
+                    
+                    <div class="mt-6 pt-4 border-t border-zinc-700 flex gap-x-2">
+                        <button onclick="this.closest('.fixed').remove(); startExplorer();" 
+                                class="flex-1 py-2.5 text-sm rounded-3xl border border-zinc-700 hover:bg-zinc-800">Start new bridge from here</button>
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="flex-1 py-2.5 text-sm rounded-3xl bg-white text-zinc-950 font-medium">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function showDomainDetailFromOutside(domainId) {
+            const domain = domains.find(d => d.id === domainId);
+            if (domain) showDomainDetail(domain);
+        }
+
+        function resetExplorer() {
+            document.getElementById('explorer-section').classList.add('hidden');
+            currentStory = null;
+        }
+
+        // Initialize everything
+        function initPreview() {
+            initTailwind();
+            
+            // Pre-populate domains grid on load (hidden by default)
+            const grid = document.getElementById('domains-grid');
+            if (grid) {
+                // Will be populated when shown
+            }
+            
+            // Keyboard support
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.getElementById('explorer-section').classList.contains('hidden')) {
+                    e.preventDefault();
+                    startExplorer();
+                }
+            });
+            
+            // Welcome hint
+            setTimeout(() => {
+                console.log('%c[Narrative Forge] Preview loaded. 11 domains active.', 'color:#3f3f46');
+            }, 800);
+        }
+
+        // Boot
+        window.onload = function() {
+            initPreview();
+            
+            // Auto-show domains overview after a moment (nice first experience)
+            setTimeout(() => {
+                const domainsSection = document.getElementById('domains-section');
+                if (domainsSection && domainsSection.classList.contains('hidden') === false) {
+                    // already visible, do nothing
+                }
+            }, 1200);
+        }
+
+        // Expose a couple functions globally for console / future
+        window.NF = {
+            start: startExplorer,
+            domains: () => showDomains(),
+            loadStory: (key) => startExplorerWithStory(key)
+        };
+    </script>
+</body>
+</html>
