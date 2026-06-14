@@ -42,4 +42,4 @@ jobs:
         run: python scripts/ingest_raw_data.py
 
       - name: Notify (placeholder)
-        run: echo "Ingest complete for arena=${{ github.event.inputs.arena }}. Next: trigger analysis on processed bucket."
+        run: 'echo "Ingest complete for arena=${{ github.event.inputs.arena }}. Next: trigger analysis on processed bucket."'
