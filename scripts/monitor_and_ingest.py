@@ -512,6 +512,16 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                                 print(f"    Auto-process trigger: {result.stderr.strip()[:200]}")
                     except Exception as e:
                         print(f"    Auto-process trigger failed for {key}: {e}")
+                    # Full chain (Phase 1/2): trigger deep analyze for documents (graphs, repeated phrases/coordination detection, timelines, tactic scores, synthesis)
+                    if arena == "documents":
+                        try:
+                            proc_base = key.split("/")[-1].rsplit(".", 1)[0]
+                            cmd2 = ["gh", "workflow", "run", "analyze-data.yml", "-R", repo, "-f", f"processed_key=processed/{arena}/{proc_base}-summary.json"]
+                            result2 = subprocess.run(cmd2, capture_output=True, text=True, timeout=60)
+                            if result2.returncode == 0:
+                                print(f"    Auto-triggered analyze-data for full synthesis on {key}")
+                        except Exception as e:
+                            print(f"    Analyze auto-trigger note (non-fatal): {e}")
         except Exception as e:
             print(f"    ERROR ingesting {key}: {e}")
 
