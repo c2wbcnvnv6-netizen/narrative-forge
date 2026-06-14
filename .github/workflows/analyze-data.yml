@@ -1,0 +1,42 @@
+name: Analyze Processed Data (synthesis, graphs, timelines, tactics)
+
+on:
+  workflow_dispatch:
+    inputs:
+      processed_key:
+        description: 'Processed summary key (e.g. processed/documents/...-summary.json)'
+        required: true
+      batch:
+        description: 'Comma list of additional keys (optional)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Dry run only'
+        required: false
+        default: 'false'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps (light)
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3
+      - name: Run substantial analysis
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          BUCKET_NAME: babylon-raw-data
+          PROCESSED_KEY: ${{ github.event.inputs.processed_key }}
+        run: |
+          python scripts/analyze_data.py --processed-key "${{ github.event.inputs.processed_key }}" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+      - name: Notify
+        run: echo "Analysis complete. Check processed/derived/ for graph/timeline/synthesis. NOTIFY markers emitted."

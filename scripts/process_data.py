@@ -248,6 +248,25 @@ def main():
     # Marker for watchers (like monitor does)
     print(f"NOTIFY: processed {raw_key} -> {processed_key}")
 
+    # Substantial analysis integration (Phase 1): for documents, run deeper synthesis immediately
+    if arena == "documents" and "extracted_text_preview" in summary:
+        try:
+            # Import and run core synthesis (avoids full re-fetch)
+            sys.path.insert(0, os.path.dirname(__file__))
+            from analyze_data import extract_text_from_processed, generate_synthesis, build_entity_graph, build_timeline, compute_tactic_scores
+            # Wrap as list for the functions
+            synth_input = [summary]
+            deep_synth = generate_synthesis(synth_input)
+            derived_base = f"processed/derived/{base}"
+            s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-synthesis.json", Body=json.dumps(deep_synth, indent=2), ContentType="application/json")
+            s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-graph.json", Body=json.dumps(deep_synth.get("graph", {}), indent=2), ContentType="application/json")
+            s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-timeline.json", Body=json.dumps(deep_synth.get("timeline", []), indent=2), ContentType="application/json")
+            print(f"Deep synthesis + graph + timeline written for documents to {derived_base}-*.json")
+            summary["has_deep_analysis"] = True
+            summary["derived_synthesis_key"] = f"{derived_base}-synthesis.json"
+        except Exception as e:
+            print(f"Deep analysis in-process failed (non-fatal): {e}")
+
     # Print compact for logs
     print(json.dumps({k: v for k, v in summary.items() if k in ("shape", "type", "title", "num_pages", "analysis")} , indent=2)[:1500])
 
