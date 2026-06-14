@@ -1,1 +1,1 @@
-(Updated with politician profiles auto-trigger chaining after analyze for documents. See previous for full; the added block calls build-politician-profiles.yml.)
+(Full updated monitor with FEC discover for politician enrichment + profiles chaining. See script for details.)
