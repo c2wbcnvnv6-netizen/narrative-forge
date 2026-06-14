@@ -1,0 +1,45 @@
+name: Ingest Raw Data (for first download parameters)
+
+on:
+  workflow_dispatch:
+    inputs:
+      arena:
+        description: 'Arena / domain (e.g. congress, elections, finance, media, etc.)'
+        required: true
+        default: 'congress'
+      source_url:
+        description: 'Public download URL (e.g. from usaspending.gov, congress.gov, fec.gov, etc.)'
+        required: true
+      target_key:
+        description: 'S3 key inside babylon-raw-data (e.g. raw/congress/2024/awards.csv)'
+        required: true
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip --upgrade pip
+          pip install requests boto3
+
+      - name: Run ingest
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          ARENA: ${{ github.event.inputs.arena }}
+          SOURCE_URL: ${{ github.event.inputs.source_url }}
+          TARGET_KEY: ${{ github.event.inputs.target_key }}
+        run: python scripts/ingest_raw_data.py
+
+      - name: Notify (placeholder)
+        run: echo "Ingest complete for arena=${{ github.event.inputs.arena }}. Next: trigger analysis on processed bucket."
