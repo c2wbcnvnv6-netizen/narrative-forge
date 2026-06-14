@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Narrative Forge • Preview</title>
+    <title>The Breaker of Babylon • Preview</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -93,7 +93,7 @@
                         <span class="text-zinc-950 font-bold text-xl tracking-tighter">NF</span>
                     </div>
                     <div>
-                        <span class="font-display text-2xl font-semibold tracking-tighter">Narrative Forge</span>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">The Breaker of Babylon</span>
                     </div>
                 </div>
                 <div class="px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-medium rounded-full flex items-center gap-x-1.5">
@@ -575,7 +575,7 @@
             // Title
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 22px Inter, system-ui, sans-serif';
-            ctx.fillText('NARRATIVE FORGE', 24, 48);
+            ctx.fillText('THE BREAKER OF BABYLON', 24, 48);
             
             ctx.font = '600 16px Inter, system-ui, sans-serif';
             ctx.fillStyle = '#a1a1aa';
@@ -612,7 +612,7 @@
             ctx.fillText('11-domain system map • Public data synthesis', 24, 265);
             
             ctx.fillStyle = '#3b82f6';
-            ctx.fillText('narrative-forge.preview', canvas.width - 160, 265);
+            ctx.fillText('thebreakerofbabylon.preview', canvas.width - 160, 265);
         }
 
         function downloadMeme() {
@@ -620,7 +620,7 @@
             if (!canvas) return;
             
             const link = document.createElement('a');
-            link.download = `narrative-forge-meme-${Date.now()}.png`;
+            link.download = `the-breaker-of-babylon-meme-${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
             
@@ -728,7 +728,7 @@
             
             // Welcome hint
             setTimeout(() => {
-                console.log('%c[Narrative Forge] Preview loaded. 11 domains active.', 'color:#3f3f46');
+                console.log('%c[The Breaker of Babylon] Preview loaded. 11 domains active.', 'color:#3f3f46');
             }, 800);
         }
 
@@ -746,7 +746,7 @@
         }
 
         // Expose a couple functions globally for console / future
-        window.NF = {
+        window.BB = {
             start: startExplorer,
             domains: () => showDomains(),
             loadStory: (key) => startExplorerWithStory(key)
