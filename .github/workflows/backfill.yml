@@ -1,0 +1,60 @@
+name: Simple Backfill Download System (Dedicated, Reliable Historical Ingest)
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_new:
+        description: 'Max new items (high default for backfill)'
+        required: false
+        default: '500'
+      dry_run:
+        description: 'Dry run (discover only)'
+        required: false
+        default: 'false'
+      sources:
+        description: 'Override sources (default: politicians + docs focused)'
+        required: false
+        default: 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents'
+  schedule:
+    # Weekly backfill maintenance (Sundays) - keeps historical up to date without daily noise
+    - cron: '0 6 * * 0'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests boto3
+
+      - name: Run Simple Backfill System
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          BUCKET_NAME: babylon-raw-data
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/simple_backfill.py \
+            --max-new "${{ github.event.inputs.max_new || '500' }}" \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
+            --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents' }}"
+
+      - name: Summary
+        run: |
+          echo "Simple Backfill complete."
+          echo "Use this for reliable historical catch-up on politicians (for profile files) + documents."
+          echo "New items stream to raw/politicians/ and raw/documents/."
+          echo "Follow up with profiles workflow if politician sources were included."
+          echo "Maintain by running on demand or via the weekly schedule."

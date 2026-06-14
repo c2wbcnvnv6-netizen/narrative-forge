@@ -1,1 +1,1 @@
-(Full updated monitor with FEC discover for politician enrichment + profiles chaining. See script for details.)
+(Updated with backfill support propagated to all politician discovers + higher caps in backfill mode. See recent edits for FEC, congress, recap, etc. expansion on backfill flag.)
