@@ -1,1 +1,78 @@
-cat /tmp/monitor-ingest.yml | cat
+name: Monitor & Auto-Ingest New Datasets (Continual Archive Builder)
+
+on:
+  schedule:
+    # "Just do it" - Daily at 03:00 UTC for continual archive building
+    - cron: '0 3 * * *'
+    # Extra mid-week for high-velocity sources
+    - cron: '0 15 * * 3'
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: 'Comma-separated sources (broad default covers everything)'
+        required: false
+        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general'
+      max_new:
+        description: 'Max new items to ingest this run'
+        required: false
+        default: '10'
+      dry_run:
+        description: 'Dry run (discover only)'
+        required: false
+        default: 'false'
+      arena:
+        description: 'Optional arena filter'
+        required: false
+        default: ''
+      backfill:
+        description: 'Backfill mode (large historical windows for missing older data)'
+        required: false
+        default: 'false'
+      auto_process:
+        description: 'Auto-trigger Process Ingested Data workflow after each successful ingest'
+        required: false
+        default: 'true'
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write   # required to auto-trigger other workflows (process-data)
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests boto3
+
+      - name: Run algorithmic monitor + ingest ("just do it" mode on schedule)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          BUCKET_NAME: babylon-raw-data
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/monitor_and_ingest.py \
+            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general' }}" \
+            --max-new "${{ github.event.inputs.max_new || 10 }}" \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
+            ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }} \
+            ${{ github.event.inputs.backfill == 'true' && '--backfill' || '' }} \
+            ${{ github.event.inputs.auto_process != 'false' && '--auto-process' || '' }}
+
+      - name: Summary
+        run: |
+          echo "Monitor run complete. Check the logs above for newly discovered + ingested items."
+          echo "New items are streamed directly into babylon-raw-data under raw/<arena>/..."
+          echo "A manifests/ingested.json is maintained in R2 for tracking."
+          echo "With --auto-process, the Process Ingested Data workflow was triggered for each new raw."
+          echo "Use backfill=true in manual dispatch for historical catch-up."
