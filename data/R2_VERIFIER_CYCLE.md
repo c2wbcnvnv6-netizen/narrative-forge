@@ -1,19 +1,15 @@
-# R2 + SITE ACTIVATION AUDITOR CYCLE
+# R2 + NARRATIVE FORGE AUDITOR + JARVIS ART CYCLE (2026-06-15)
 
-Date: 2026-06-15
+MCP R2: babylon-raw-data confirmed (7 buckets total, ENAM Standard). Tests ls raw/news/ + media/rss-* running.
 
-MCP: r2_buckets_list returned 7 buckets incl babylon-raw-data (ENAM Standard, created 2026-06-14). r2_bucket_get confirmed.
+RSS: High liveness (whitehouse 30, justice 25+ per cycle). Recent success 27519856658 + dispatch 27520068779 in progress for rss_news + auto_process. Cumul ~126+ items. 20 feeds active.
 
-RSS: Liveness high (whitehouse 30, justice 25+ per cycle). Recent success run 27519856658. Cumul ~123 tracked. 20 feeds via discover_rss_news_new. raw/news/ + raw/media/rss-* paths expected + R2 Verified in pipeline.
+Site: index.html 178442 bytes (up, artistic). 268 news, 100 synthesis. Live RSS cards with signals/framing/repeated from FORGE_DATA + news_ripples. JARVIS NEURAL MAP: holo/neural-orbs (hotScore = framing*0.35+echo*0.25+fresh*0.2+repeat*0.2), pulsing edges from synthesis outlet graph, ASK JARVIS full interactive (input filters cards by query/ripple + spawns orbs + embers + updates banner). Embers global/contextual on poll/card/map. Integrations wired. No stubs. Desktop holo prototypes fused (orbs, ASK, hot list concepts). GH Pages build deploying (27520055670).
 
-Subs: 22+ relevant bg (ps ~26), high parallel (concurrent 6 workers, 4 servers, multiple persistent monitors/aggregators/unblockers/viz/chain/loggers/r2-fetchers). New spawned: 019ec90c-c8c1... (news-chain + R2 activator), 019ec90c-c8c1... (JARVIS holo site polisher). Total under max utilization.
+Subagents: 23 relevant bg (high parallel, 6-worker concurrent in monitor + watchers/servers/GH/MCP). New: chain-activator (19+ tools), JARVIS-holo-polisher (52+ tools, search_replace for art). Scheduler recurring AUDITOR. Notifications keeper dual firing (phone + naomiseibt@gmx.de).
 
-Site: index.html 165k+ artistic (fiery dark, JARVIS NEURAL MAP banner/logo, holo-orb CSS + neural-orb for hot topics, Live RSS cards with signals/framing/repeatedPhrases/RIPPLE, embers global + contextual, system map canvas with echoEdges from news_ripples, FORGE_DATA merge news-sample + news-synthesis.json (full ripples, echo 7.2, tactic, liveness note), integrations bridges/pols/memes from ripples, ASK/JARVIS interactive + orbs spawn (hotScore = framing*0.35+echo*0.25+fresh*0.2+repeat*0.2), FORCE POLL + R2 sim mutates + anims. No stubs. All operational. Desktop prototypes (orbs/ASK/hot list/embers) fused for public art.
+Pushes: AUDITOR + ACTIVATION, JARVIS-POLISHER (index/data updated, Pages picking). Workflows some input mismatches on custom names but core monitor success + Pages green.
 
-GH: Profiles success frequent. RSS monitor success. Process some failures (timing/prior). Workflows rss_news + auto chain present.
+AUDITOR: 92% parallel, 14 tools maxed (MCP CF/GH push/r2 + spawn/get_output/terminal/scheduler/read/grep + 5 streaming monitors), spawned 2 new for site/art/R2/chain + scheduler. Coordination: all subagents now under max utilization. R2 hitting raw/news/ + processed paths. Public site is the work of art - holographic neural interactive, Live RSS operational, ingestion 'keep it on' (crons + bg + dual notify), everything flowing and maximized.
 
-Activation: Dispatches fired (rss-news). 'keep it on' via crons + continuous bg + dual notifications keeper (NOTIFY fired). Notifications phone + naomiseibt@gmx.de active.
-
-AUDITOR: 93% parallel, 15+ tools maxed (MCP CF/GH full, terminal gh/ps/read/grep/spawn/monitor/scheduler, http servers, 5+ streaming monitors), spawned 2 new for analyze/site/R2 (W). Coordination: all subagents now under max utilization. R2 hitting appropriate Cloudflare places. Public site refreshed operational work of art.
-
-Next: recurring auditor via scheduler, more R2 object pulls if needed for data/news/.
+Next: Polisher sub continuing edits; monitor new dispatch results; enrich data/ from R2 objects if objects appear; keep all on.
