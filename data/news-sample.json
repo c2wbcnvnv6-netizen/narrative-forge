@@ -26,7 +26,7 @@
     "MCP_buckets": "babylon-raw-data + 6 siblings (ENAM Standard)",
     "updated_by": "R2-FETCHER-SUB + R2 CF NEWS VERIFIER + ACTIVATOR SUBAGENT | JARVIS-NEURAL-MAP-ART-MAX subagent",
     "r2_live_keys_sample": [],
-    "last_r2_enrich": "2026-06-15T03:02Z",
+    "last_r2_enrich": "2026-06-15T03:03Z",
     "R2_DATA_ENRICHER_note": "Persistent bg R2 data enricher + site data live wire (every 90s). Updates FORGE_DATA meta with live raw/news/ samples when R2 creds present; always stamps fresh last_r2_enrich + ls for live wire status. Targets processed/news/ or raw for hotter ripples in JARVIS map / Live RSS.",
     "last_r2_poll": "2026-06-15T02:45:30.160771Z",
     "R2_raw_news_count": 341,
@@ -152,7 +152,7 @@
       "title": "Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications",
       "source": "justice-pr",
       "pubDate": "2026-06-12T12:00:00Z",
-      "excerpt": "LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
+      "excerpt": "LAS VEGAS \u2013 As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
       "link": "https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent",
       "arena": "legal",
       "signals": {
@@ -236,7 +236,7 @@
       "title": "Exclusive: Internal Memos Reveal Coordinated Messaging on 'Hiccups' Narrative Across Outlets",
       "source": "fox-news",
       "pubDate": "2026-06-13T22:40:00Z",
-      "excerpt": "Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases — raising coordination questions.",
+      "excerpt": "Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases \u2014 raising coordination questions.",
       "link": "https://example.com/fox-border-memos",
       "arena": "media",
       "signals": {
