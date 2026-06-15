@@ -345,7 +345,6 @@ def discover_court_documents_new(s3, existing_keys: set) -> Generator[Tuple[str,
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-345_i42k.pdf", "raw/documents/courts/scotus-24-345-fs-credit-v-saba.pdf"),
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/25-5146_e29f.pdf", "raw/documents/courts/scotus-25-5146-abouammo.pdf"),
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-889_5i36.pdf", "raw/documents/courts/scotus-24-889-hikma-v-amarin.pdf"),
-        ("documents", "https://www.supremecourt.gov/opinions/25pdf/25-406_nmip.pdf", "raw/documents/courts/scotus-25-406-fcc-v-att.pdf"),
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-109_new_jifl.pdf", "raw/documents/courts/scotus-24-109-louisiana-v-callais.pdf"),
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-781_pok0.pdf", "raw/documents/courts/scotus-24-781-first-choice-v-davenport.pdf"),
         ("documents", "https://www.supremecourt.gov/opinions/25pdf/24-539new_3fb4.pdf", "raw/documents/courts/scotus-24-539-chiles-v-salazar.pdf"),
@@ -553,7 +552,7 @@ def discover_rss_news_new(s3, existing_keys: set, hours_back: int = 48, backfill
 def discover_politicians_fec_new(s3, existing_keys: set, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
     """FEC bulk for candidates and contributions (direct zips for elected/politician enrichment).
     Maximized: probes multiple cycles (2022-2026 normal, 2008+ for backfill) and file types.
-    Parse later in profiles builder to add donor networks, candidate summaries, financials, etc. to individual files.
+    Parse later in profiles to add donor networks, candidate summaries, financials, etc. to individual files.
     """
     file_types = [
         ("cn", "candidate master"),
@@ -580,7 +579,7 @@ def discover_politicians_fec_new(s3, existing_keys: set, backfill: bool = False)
 def discover_politicians_congress_bulk_new(s3, existing_keys: set, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
     """Congress bulk data for bills, members, votes (govinfo + ProPublica/unitedstates style for elected enrichment).
     Adds legislative history, sponsorships, voting records to politician profiles.
-    Probes recent (normal) or deep historical (backfill: congress 110+) .
+    Probes recent (normal) or deep historical (backfill: congress 110+).
     """
     start_cong = 110 if backfill else 118
     end_cong = 121
