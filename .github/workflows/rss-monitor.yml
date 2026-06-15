@@ -51,6 +51,7 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           BUCKET_NAME: babylon-raw-data
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python scripts/monitor_and_ingest.py \
             --sources "rss_news" \

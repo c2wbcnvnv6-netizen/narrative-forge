@@ -913,17 +913,19 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                     except Exception as e:
                         print(f"    Auto-process trigger failed for {key}: {e}")
                     # Full chain (Phase 1/2): trigger deep analyze for documents + news (graphs, repeated phrases/coordination detection across outlets, timelines, tactic scores, synthesis). News RSS feeds framing signals from wires/.gov for media coordination + politician entity tie-in.
-                    if arena in ("documents", "news"):
+                    if arena in ("documents", "news", "rss_news"):
                         try:
                             proc_base = key.split("/")[-1].rsplit(".", 1)[0]
-                            cmd2 = ["gh", "workflow", "run", "analyze-data.yml", "-R", repo, "-f", f"processed_key=processed/{arena}/{proc_base}-summary.json"]
+                            # Use 'news' processed dir for rss_news too (consistent with process_data robust write to processed/news)
+                            proc_dir_arena = "news" if arena in ("news", "rss_news") else arena
+                            cmd2 = ["gh", "workflow", "run", "analyze-data.yml", "-R", repo, "-f", f"processed_key=processed/{proc_dir_arena}/{proc_base}-summary.json"]
                             result2 = subprocess.run(cmd2, capture_output=True, text=True, timeout=60)
                             if result2.returncode == 0:
                                 print(f"    Auto-triggered analyze-data for full synthesis on {key}")
                         except Exception as e:
                             print(f"    Analyze auto-trigger note (non-fatal): {e}")
                     # Politician profiles (individual files per elected): trigger after analyze for documents + news (aggregates timelines, signals, sources, graphs per person if entities match in RSS titles/descriptions/HTML).
-                    if arena in ("documents", "news"):
+                    if arena in ("documents", "news", "rss_news"):
                         try:
                             cmd3 = ["gh", "workflow", "run", "build-politician-profiles.yml", "-R", repo]
                             result3 = subprocess.run(cmd3, capture_output=True, text=True, timeout=60)
