@@ -4,7 +4,7 @@
     "generated": "2026-06-15T02:00Z",
     "feeds_active": 20,
     "liveness_note": "Tied to discover_rss_news_new (10->20 feeds post #NEW-DISCOVER), R2 Verified raw/news/ paths, per-feed RSS liveness prints. Synced post 2751945* dispatches via gh logs + check_r2 + MCP.",
-    "last_activation": "2026-06-15T03:01:08Z",
+    "last_activation": "2026-06-15T03:02:33Z",
     "rss_liveness": {
       "whitehouse": 30,
       "justice": 25
@@ -14,7 +14,7 @@
     "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
     "updated_by": "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB | JARVIS-NEURAL-MAP-ART-MAX subagent",
     "last_art_max": "2026-06-15T02:46:54Z",
-    "last_art_max_cycle": "2026-06-15T03:01:08Z"
+    "last_art_max_cycle": "2026-06-15T03:02:33Z"
   },
   "news_ripples": {
     "media_specific_repeated_phrases": [
