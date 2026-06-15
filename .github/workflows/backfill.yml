@@ -66,7 +66,7 @@ jobs:
             echo "backfill_level=deep" >> $GITHUB_OUTPUT
             echo "max_new=1000" >> $GITHUB_OUTPUT
             echo "Using DEEP backfill (every 4th Sunday)"
-          else
+          else:
             echo "backfill_level=medium" >> $GITHUB_OUTPUT
             echo "max_new=500" >> $GITHUB_OUTPUT
             echo "Using MEDIUM backfill (regular weekly)"

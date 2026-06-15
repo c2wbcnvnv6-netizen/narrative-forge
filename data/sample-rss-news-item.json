@@ -1,0 +1,17 @@
+{
+  "source": "justice-pr",
+  "feed_url": "https://www.justice.gov/news/rss?type=press_release",
+  "item": {
+    "title": "Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications",
+    "link": "https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent",
+    "pubDate": "Fri, 12 Jun 2026 12:00:00 +0000",
+    "description": "LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
+    "guid": "https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent",
+    "dc:creator": ""
+  },
+  "target_key": "raw/news/rss-justice-pr-coordinated-law-enforcement-actions-results.json",
+  "arena": "news",
+  "ingest_note": "Ingest stores the full article HTML from link at the rss- key for framing analysis, repeated phrase detection across wires, entity extraction (politicians, agencies), signals.",
+  "liveness_check": "pubDate within hours_back + key_exists on R2 + optional HEAD on link",
+  "sample_date": "2026-06-14"
+}

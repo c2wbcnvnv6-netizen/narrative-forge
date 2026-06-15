@@ -49,6 +49,7 @@ from botocore.config import Config
 
 BUCKET = os.environ.get("BUCKET_NAME", "babylon-raw-data")
 
+
 def get_s3():
     return boto3.client(
         "s3",
@@ -407,7 +408,6 @@ def compute_echo_chamber_scores(repeated_phrases: list[dict], summaries: list[di
         "interpretation": "High echo_chamber_score + cross ratio indicates same framing propagating rapidly across outlets (RSS live signal for narrative convergence)."
     }
 
-
 def extract_politician_media_framing(summaries: list[dict], repeated_phrases: list[dict]) -> dict:
     """Integrate news analysis with politician profiles: how media (RSS outlets) frames specific pols.
     Pulls repeated loaded phrases near pol entity mentions in news items.
@@ -446,7 +446,6 @@ def extract_politician_media_framing(summaries: list[dict], repeated_phrases: li
     for pol, lst in pol_framing.items():
         result[pol] = lst[:4]
     return result
-
 
 def generate_synthesis(summaries: list[dict]) -> dict:
     texts = [extract_text_from_processed(s) for s in summaries]

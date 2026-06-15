@@ -333,7 +333,7 @@ def discover_eurostat_nuts_new(s3, existing_keys: set) -> Generator[Tuple[str, s
     if key not in existing_keys and not key_exists(BUCKET, key, s3):
         yield "global", url, key
 
-# ============== DOCUMENT SOURCES (new dedicated discovers for "documents" folder: court rulings, press releases, CRS/GAO, FOIA/transcripts etc.) ==============
+# ============== DOCUMENT SOURCES (new dedicated discovers for "documents" folder: court rulings, press releases, CRS/GAO reports, FOIA/transcripts etc.) ==============
 
 def discover_court_documents_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
     """Court rulings and opinions (SCOTUS slip opinions direct PDFs + govinfo patterns). 
@@ -579,7 +579,7 @@ def discover_politicians_fec_new(s3, existing_keys: set, backfill: bool = False)
 def discover_politicians_congress_bulk_new(s3, existing_keys: set, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
     """Congress bulk data for bills, members, votes (govinfo + ProPublica/unitedstates style for elected enrichment).
     Adds legislative history, sponsorships, voting records to politician profiles.
-    Probes recent (normal) or deep historical (backfill: congress 110+).
+    Probes recent (normal) or deep historical (backfill: congress 110+) .
     """
     start_cong = 110 if backfill else 118
     end_cong = 121
