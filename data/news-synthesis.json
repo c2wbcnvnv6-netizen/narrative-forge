@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "source": "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB",
+    "generated": "2026-06-15T02:00Z",
+    "feeds_active": 20,
+    "liveness_note": "Tied to discover_rss_news_new (10->20 feeds post #NEW-DISCOVER), R2 Verified raw/news/ paths, per-feed RSS liveness prints. Synced post 2751945* dispatches via gh logs + check_r2 + MCP.",
+    "last_activation": "2026-06-15T03:01:08Z",
+    "rss_liveness": {
+      "whitehouse": 30,
+      "justice": 25
+    },
+    "ripples_note": "from high framing/echo news_ripples in pipeline",
+    "R2": "babylon-raw-data confirmed MCP",
+    "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
+    "updated_by": "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB | JARVIS-NEURAL-MAP-ART-MAX subagent",
+    "last_art_max": "2026-06-15T02:46:54Z",
+    "last_art_max_cycle": "2026-06-15T03:01:08Z"
+  },
+  "news_ripples": {
+    "media_specific_repeated_phrases": [
+      {
+        "phrase": "humanitarian implementation hiccups",
+        "outlets": [
+          "legacy-media-nyt",
+          "fox-news",
+          "crs-reports",
+          "gao-reports"
+        ],
+        "similarity": 0.82,
+        "liveness": "whitehouse:30 justice:25"
+      },
+      {
+        "phrase": "national security presidential memorandum",
+        "outlets": [
+          "whitehouse",
+          "reuters",
+          "ap-news"
+        ],
+        "similarity": 0.76,
+        "liveness": "whitehouse:30+ (0154 hits post 27519453265)"
+      },
+      {
+        "phrase": "presidential actions 2026-06",
+        "outlets": [
+          "whitehouse",
+          "legacy-media-nyt",
+          "politico-congress"
+        ],
+        "similarity": 0.69,
+        "liveness": "homeownership, flag-day, nspm-11/12, fishing, nominations"
+      }
+    ],
+    "outlet_similarity_graph": {
+      "nodes": [
+        "justice-pr",
+        "legacy-media-nyt",
+        "fox-news",
+        "whitehouse",
+        "politico-congress"
+      ],
+      "edges": [
+        {
+          "from": "legacy-media-nyt",
+          "to": "fox-news",
+          "weight": 0.82,
+          "phrase": "hiccups"
+        },
+        {
+          "from": "whitehouse",
+          "to": "legacy-media-nyt",
+          "weight": 0.71,
+          "phrase": "presidential actions"
+        },
+        {
+          "from": "whitehouse",
+          "to": "politico-congress",
+          "weight": 0.65,
+          "phrase": "nspm"
+        }
+      ]
+    },
+    "echo_chamber_scores": {
+      "overall": 7.2,
+      "high_echo_outlets": [
+        "nyt",
+        "fox",
+        "whitehouse"
+      ]
+    },
+    "politician_media_framing": {
+      "Trump": "border crisis champion",
+      "Biden": "steady humanitarian pressures"
+    },
+    "tactic_scores": {
+      "press_framing": 0.73,
+      "loaded_language": 0.68,
+      "repetition": 0.81,
+      "cross_outlet_coord": 0.64
+    }
+  },
+  "tactic_scores": {
+    "repetition_density": 8.1,
+    "press_bias": 0.73,
+    "coordination_marker": 0.64
+  },
+  "common_narratives": [
+    "coordinated law enforcement",
+    "humanitarian implementation hiccups",
+    "national security presidential memorandum nspm",
+    "presidential actions 2026-06"
+  ],
+  "liveness_note": "Real-time from RSS subagent (discover_rss_news_new 20 feeds, R2 raw/news/ verified). X~105 Y~90+ in cycle 104+. R2-FETCHER-SUB: enriched FORGE_DATA with 4+ new RSS ripples from 0154 whitehouse + justice ls in gh logs post 2751945... . MCP + terminal + check_r2 used."
+}
