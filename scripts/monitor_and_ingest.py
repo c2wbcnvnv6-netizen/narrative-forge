@@ -251,6 +251,7 @@ def discover_census_metro_new(s3, existing_keys: set) -> Generator[Tuple[str, st
     # For bulk ACS metro, use direct from census or note NHGIS (https://www.nhgis.org/) for best extrapolation (time series + GIS for consistent metros over decades)
     # Add one example ACS extract if direct; otherwise rely on NHGIS manual bulk for citable long-term data.
 
+
 def discover_bls_qcew_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
     """BLS Quarterly Census of Employment and Wages (QCEW) - county/MSA level employment/wages by industry. Prime citable source for local labor market extrapolation."""
     # BLS open data CSV slices - direct, updated quarterly. Example for recent US or metro (structure: data.bls.gov/cew/data/api/YYYY/Q/area/CODE.csv)
@@ -606,24 +607,24 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
             days_back = 730   # ~2 years
             months_back = 24
             years_back = 10
-            print("\ud83d\udcdc Deep backfill mode \u2014 using extended historical windows (730d/24m/10y)")
+            print("[Deep] Deep backfill mode - using extended historical windows (730d/24m/10y)")
         elif backfill_level == "medium":
             days_back = 365
             months_back = 12
             years_back = 5
-            print("\ud83d\udcdc Medium backfill mode \u2014 using standard historical windows")
+            print("[Medium] Medium backfill mode - using standard historical windows")
         else:  # light
             days_back = 90
             months_back = 6
             years_back = 2
-            print("\ud83d\udcdc Light backfill mode \u2014 using limited historical windows")
+            print("[Light] Light backfill mode - using limited historical windows")
     else:
         days_back = 14
         months_back = 3
         years_back = 2
 
     if force:
-        print("\ud83d\udd25 Force mode enabled \u2014 bypassing some manifest/key_exists checks for this run")
+        print("[Force] Force mode enabled - bypassing some manifest/key_exists checks for this run")
         # To implement bypass, we'll skip manifest-based existing for discovery/ingest decision
 
     # Also pass these through to the ingest call and discover functions as needed
@@ -693,9 +694,9 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                 try:
                     head = s3.head_object(Bucket=BUCKET, Key=key)
                     size = head.get("ContentLength", 0)
-                    print(f"    \u2705 R2 Verified: {key} ({size} bytes)")
+                    print(f"    [OK] R2 Verified: {key} ({size} bytes)")
                 except Exception as e:
-                    print(f"    \u274c ALERT: R2 verification failed for {key}: {e}")
+                    print(f"    [ALERT] R2 verification failed for {key}: {e}")
                 if auto_process:
                     try:
                         repo = os.environ.get("GITHUB_REPOSITORY", "")
@@ -733,7 +734,7 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                         except Exception as e:
                             print(f"    Profiles trigger note: {e}")
         except Exception as e:
-            print(f"    \u274c ALERT: ERROR ingesting {key}: {e}")
+            print(f"    [ALERT] ERROR ingesting {key}: {e}")
 
     if ingested:
         manifest["last_checked"] = manifest.get("last_checked", {})
