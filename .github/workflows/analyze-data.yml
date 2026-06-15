@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       processed_key:
-        description: 'Processed summary key (e.g. processed/documents/...-summary.json)'
+        description: 'Processed summary key (e.g. processed/documents/...-summary.json or processed/news/rss-...-summary.json for new news features)'
         required: true
       batch:
         description: 'Comma list of additional keys (optional)'
@@ -39,4 +39,7 @@ jobs:
         run: |
           python scripts/analyze_data.py --processed-key "${{ github.event.inputs.processed_key }}" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
       - name: Notify
-        run: echo "Analysis complete. Check processed/derived/ for graph/timeline/synthesis. NOTIFY markers emitted."
+        run: |
+          echo "Analysis complete. Check processed/derived/ for graph/timeline/synthesis. NOTIFY markers emitted."
+          echo "For RSS/news: supports new news features (framing density, repeated narratives from feeds, entity co-oc from news items, timelines)."
+          echo "Chaining: typically auto-triggered from monitor-ingest (rss_news ingest -> process -> analyze) or manual dispatch after news process."

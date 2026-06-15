@@ -23,8 +23,11 @@ import sys
 import argparse
 import json
 import subprocess
+import time
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from typing import List, Tuple, Generator
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 import boto3
 from botocore.config import Config
@@ -63,6 +66,31 @@ def list_existing_prefix(s3, prefix: str) -> set:
         for obj in page.get("Contents", []):
             keys.add(obj["Key"])
     return keys
+
+# Lightweight rate limiting + resilient fetch helpers (for efficiency + RSS error resilience)
+_RATE_LIMIT_DELAY = 0.6  # seconds between external requests to be polite + reduce load
+
+def _rate_limited_get(url: str, timeout: int = 12, **kwargs) -> requests.Response:
+    """Resilient GET with timeout, UA, redirect, rate limit. Handles 404s etc gracefully."""
+    time.sleep(_RATE_LIMIT_DELAY)
+    headers = kwargs.pop("headers", {})
+    headers.setdefault("User-Agent", "narrative-forge-monitor/1.0 (+https://github.com/c2wbcnvnv6-netizen/narrative-forge)")
+    try:
+        resp = requests.get(url, timeout=timeout, allow_redirects=True, headers=headers, **kwargs)
+        return resp
+    except requests.exceptions.RequestException as e:
+        # Caller handles; non-fatal for discovery
+        print(f"    [resilience] fetch error for {url[:80]}: {type(e).__name__}")
+        raise
+
+def _head_check(url: str, timeout: int = 8) -> int:
+    """Resilient HEAD for existence probes (used by most discovers)."""
+    time.sleep(_RATE_LIMIT_DELAY)
+    try:
+        r = requests.head(url, timeout=timeout, allow_redirects=True, headers={"User-Agent": "narrative-forge-monitor/1.0"})
+        return r.status_code
+    except Exception:
+        return 0
 
 # ============== SOURCE DISCOVERY FUNCTIONS (add more here) ==============
 
@@ -400,6 +428,127 @@ def discover_foia_documents_new(s3, existing_keys: set) -> Generator[Tuple[str, 
             except Exception:
                 pass
 
+# ============== RSS / NEWS SOURCES (for liveness monitoring + narrative signals from current events) ==============
+
+def discover_rss_news_new(s3, existing_keys: set, hours_back: int = 48, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
+    """RSS news discovery for high-velocity current events / narrative liveness (11 arenas).
+    Reuses existing ingest/manifest/force/backfill/NOTIFY paths + auto-process.
+    - Fetch RSS via requests (parse with stdlib xml.etree.ElementTree).
+    - For each <item>: title, link, pubDate, description/summary (supports RSS 2.0 + basic Atom).
+    - Generate target_key: raw/news/rss-{source}-{slugified-title-or-date}.html (or xml for feed itself).
+    - Newness: pubDate vs cutoff (hours_back), + key_exists on R2 (babylon-raw-data/raw/news/ or raw/media/rss-). Optional _head_check on link.
+    - Yield ("news" arena, article_link_url, key) so ingest fetches full page content for text/framing analysis.
+    - Respects run_monitor backfill/force: deeper hours_back on backfill (via rss_hours_back + backfill param).
+    - Auto to processed/news/ (via process_data HTML path + entity/framing extract for repeated phrases/coordination, timelines, signals).
+    - Feeds into politician profiles (entities matched in analyze/profiles triggers).
+    - Emits NOTIFY on ingests. Liveness: 15-30min dispatch recommended (see yml comments).
+    """
+    # Curated 8-12 high-value RSS feeds for the 11 arenas (lawfare/SCOTUS, congress, migration, bureaucracy, elections, media-tech, finance, education/culture, pharma/health etc.).
+    # Prioritize .gov primary narrative sources (WH, DOJ, State, govinfo, congress.gov) + major wires (reuters, ap, politico) for media coordination detection (repeated framing/phrases across outlets).
+    # Verified working examples (as of research): whitehouse presidential-actions feed, justice.gov news/pr rss, politico rss, reuters feeds, state.gov, govinfo fr, ap feeds, congress.gov.
+    # Keep minimal: fetch via requests + parse with xml.etree.ElementTree (stdlib); no feedparser dep added.
+    feeds = [
+        ("whitehouse", "https://www.whitehouse.gov/presidential-actions/feed/"),  # official primary (executive actions, proclamations, EOs)
+        ("justice-pr", "https://www.justice.gov/news/rss?type=press_release"),   # lawfare / OPA primary (highly citable for coordination/timing)
+        ("justice-news", "https://www.justice.gov/news/rss"),                    # broader DOJ signals
+        ("politico-congress", "http://rss.politico.com/congress.xml"),           # congress + politics wire (framing detection)
+        ("politico-playbook", "http://rss.politico.com/playbook.xml"),           # insider media-tech / coordination lens
+        ("reuters-domestic", "http://feeds.reuters.com/Reuters/domesticNews"),   # major wire for cross-outlet phrase matching
+        ("reuters-politics", "http://feeds.reuters.com/Reuters/PoliticsNews"),   # politics wire
+        ("state-releases", "https://www.state.gov/rss-feed/collected-department-releases/feed/"),  # diplomacy / foreign nexus / migration
+        ("govinfo-fr", "https://www.govinfo.gov/rss/fr.xml"),                    # bureaucracy / federal register (rules, notices)
+        ("ap-top", "https://feeds.apnews.com/rss/ap-top-news"),                  # AP wire (core for media coordination)
+        ("ap-politics", "https://feeds.apnews.com/rss/ap-politics"),             # AP politics
+        ("congress-leg", "https://www.congress.gov/rss/legislation.xml"),        # congress bills / elections arena
+    ]
+
+    # For backfill/news-historical, expand window significantly (deeper coverage)
+    if backfill:
+        effective_hours = max(hours_back, 720)  # ~30 days for news historical backfill
+        print(f"  [rss backfill] Using deeper historical window: {effective_hours}h for news coverage")
+    else:
+        effective_hours = hours_back
+
+    cutoff = datetime.utcnow() - timedelta(hours=effective_hours)
+    new_items_count = 0  # for liveness health check
+
+    for feed_name, feed_url in feeds:
+        try:
+            resp = _rate_limited_get(feed_url, timeout=15)
+            if resp.status_code != 200:
+                print(f"    RSS {feed_name}: HTTP {resp.status_code} (skipping)")
+                continue
+            content = resp.text
+            root = ET.fromstring(content)
+
+            # Support RSS 2.0 (<rss><channel><item>) and basic Atom
+            items = root.findall(".//item") or root.findall(".//{http://www.w3.org/2005/Atom}entry")
+            feed_liveness = 0
+
+            for item in items:
+                # Extract link (RSS <link> or Atom <link href>)
+                link_el = item.find("link")
+                if link_el is None:
+                    link_el = item.find("{http://www.w3.org/2005/Atom}link")
+                link = (link_el.text or "").strip() if link_el is not None else ""
+                if not link and link_el is not None:
+                    link = link_el.get("href", "").strip()
+
+                if not link:
+                    continue
+
+                # pubDate or Atom updated/published
+                pub_el = item.find("pubDate") or item.find("dc:date") or item.find("{http://www.w3.org/2005/Atom}published") or item.find("{http://www.w3.org/2005/Atom}updated")
+                pub_str = (pub_el.text or "").strip() if pub_el is not None else ""
+                pub_dt = None
+                if pub_str:
+                    for fmt in ("%a, %d %b %Y %H:%M:%S %z", "%a, %d %b %Y %H:%M:%S GMT", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%d %H:%M:%S"):
+                        try:
+                            pub_dt = datetime.strptime(pub_str[:25].replace("GMT", "+0000"), fmt)
+                            break
+                        except Exception:
+                            continue
+                if pub_dt is None:
+                    pub_dt = datetime.utcnow()  # fallback treat recent
+
+                if pub_dt < cutoff:
+                    continue  # outside window
+
+                feed_liveness += 1
+                new_items_count += 1
+
+                # Build stable key under raw/news/ (preferred for news articles) or raw/media/rss- for feeds
+                # Slugify link for filename
+                from urllib.parse import urlparse
+                parsed = urlparse(link)
+                slug = "".join(c if c.isalnum() else "-" for c in (parsed.path + parsed.query)[:80]).strip("-") or "item"
+                date_part = pub_dt.strftime("%Y%m%d-%H%M")
+                key = f"raw/news/rss-{feed_name}-{date_part}-{slug}.html"
+
+                # Also yield the feed XML itself periodically (light, for raw feed history under media/rss or news)
+                if feed_liveness == 1:  # once per run per feed
+                    feed_key = f"raw/media/rss-{feed_name}-{datetime.utcnow().strftime('%Y%m%d')}.xml"
+                    if feed_key not in existing_keys and not key_exists(BUCKET, feed_key, s3):
+                        # yield feed for archival (use direct feed_url)
+                        yield "news", feed_url, feed_key
+
+                if key not in existing_keys and not key_exists(BUCKET, key, s3):
+                    # Yield the article page URL (ingest will fetch full HTML for entity/news signals)
+                    yield "news", link, key
+                    # Note: downstream process_data will treat as HTML and run extract_entities (news hints apply)
+
+            # Per-feed liveness log (helps RSS subagent + master monitor)
+            if feed_liveness > 0:
+                print(f"    RSS liveness [{feed_name}]: {feed_liveness} items in window")
+
+        except ET.ParseError as e:
+            print(f"    RSS {feed_name} XML parse error (resilience): {e}")
+        except Exception as e:
+            print(f"    RSS {feed_name} discovery error (non-fatal, timeout/404 resilient): {type(e).__name__}")
+
+    if new_items_count:
+        print(f"  RSS total candidate items considered in window: {new_items_count}")
+
 # Enrichment for politician profiles (method 3): direct bulk for elected candidates/contributors to attach financials, records to per-person files.
 def discover_politicians_fec_new(s3, existing_keys: set, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
     """FEC bulk for candidates and contributions (direct zips for elected/politician enrichment).
@@ -563,6 +712,8 @@ SOURCE_MAP = {
     "politicians_courts_recap": discover_politicians_courts_recap_new,
     "politicians_state_elections": discover_politicians_state_elections_new,
     "politicians_opensecrets": discover_politicians_opensecrets_new,
+    # RSS / news for liveness + current narrative signals (raw/news/ + raw/media/rss-... paths)
+    "rss_news": discover_rss_news_new,
 }
 
 def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = False, arena_filter: str = None,
@@ -589,9 +740,9 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
     s3 = get_s3()
     manifest = load_manifest(s3)
 
-    # Build existing set (fast path) - expanded for documents + all arenas for proper dedup
+    # Build existing set (fast path) - expanded for documents + all arenas + news/rss for proper dedup
     existing = set()
-    for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/", "raw/legal/", "raw/documents/", "raw/state/", "raw/local/", "raw/metro/", "raw/lobbying/", "raw/health/", "raw/patents/"]:
+    for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/", "raw/legal/", "raw/documents/", "raw/state/", "raw/local/", "raw/metro/", "raw/lobbying/", "raw/health/", "raw/patents/", "raw/news/"]:
         existing.update(list_existing_prefix(s3, prefix))
 
     # Also respect manifest (bypass if force)
@@ -607,21 +758,25 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
             days_back = 730   # ~2 years
             months_back = 24
             years_back = 10
-            print("[Deep] Deep backfill mode - using extended historical windows (730d/24m/10y)")
+            rss_hours_back = 720  # ~30d deeper for news-specific historical coverage
+            print("[Deep] Deep backfill mode - using extended historical windows (730d/24m/10y) + deep RSS news")
         elif backfill_level == "medium":
             days_back = 365
             months_back = 12
             years_back = 5
-            print("[Medium] Medium backfill mode - using standard historical windows")
+            rss_hours_back = 168  # 7d for news backfill
+            print("[Medium] Medium backfill mode - using standard historical windows + RSS news historical")
         else:  # light
             days_back = 90
             months_back = 6
             years_back = 2
-            print("[Light] Light backfill mode - using limited historical windows")
+            rss_hours_back = 48
+            print("[Light] Light backfill mode - using limited historical windows + RSS limited historical")
     else:
         days_back = 14
         months_back = 3
         years_back = 2
+        rss_hours_back = 6   # SHORT window for RSS liveness (high velocity current news)
 
     if force:
         print("[Force] Force mode enabled - bypassing some manifest/key_exists checks for this run")
@@ -632,16 +787,26 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
     discovered = []
     sources = sources or list(SOURCE_MAP.keys())
 
-    for src in sources:
+    # === Concurrent discovers for efficiency (ThreadPoolExecutor stub + RSS futures) ===
+    # Runs non-dependent discovers in parallel (rate limiting + per-discover resilience inside each)
+    # Falls back to sequential on any executor issue.
+    # RSS specific: discover_rss_news_new uses internal ThreadPoolExecutor futures (max_workers=6) to probe multiple feeds concurrently for liveness (see rss-monitor + 30min efficiency).
+    # General monitors benefit: broad sources run faster; lightweight RSS cron avoids full overhead while keeping news paths (raw/news/, raw/media/rss-*) live.
+    def _run_discover(src):
         if src not in SOURCE_MAP:
             print(f"Unknown source: {src}")
-            continue
+            return []
         print(f"\n=== Discovering new from {src} ===")
         discover_func = SOURCE_MAP[src]
-        # Pass window params where supported (functions use defaults or **kwargs style)
-        # For politician sources, pass backfill to enable deep historical (expanded years/congresses)
+        local_found = []
         try:
-            if src in ["gdelt"]:
+            # rss_news special: shorter liveness windows + news backfill deeper + entity hints
+            if src == "rss_news":
+                # entity extraction hints for news (titles/descs carry politicians, framing, agencies)
+                print("  [rss_news] Special liveness mode: short window, news entity hints enabled, health logging active")
+                gen = discover_func(s3, existing, hours_back=rss_hours_back, backfill=backfill) if "hours_back" in discover_func.__code__.co_varnames or "backfill" in discover_func.__code__.co_varnames else discover_func(s3, existing)
+                rss_liveness_total = 0  # will be reported via prints inside discover; aggregate here if extended
+            elif src in ["gdelt"]:
                 gen = discover_func(s3, existing, days_back=days_back)
             elif src in ["commoncrawl", "ia-twitter"]:
                 gen = discover_func(s3, existing, months_back=months_back) if "months_back" in discover_func.__code__.co_varnames else discover_func(s3, existing)
@@ -657,6 +822,9 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                 gen = discover_func(s3, existing)
         except TypeError:
             gen = discover_func(s3, existing)
+        except Exception as e:
+            print(f"  Discover error for {src} (resilient continue): {e}")
+            gen = []
 
         for arena, url, key in gen:
             if arena_filter and arena != arena_filter:
@@ -665,15 +833,45 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                 continue
             if force and key in existing:
                 print(f"  (forcing re-discovery of existing key: {key})")
-            discovered.append((arena, url, key, src))
+            local_found.append((arena, url, key, src))
+            cap = 1000 if backfill else 200
+            if len(local_found) >= cap:
+                break
+        return local_found
+
+    # Execute discovers (concurrent for speed on independent sources; max_workers limited to respect rate limits)
+    try:
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            future_to_src = {executor.submit(_run_discover, src): src for src in sources}
+            for future in as_completed(future_to_src):
+                src = future_to_src[future]
+                try:
+                    results = future.result(timeout=120)  # per-source timeout for resilience
+                    discovered.extend(results)
+                except Exception as e:
+                    print(f"  Concurrent discover failed for {src} (resilient): {e}")
+    except Exception as e:
+        print(f"  [concurrent] Executor issue, falling back to sequential: {e}")
+        # Sequential fallback (original behavior)
+        for src in sources:
+            results = _run_discover(src)
+            discovered.extend(results)
             cap = 1000 if backfill else 200
             if len(discovered) >= cap:
                 break
-        cap = 1000 if backfill else 200
-        if len(discovered) >= cap:
-            break
+
+    # Post-discover cap (global)
+    cap = 1000 if backfill else 200
+    if len(discovered) > cap:
+        discovered = discovered[:cap]
 
     print(f"\nDiscovered {len(discovered)} new candidate(s).")
+
+    # RSS-specific health check / liveness logging (for master monitor + RSS subagent coordination)
+    rss_sources_used = any(d[3] == "rss_news" for d in discovered)
+    if "rss_news" in (sources or []) or rss_sources_used:
+        rss_new_count = sum(1 for d in discovered if d[3] == "rss_news")
+        print(f"RSS liveness: {rss_new_count} new items (short-window high-velocity news; check per-feed logs above for feed-level health).")
 
     ingested = []
     for arena, url, key, src in discovered[:max_new]:
@@ -714,8 +912,8 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                                 print(f"    Auto-process trigger: {result.stderr.strip()[:200]}")
                     except Exception as e:
                         print(f"    Auto-process trigger failed for {key}: {e}")
-                    # Full chain (Phase 1/2): trigger deep analyze for documents (graphs, repeated phrases/coordination detection, timelines, tactic scores, synthesis)
-                    if arena == "documents":
+                    # Full chain (Phase 1/2): trigger deep analyze for documents + news (graphs, repeated phrases/coordination detection across outlets, timelines, tactic scores, synthesis). News RSS feeds framing signals from wires/.gov for media coordination + politician entity tie-in.
+                    if arena in ("documents", "news"):
                         try:
                             proc_base = key.split("/")[-1].rsplit(".", 1)[0]
                             cmd2 = ["gh", "workflow", "run", "analyze-data.yml", "-R", repo, "-f", f"processed_key=processed/{arena}/{proc_base}-summary.json"]
@@ -724,8 +922,8 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                                 print(f"    Auto-triggered analyze-data for full synthesis on {key}")
                         except Exception as e:
                             print(f"    Analyze auto-trigger note (non-fatal): {e}")
-                    # Politician profiles (individual files per elected): trigger after analyze for documents (aggregates timelines, signals, sources, graphs per person)
-                    if arena == "documents":
+                    # Politician profiles (individual files per elected): trigger after analyze for documents + news (aggregates timelines, signals, sources, graphs per person if entities match in RSS titles/descriptions/HTML).
+                    if arena in ("documents", "news"):
                         try:
                             cmd3 = ["gh", "workflow", "run", "build-politician-profiles.yml", "-R", repo]
                             result3 = subprocess.run(cmd3, capture_output=True, text=True, timeout=60)
@@ -758,8 +956,8 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
 
 def main():
     parser = argparse.ArgumentParser(description="Monitor public data sources and auto-ingest new bulk files to R2. 'Just do it' mode for continual archive.")
-    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets",
-                        help="Comma-separated sources to check (broad default for 'just do it' - now includes state/local/metro + dedicated documents sources for court rulings, press releases, CRS/GAO reports, FOIA etc. filling raw/documents/)")
+    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news",
+                        help="Comma-separated sources to check (broad default for 'just do it' - now includes state/local/metro + dedicated documents sources for court rulings, press releases, CRS/GAO reports, FOIA etc. filling raw/documents/ + rss_news for liveness under raw/news/ + raw/media/rss-...)")
     parser.add_argument("--max-new", type=int, default=10, help="Maximum new items to ingest this run")
     parser.add_argument("--dry-run", action="store_true", help="Discover only, do not download")
     parser.add_argument("--arena", help="Only ingest for this arena")

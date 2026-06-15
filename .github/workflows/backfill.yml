@@ -20,9 +20,9 @@ on:
         required: false
         default: 'deep'
       sources:
-        description: 'Comma-separated sources (default focused on politicians + docs for profiles)'
+        description: 'Comma-separated sources (default focused on politicians + docs for profiles; include rss_news for deeper historical news coverage)'
         required: false
-        default: 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents'
+        default: 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news'
       arena:
         description: 'Optional arena filter (e.g. politicians, documents). Empty for all in sources.'
         required: false
@@ -88,7 +88,7 @@ jobs:
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
             ${{ github.event.inputs.force == 'true' && '--force' || '' }} \
             --backfill-level "${{ steps.schedule.outputs.backfill_level || github.event.inputs.backfill_level || 'deep' }}" \
-            --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents' }}" \
+            --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news' }}" \
             ${{ steps.schedule.outputs.arena && format('--arena {0}', steps.schedule.outputs.arena) || '' }} \
             ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }}
 
@@ -119,6 +119,7 @@ jobs:
           echo "  effective_arena: ${{ steps.schedule.outputs.arena || github.event.inputs.arena || '' }}"
           echo ""
           echo "Check the uploaded backfill_log.json artifact for structured details (status, ingested_count, force, level)."
-          echo "Data is written to R2 under raw/politicians/ and raw/documents/ (and processed/ for analysis)."
+          echo "Data is written to R2 under raw/politicians/ and raw/documents/ (and processed/ for analysis). rss_news goes to raw/news/ + raw/media/rss-* (deeper historical when --backfill-level deep)."
           echo "Follow up with the profiles or analyze workflows if desired."
           echo "This workflow also runs automatically every Sunday at 06:00 UTC for ongoing maintenance."
+          echo "RSS backfill: use --sources rss_news + deep for historical news story coverage (auto chains to process/analyze)."

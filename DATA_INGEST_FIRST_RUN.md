@@ -157,8 +157,9 @@ You control the "first download data parameters" completely through the GitHub U
   - Idempotent streaming ingest re-uses the core script.
   - Supports --dry-run, --max-new, --sources, --arena from workflow_dispatch for manual control.
   - This builds the living archive automatically for easy access/referencing across all arenas (media/social especially).
-- Add new discover_* functions in monitor_and_ingest.py for additional sources (FEC cycles, new Census releases, more IA/HF collections, etc.).
+- Add new discover_* functions in monitor_and_ingest.py for additional sources (FEC cycles, new Census releases, more IA/HF collections, rss_news feeds, etc.).
 - Post-ingest (NLP/embeddings/graphs) can be chained by calling the Process Ingested Data workflow from the monitor after successful ingests.
+- **RSS news liveness**: See new rss-monitor.yml (*/30 * * * *), rss_news in monitor/backfill sources. Use for raw/news/ + raw/media/rss-*. Health via scripts/check_r2_health.py --rss. Auto chains to process/analyze for news features.
 
 You are doing great. One micro-step at a time.
 

@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       arena:
-        description: 'Arena / domain (e.g. finance, congress, media)'
+        description: 'Arena / domain (e.g. finance, congress, media, news). Use "news" for RSS ingested items (raw/news/* or raw/media/rss-*)'
         required: true
         default: 'media'
       raw_key:
-        description: 'S3 key of the raw file in babylon-raw-data'
+        description: 'S3 key of the raw file in babylon-raw-data (rss examples: raw/news/rss-*.html or raw/media/rss-*.xml)'
         required: true
 
 jobs:
@@ -39,4 +39,7 @@ jobs:
         run: python scripts/process_data.py
 
       - name: Notify processed
-        run: echo "Processing complete for arena=${{ github.event.inputs.arena }}. Summary in processed/ prefix. Rich extraction + basic analysis for documents now available."
+        run: |
+          echo "Processing complete for arena=${{ github.event.inputs.arena }}. Summary in processed/ prefix. Rich extraction + basic analysis for documents now available."
+          echo "For RSS/news (arena=news): text extract from article HTML or RSS XML; entities/signals for downstream news features in analyze."
+          echo "Auto-chaining from monitor: RSS -> this process -> analyze-data (new news features) -> profiles if entities."

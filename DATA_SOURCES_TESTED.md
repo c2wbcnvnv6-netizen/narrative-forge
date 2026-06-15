@@ -203,3 +203,30 @@ Added dedicated discover functions (court_documents, press_releases, crs_gao_rep
 Dispatched initial document-focused monitor runs (broad + specific documents sources, backfill, high max_new, auto_process) + direct targeted ingests for verified SCOTUS/CRS/WH/DOJ URLs to begin filling raw/documents/ immediately. Check GitHub Actions (monitor-ingest.yml and ingest-raw-data.yml) for runs; local bg watchers will surface NOTIFYs and email+SMS. This directly continues the "all things at all times" + state/local expansion.
 
 Citable, primary, "go deep" sources now live in the archive pipeline.
+
+## RSS News Sources (rss_news) — for Liveness, Media Narrative, Current Events Signals
+Added as first-class source ("rss_news") to SOURCE_MAP + defaults in monitor-ingest.yml / backfill.yml + new lightweight rss-monitor.yml.
+- **Why liveness**: High-frequency (30min dedicated cron) RSS polling detects breaking releases from official + major outlets in near-real-time. Feeds into "new news features" in analyze (repeated language across coverage, framing tactics in media, entity timelines synced to events). Complements slower document/court/CRS (post-facto) with live media layer.
+- **Sources list** (curated public RSS, extendable; all keyless):
+  - Reuters: http://feeds.reuters.com/reuters/topNews , /worldNews
+  - AP: https://feeds.apnews.com/rss/ap-top-news , /ap-politics
+  - NYT: https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml , /Politics.xml
+  - WSJ: https://feeds.a.dj.com/rss/RSSWorldNews.xml
+  - BBC: http://feeds.bbci.co.uk/news/world/rss.xml
+  - CNN: http://rss.cnn.com/rss/cnn_topstories.rss
+  - Guardian: https://www.theguardian.com/world/rss
+  - Gov/related (via discover patterns): whitehouse briefings, justice.gov opa, gao news (direct RSS endpoints)
+- **Storage + processing paths**: raw/news/ (per-article HTML for full extract) + raw/media/rss-*.xml (feed snapshots for archive). Processed to processed/news/ , derived/ for analysis. Arena="news".
+- **Liveness benefits + health**: Last-hour items detectable; check_r2_health.py --rss reports counts, samples, live items in window, R2 hits for news paths, verifies Cloudflare raw/media/ + raw/news/. NOTIFYs emitted on ingest/process/analyze. Use in master monitor status.
+- **Backfill / efficiency**: Supports --backfill (deeper 30d+ windows for historical news context). Lightweight separate workflow (rss-monitor.yml) for 30min cadence avoids overhead of full monitor (which also supports rss_news in broad runs). Parallel (futures) feed fetching in discover_rss_news_new. Auto full chain supported.
+- **How to use / dispatch**:
+  - Liveness: GitHub Actions → rss-monitor.yml → Run workflow (or auto).
+  - With others: monitor-ingest.yml dispatch with sources including rss_news.
+  - Historical: backfill.yml with rss_news.
+  - Direct health: python scripts/check_r2_health.py --rss (after R2 env).
+  - Follow-on: process + analyze on the landed raw/news keys (or auto).
+- **Citatability**: All public RSS from reputable outlets/gov. Cite "Reuters [title] (via RSS feed, [pubDate])" etc. Full HTML preserved in R2 for verification.
+- **Coordination**: Workflows updated (monitor-ingest, backfill, process, analyze + new rss-monitor). Health script added. Docs (this + README + DATA_PROCESSING) updated. Ensures support for new discover across master + subagents. Paths raw/news/ + raw/media/ verified in health for Cloudflare.
+- Extends the 11 arenas with live media-tech / narrative signals layer for "at all times" monitoring.
+
+This completes high-velocity news ingestion while keeping the pipeline efficient and chained.

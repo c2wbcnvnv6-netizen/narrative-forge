@@ -75,6 +75,22 @@ Post-ingest processing, extraction, analysis, and synthesis for all raw data (CS
 - Every processed summary includes original raw_key + processed_at + source URLs from discovers.
 - All data remains public .gov mirrors (SCOTUS, everycrsreport, whitehouse.gov, justice.gov, gao.gov) — no proprietary.
 
+## RSS / News Pipeline (raw/news/ + raw/media/rss-*) — Liveness + New News Features
+Added rss_news source + dedicated lightweight workflow for continual current-events capture.
+- **Ingest**: Via monitor_and_ingest.py (discover_rss_news_new) or rss-monitor.yml (every 30min) or backfill (deeper). Yields HTML article pages (for full text) + occasional feed XMLs. Arena="news". Paths: raw/news/rss-<feed>-<ts>-<slug>.html , raw/media/rss-<feed>-<date>.xml . Supports parallel futures for multiple feeds.
+- **Process** (process-data.yml, arena=news): Uses HTML path in process_data.py → BS4 title/body extract + extract_entities_and_signals (politicians, agencies, bills, framing, press-style). Writes processed/news/...-summary.json + -extracted.txt. Emits NOTIFY.
+- **Analyze** (analyze-data.yml, processed_key=processed/news/...): Leverages generate_synthesis etc for *new news features*: repeated phrases (coordination detection across news items), entity graphs, timelines, tactic scores (framing_density, repetition, high-sim matches). Outputs to processed/derived/ *-graph/timeline/synthesis.json + report. Auto-triggerable from monitor after RSS process.
+- **Profiles**: If entities present, chains to build-politician-profiles (as in documents flow).
+- **Chaining (auto)**: rss_news ingest (with --auto-process) → process → (for news) analyze. Full live without manual steps.
+- **Liveness + health**: 30min RSS cron for <1h freshness. Use scripts/check_r2_health.py --rss to verify: raw/news/ counts, rss-* samples, last-hour items (liveness), R2 hits for news paths, NOTIFY presence guidance. Cloudflare R2 paths raw/news/ + raw/media/ confirmed in health.
+- **Efficiency**: Lightweight (rss-monitor separate from broad monitor-ingest), futures in discover, short windows, only process/analyze on *new*. Backfill for historical RSS news story archives if wanted (deeper hours).
+- **Dispatch examples** (see README + workflows):
+  - Live RSS: gh workflow run rss-monitor.yml
+  - Include in broad: gh workflow run monitor-ingest.yml -f sources=...,rss_news
+  - Backfill news history: gh workflow run backfill.yml -f sources=rss_news -f backfill-level=deep
+  - Standalone chain: process then analyze on specific news raw_key/processed_key.
+- Benefits: Real-time narrative signals from media/gov releases; cross with documents for timing/framing exposure. All citable public RSS.
+
 ## Current Status & Landed Items (example)
 Recent direct document ingests (raw/):
 - Several SCOTUS PDFs (e.g. 25-6, 25-406, etc.)
