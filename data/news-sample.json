@@ -33,7 +33,7 @@
     "R2_media_rss_count": 4,
     "babylon_raw_data_status": "GREEN (MCP + test-r2 27520861006)",
     "activation_note": "FULL ACTIVATION LIVE X=166 Y=7 | CF hits active | JARVIS NEURAL MAP art live",
-    "last_activation": "2026-06-15T03:02:33Z",
+    "last_activation": "2026-06-15T03:03:58Z",
     "rss_liveness": {
       "whitehouse": 30,
       "justice": 25
@@ -42,7 +42,7 @@
     "R2": "babylon-raw-data confirmed MCP",
     "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
     "last_art_max": "2026-06-15T02:46:54Z",
-    "last_art_max_cycle": "2026-06-15T03:02:33Z"
+    "last_art_max_cycle": "2026-06-15T03:03:58Z"
   },
   "newsItems": [
     {
@@ -152,7 +152,7 @@
       "title": "Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications",
       "source": "justice-pr",
       "pubDate": "2026-06-12T12:00:00Z",
-      "excerpt": "LAS VEGAS \u2013 As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
+      "excerpt": "LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
       "link": "https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent",
       "arena": "legal",
       "signals": {
@@ -236,7 +236,7 @@
       "title": "Exclusive: Internal Memos Reveal Coordinated Messaging on 'Hiccups' Narrative Across Outlets",
       "source": "fox-news",
       "pubDate": "2026-06-13T22:40:00Z",
-      "excerpt": "Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases \u2014 raising coordination questions.",
+      "excerpt": "Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases — raising coordination questions.",
       "link": "https://example.com/fox-border-memos",
       "arena": "media",
       "signals": {
