@@ -26,14 +26,14 @@
     "MCP_buckets": "babylon-raw-data + 6 siblings (ENAM Standard)",
     "updated_by": "R2-FETCHER-SUB + R2 CF NEWS VERIFIER + ACTIVATOR SUBAGENT | JARVIS-NEURAL-MAP-ART-MAX subagent",
     "r2_live_keys_sample": [],
-    "last_r2_enrich": "2026-06-15T03:03Z",
+    "last_r2_enrich": "2026-06-15T03:06Z",
     "R2_DATA_ENRICHER_note": "Persistent bg R2 data enricher + site data live wire (every 90s). Updates FORGE_DATA meta with live raw/news/ samples when R2 creds present; always stamps fresh last_r2_enrich + ls for live wire status. Targets processed/news/ or raw for hotter ripples in JARVIS map / Live RSS.",
     "last_r2_poll": "2026-06-15T02:45:30.160771Z",
     "R2_raw_news_count": 341,
     "R2_media_rss_count": 4,
     "babylon_raw_data_status": "GREEN (MCP + test-r2 27520861006)",
     "activation_note": "FULL ACTIVATION LIVE X=166 Y=7 | CF hits active | JARVIS NEURAL MAP art live",
-    "last_activation": "2026-06-15T03:03:58Z",
+    "last_activation": "2026-06-15T03:11:04Z",
     "rss_liveness": {
       "whitehouse": 30,
       "justice": 25
@@ -42,7 +42,7 @@
     "R2": "babylon-raw-data confirmed MCP",
     "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
     "last_art_max": "2026-06-15T02:46:54Z",
-    "last_art_max_cycle": "2026-06-15T03:03:58Z"
+    "last_art_max_cycle": "2026-06-15T03:11:04Z"
   },
   "newsItems": [
     {
