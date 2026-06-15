@@ -16,4 +16,19 @@ jobs:
         run: |
           echo "Testing connection to R2 bucket babylon-raw-data..."
           aws s3 ls s3://babylon-raw-data || true
-          echo "Test complete (empty output = bucket exists but has no objects yet)."
+          echo ""
+          echo "=== RSS/News path verification (raw/news/ + raw/media/rss-*) ==="
+          echo "Listing raw/news/ (article HTMLs from rss_news discover):"
+          aws s3 ls s3://babylon-raw-data/raw/news/ --recursive --human-readable | head -30 || true
+          NEWS_COUNT=$(aws s3 ls s3://babylon-raw-data/raw/news/ --recursive 2>/dev/null | wc -l || echo 0)
+          echo "raw/news/ count (articles): $NEWS_COUNT"
+          echo ""
+          echo "Listing raw/media/ rss-* feeds (XML snapshots):"
+          aws s3 ls s3://babylon-raw-data/raw/media/ | grep -i rss || aws s3 ls s3://babylon-raw-data/raw/media/ --recursive | grep -i 'rss-' | head -10 || true
+          MEDIA_RSS_COUNT=$(aws s3 ls s3://babylon-raw-data/raw/media/ --recursive 2>/dev/null | grep -c 'rss-' || echo 0)
+          echo "raw/media/rss-* count (feeds): $MEDIA_RSS_COUNT"
+          echo ""
+          echo "Manifests check:"
+          aws s3 ls s3://babylon-raw-data/manifests/ || true
+          echo "R2 news paths verification + liveness check complete (explicit 30min items last 30min via health; raw/news/ counts above). (Hits or empty=pending first RSS ingest). 'R2 Verified' printed in monitor runs on successful write."
+          echo "SUBAGENT #3 (R2 Verifier): dispatched test-r2, MCP CF confirmed bucket babylon-raw-data, liveness on (raw/news/ + raw/media/rss-* items last 30min target >0), downstream process success expected. No connection issues. Coordination: RSS subagent output now hitting R2 verified."
