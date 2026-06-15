@@ -6,24 +6,45 @@ on:
       max_new:
         description: 'Max new items (high default for backfill)'
         required: false
-        default: '500'
+        default: '800'
       dry_run:
         description: 'Dry run (discover only)'
         required: false
         default: 'false'
+      force:
+        description: 'Force mode — bypass some manifest/key_exists checks for aggressive historical pull'
+        required: false
+        default: 'false'
+      backfill_level:
+        description: 'Backfill depth level (light | medium | deep). Deep expands ranges in discovers.'
+        required: false
+        default: 'deep'
       sources:
-        description: 'Override sources (default: politicians + docs focused)'
+        description: 'Comma-separated sources (default focused on politicians + docs for profiles)'
         required: false
         default: 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents'
+      arena:
+        description: 'Optional arena filter (e.g. politicians, documents). Empty for all in sources.'
+        required: false
+        default: ''
   schedule:
     # Weekly backfill maintenance (Sundays) - keeps historical up to date without daily noise
     - cron: '0 6 * * 0'
+
+permissions:
+  contents: read
+  actions: write   # for triggering other workflows later
+
+concurrency:
+  group: backfill-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   backfill:
     runs-on: ubuntu-latest
     permissions:
       actions: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +58,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests boto3
 
-      - name: Run Simple Backfill System
+      - name: Compute smart schedule parameters (weekly deep every 4 weeks)
+        id: schedule
+        run: |
+          WEEK=$(date +%U)
+          if [ $((10#$WEEK % 4)) -eq 0 ]; then
+            echo "backfill_level=deep" >> $GITHUB_OUTPUT
+            echo "max_new=1000" >> $GITHUB_OUTPUT
+            echo "Using DEEP backfill (every 4th Sunday)"
+          else
+            echo "backfill_level=medium" >> $GITHUB_OUTPUT
+            echo "max_new=500" >> $GITHUB_OUTPUT
+            echo "Using MEDIUM backfill (regular weekly)"
+          fi
+          # Arena can be set via manual trigger; default empty for all
+          echo "arena=${{ github.event.inputs.arena || '' }}" >> $GITHUB_OUTPUT
+
+      - name: Run Improved Simple Backfill System
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -47,14 +84,41 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python scripts/simple_backfill.py \
-            --max-new "${{ github.event.inputs.max_new || '500' }}" \
+            --max-new "${{ steps.schedule.outputs.max_new || github.event.inputs.max_new || '800' }}" \
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
-            --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents' }}"
+            ${{ github.event.inputs.force == 'true' && '--force' || '' }} \
+            --backfill-level "${{ steps.schedule.outputs.backfill_level || github.event.inputs.backfill_level || 'deep' }}" \
+            --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents' }}" \
+            ${{ steps.schedule.outputs.arena && format('--arena {0}', steps.schedule.outputs.arena) || '' }} \
+            ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }}
+
+      - name: Upload backfill log artifact (if generated)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backfill-log-${{ github.run_id }}
+          path: backfill_log.json
+          retention-days: 30
 
       - name: Summary
+        if: always()
         run: |
-          echo "Simple Backfill complete."
-          echo "Use this for reliable historical catch-up on politicians (for profile files) + documents."
-          echo "New items stream to raw/politicians/ and raw/documents/."
-          echo "Follow up with profiles workflow if politician sources were included."
-          echo "Maintain by running on demand or via the weekly schedule."
+          echo "=== Simple Backfill Complete ==="
+          echo "Inputs:"
+          echo "  max_new: ${{ github.event.inputs.max_new || '800' }}"
+          echo "  dry_run: ${{ github.event.inputs.dry_run || 'false' }}"
+          echo "  force: ${{ github.event.inputs.force || 'false' }}"
+          echo "  backfill_level: ${{ github.event.inputs.backfill_level || 'deep' }}"
+          echo "  sources: ${{ github.event.inputs.sources || 'default' }}"
+          echo "  arena: ${{ github.event.inputs.arena || '' }}"
+          echo ""
+          echo "Effective (computed for schedule or from inputs):"
+          echo "  effective_force: ${{ github.event.inputs.force || 'false' }}"
+          echo "  effective_backfill_level: ${{ steps.schedule.outputs.backfill_level || github.event.inputs.backfill_level || 'deep' }}"
+          echo "  effective_max_new: ${{ steps.schedule.outputs.max_new || github.event.inputs.max_new || '800' }}"
+          echo "  effective_arena: ${{ steps.schedule.outputs.arena || github.event.inputs.arena || '' }}"
+          echo ""
+          echo "Check the uploaded backfill_log.json artifact for structured details (status, ingested_count, force, level)."
+          echo "Data is written to R2 under raw/politicians/ and raw/documents/ (and processed/ for analysis)."
+          echo "Follow up with the profiles or analyze workflows if desired."
+          echo "This workflow also runs automatically every Sunday at 06:00 UTC for ongoing maintenance."
