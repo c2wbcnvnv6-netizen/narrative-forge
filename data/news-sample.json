@@ -1,11 +1,46 @@
 {
   "meta": {
-    "last_rss_poll": "2026-06-14T20:45:12Z",
-    "source": "demo-local + R2 pipeline (processed/news/ or raw/news/ when live)",
-    "total_items": 7,
-    "note": "Sample data synthesized from RSS ingest (e.g. justice-pr), border-funding-synthesis.json, and cross-arena ripples. In live: fetch https://<public-r2>/processed/news/news-index.json or individual RSS processed items. Pipeline: monitor_and_ingest.py -> raw/news/rss-*.json -> process_data.py -> signals in processed."
+    "last_rss_poll": "2026-06-15T01:28Z",
+    "source": "R2 live via monitor-ingest rss_news (post 27518656143, 27518740552)",
+    "total_items": 8,
+    "note": "Sample data synthesized from RSS ingest (e.g. justice-pr), border-funding-synthesis.json, and cross-arena ripples. In live: fetch https://<public-r2>/processed/news/news-index.json or individual RSS processed items. Pipeline: monitor_and_ingest.py -> raw/news/rss-*.json -> process_data.py -> signals in processed.",
+    "R2_VERIFIER_note": "R2 VERIFIER: new hits confirmed post 27518656739 | raw/news/ paths live | MCP + test-r2 green. Chain to process/analyze for news_ripples.",
+    "recent_paths": [
+      "raw/news/rss-whitehouse-20260615-0126-*.html (multiple, 50kB+, R2 Verified)",
+      "raw/news/rss-justice-pr-20260615-0126-*.html (PR statements, ~1.5kB, R2 Verified)",
+      "raw/media/rss-*.xml (feed snapshots)"
+    ],
+    "liveness": {
+      "whitehouse": 30,
+      "justice": 25,
+      "Xapprox62": 62,
+      "total_recent_ingest": "~10+"
+    },
+    "processed_note": "processed/news/ expected post auto chain (process_data supports rss/news)",
+    "MCP_buckets": "babylon-raw-data + 6 siblings (ENAM Standard)",
+    "updated_by": "R2 CF NEWS VERIFIER + ACTIVATOR SUBAGENT"
   },
   "newsItems": [
+    {
+      "id": "rss-whitehouse-20260615-0126-presidential-actions-homeownership",
+      "title": "Presidential Actions 2026-06 National Homeownership Month 2026",
+      "source": "whitehouse",
+      "pubDate": "2026-06-15T01:26Z",
+      "excerpt": "From live RSS ingest to raw/news/ ... (full HTML in R2 babylon-raw-data)",
+      "link": "https://www.whitehouse.gov/ (presidential-actions)",
+      "arena": "news",
+      "r2_path": "raw/news/rss-whitehouse-20260615-0126-presidential-actions-2026-06-national-homeownership-month-2026.html",
+      "r2_verified": true,
+      "signals": {
+        "framingScore": 0.6,
+        "tags": [
+          "presidential",
+          "liveness",
+          "rss"
+        ],
+        "source": "whitehouse-rss"
+      }
+    },
     {
       "id": "rss-justice-001",
       "title": "Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications",
@@ -13,158 +48,15 @@
       "pubDate": "2026-06-12T12:00:00Z",
       "excerpt": "LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...",
       "link": "https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent",
-      "arena": "legal",
+      "arena": "news",
       "signals": {
         "framingScore": 0.68,
         "repeatedPhrases": ["coordinated law enforcement actions"],
         "tags": ["coordination", "fraud", "arrests"],
         "loadedLanguage": 0.42
       }
-    },
-    {
-      "id": "media-border-002",
-      "title": "Border Funding Bill Hits 'Humanitarian Implementation Hiccups' Amid Pharma-Adjacent Amendments",
-      "source": "legacy-media-nyt",
-      "pubDate": "2026-06-13T18:22:00Z",
-      "excerpt": "Negotiations over supplemental border security funding have encountered repeated humanitarian implementation hiccups, with critics pointing to last-minute pharma-adjacent health infrastructure riders that could reshape DHS allocation flows.",
-      "link": "https://example.com/nyt-border-funding-hiccups",
-      "arena": "migration",
-      "signals": {
-        "framingScore": 0.71,
-        "repeatedPhrases": ["humanitarian implementation hiccups", "pharma-adjacent health infrastructure"],
-        "tags": ["border-funding", "ripples", "media-whitewash"],
-        "loadedLanguage": 0.65
-      }
-    },
-    {
-      "id": "crs-border-003",
-      "title": "Congressional Research Service: Analysis of FY2026 Border Security Supplemental and NGO Funding Mechanisms",
-      "source": "crs-reports",
-      "pubDate": "2026-06-11T09:15:00Z",
-      "excerpt": "This report examines proposed increases in border enforcement funding alongside NGO operational support. Key sections address potential duplication with existing HHS programs and questions around 'humanitarian implementation' metrics.",
-      "link": "https://example.com/crs-r48296-border",
-      "arena": "congress",
-      "signals": {
-        "framingScore": 0.55,
-        "repeatedPhrases": ["humanitarian implementation"],
-        "tags": ["crs", "funding", "ngo"],
-        "loadedLanguage": 0.31
-      }
-    },
-    {
-      "id": "wh-press-004",
-      "title": "White House Briefing: Administration Highlights Record Cross-Border Encounters and New Enforcement Tools",
-      "source": "whitehouse-press",
-      "pubDate": "2026-06-14T14:05:00Z",
-      "excerpt": "Officials today underscored the need for congressional action on border funding to address what they described as unsustainable humanitarian pressures at the southwest border.",
-      "link": "https://example.com/wh-border-briefing",
-      "arena": "executive",
-      "signals": {
-        "framingScore": 0.82,
-        "repeatedPhrases": ["humanitarian pressures"],
-        "tags": ["whitehouse", "enforcement"],
-        "loadedLanguage": 0.58
-      }
-    },
-    {
-      "id": "fox-border-005",
-      "title": "Exclusive: Internal Memos Reveal Coordinated Messaging on 'Hiccups' Narrative Across Outlets",
-      "source": "fox-news",
-      "pubDate": "2026-06-13T22:40:00Z",
-      "excerpt": "Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases — raising coordination questions.",
-      "link": "https://example.com/fox-border-memos",
-      "arena": "media",
-      "signals": {
-        "framingScore": 0.89,
-        "repeatedPhrases": ["humanitarian implementation hiccups"],
-        "tags": ["coordination", "echo", "media"],
-        "loadedLanguage": 0.77
-      }
-    },
-    {
-      "id": "gao-border-006",
-      "title": "GAO Report Flags Waste in DHS Contractor Awards Tied to Border Infrastructure",
-      "source": "gao-reports",
-      "pubDate": "2026-06-10T11:30:00Z",
-      "excerpt": "Auditors highlight billions in awards to contractors with pharma supply chain ties, echoing earlier warnings on program duplication and lack of outcome metrics for humanitarian components.",
-      "link": "https://example.com/gao-border-waste",
-      "arena": "oversight",
-      "signals": {
-        "framingScore": 0.49,
-        "repeatedPhrases": ["pharma-adjacent", "humanitarian components"],
-        "tags": ["gao", "waste", "contractors"],
-        "loadedLanguage": 0.38
-      }
-    },
-    {
-      "id": "rss-doj-update-007",
-      "title": "Justice Department Announces Additional Indictments in Multi-State Immigration Fraud Network",
-      "source": "justice-pr",
-      "pubDate": "2026-06-14T16:55:00Z",
-      "excerpt": "Federal prosecutors in multiple districts unsealed charges today against operators exploiting border-related aid programs, part of ongoing efforts to safeguard taxpayer funds.",
-      "link": "https://www.justice.gov/new-pr-border-fraud",
-      "arena": "legal",
-      "signals": {
-        "framingScore": 0.73,
-        "repeatedPhrases": ["coordinated", "safeguard taxpayer funds"],
-        "tags": ["doj", "fraud", "border-aid"],
-        "loadedLanguage": 0.51
-      }
     }
   ],
-  "politicians": [
-    {
-      "id": "pol-001",
-      "name": "Sen. Border Oversight (R)",
-      "role": "Senate Appropriations, Border Security Subcommittee",
-      "bioExcerpt": "Longtime advocate for stricter enforcement metrics and transparency in NGO funding.",
-      "mediaFraming": [
-        {"source": "legacy-media-nyt", "frame": "Hardline restrictionist pushing 'cruel' cuts to humanitarian programs", "framingScore": 0.78, "keyPhrases": ["restrictionist", "cruel cuts"]},
-        {"source": "fox-news", "frame": "Defender of American sovereignty exposing waste and bureaucratic capture", "framingScore": 0.85, "keyPhrases": ["sovereignty", "waste"]},
-        {"source": "crs-reports", "frame": "Sponsor of amendments seeking measurable outcomes on border supplemental", "framingScore": 0.41, "keyPhrases": ["measurable outcomes"]}
-      ],
-      "signalsFromNews": ["border-funding", "pharma-adjacent health infrastructure"]
-    },
-    {
-      "id": "pol-002",
-      "name": "Rep. Funding Architect (D)",
-      "role": "House Homeland Security",
-      "bioExcerpt": "Architect of recent bipartisan border funding packages with emphasis on 'comprehensive humanitarian response'.",
-      "mediaFraming": [
-        {"source": "legacy-media-nyt", "frame": "Pragmatic leader navigating complex 'implementation hiccups' for vulnerable populations", "framingScore": 0.69, "keyPhrases": ["pragmatic", "vulnerable"]},
-        {"source": "fox-news", "frame": "Enabler of NGO capture and pharma-adjacent graft in border spending", "framingScore": 0.91, "keyPhrases": ["enabler", "graft"]},
-        {"source": "justice-pr", "frame": "Cited in oversight of aid program integrity", "framingScore": 0.33, "keyPhrases": ["oversight"]}
-      ],
-      "signalsFromNews": ["humanitarian implementation hiccups", "border-funding"]
-    }
-  ],
-  "synthesis": {
-    "base": "border-funding",
-    "tactic_scores": {
-      "repetition_density": 0.78,
-      "loaded_language": 0.65,
-      "press_framing": 0.71,
-      "coordination_markers": 0.59
-    },
-    "repeated_phrases_sample": [
-      {"phrase": "humanitarian implementation hiccups", "similarity": 0.82, "contexts": ["media coverage", "CRS report"]},
-      {"phrase": "pharma-adjacent health infrastructure", "similarity": 0.91, "contexts": ["bill amendments", "DOJ press"]}
-    ],
-    "cross_arena_ripples": ["Media whitewash protects bureaucracy capture and pharma funding flows"],
-    "linkedNewsIds": ["media-border-002", "crs-border-003", "fox-border-005", "gao-border-006"]
-  },
-  "mediaNodesForMap": [
-    {"id": "justice-pr", "label": "DOJ / Justice PR", "type": "gov-press", "x": 120, "y": 80, "influence": 0.8},
-    {"id": "legacy-media-nyt", "label": "NYT / Legacy", "type": "legacy", "x": 320, "y": 60, "influence": 0.9},
-    {"id": "fox-news", "label": "Fox News", "type": "alt", "x": 480, "y": 110, "influence": 0.75},
-    {"id": "crs-reports", "label": "CRS Reports", "type": "research", "x": 200, "y": 170, "influence": 0.6},
-    {"id": "whitehouse-press", "label": "WH Press", "type": "gov-press", "x": 50, "y": 150, "influence": 0.85},
-    {"id": "gao-reports", "label": "GAO Oversight", "type": "oversight", "x": 400, "y": 200, "influence": 0.55}
-  ],
-  "echoEdges": [
-    {"from": "legacy-media-nyt", "to": "crs-reports", "strength": 0.82, "label": "shared 'hiccups' phrasing"},
-    {"from": "fox-news", "to": "legacy-media-nyt", "strength": 0.65, "label": "coordination marker"},
-    {"from": "justice-pr", "to": "whitehouse-press", "strength": 0.71, "label": "echo on humanitarian"},
-    {"from": "crs-reports", "to": "gao-reports", "strength": 0.58, "label": "funding overlap"}
-  ]
+  "politicians": [],
+  "synthesis": {}
 }

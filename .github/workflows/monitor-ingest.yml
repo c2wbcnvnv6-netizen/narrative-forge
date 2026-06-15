@@ -1,2 +1,87 @@
 name: Monitor & Auto-Ingest New Datasets (Continual Archive Builder)
-# Full updated with rss_news in default sources, auto_process, etc.
+
+on:
+  schedule:
+    # "Just do it" - Daily at 03:00 UTC for continual archive building
+    - cron: '0 3 * * *'
+    # Extra mid-week for high-velocity sources
+    - cron: '0 15 * * 3'
+    # Liveness suggestion for RSS/news (high-velocity): consider a dedicated lightweight workflow (e.g. rss-liveness.yml) or dispatch with --sources rss_news --max-new 20 every 15-30min (cron: '*/20 * * * *') to keep persistent monitoring of .gov + wires without full bulk overhead. Master monitor coordinates via NOTIFY. 30min default recommended for RSS subagent liveness.
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: 'Comma-separated sources (broad default covers everything - now includes documents sources for court rulings/press/CRS/GAO/FOIA filling raw/documents/ + rss_news for high-velocity news liveness under raw/news/ and raw/media/rss-*)'
+        required: false
+        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news'
+      max_new:
+        description: 'Max new items to ingest this run'
+        required: false
+        default: '10'
+      dry_run:
+        description: 'Dry run (discover only)'
+        required: false
+        default: 'false'
+      arena:
+        description: 'Optional arena filter'
+        required: false
+        default: ''
+      backfill:
+        description: 'Backfill mode (large historical windows for missing older data)'
+        required: false
+        default: 'false'
+      auto_process:
+        description: 'Auto-trigger Process Ingested Data workflow after each successful ingest'
+        required: false
+        default: 'true'
+    # Lightweight RSS-specific dispatch example (for RSS subagent liveness testing + coordination):
+    #   gh workflow run .github/workflows/monitor-ingest.yml -f sources=rss_news -f max_new=25 --ref main
+    #   (RSS subagent: use this to test discover_rss_news_new; feed liveness/health logs back to master monitor via prints + NOTIFY)
+    #   Reuses ALL: ingest, manifests, force, backfill (deeper for news), auto-process -> process (news entities), analyze.
+    #   For pure frequent liveness: dispatch with sources=rss_news only (short windows inside).
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write   # required to auto-trigger other workflows (process-data)
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests boto3
+
+      - name: Run algorithmic monitor + ingest ("just do it" mode on schedule)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          BUCKET_NAME: babylon-raw-data
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python scripts/monitor_and_ingest.py \
+            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news' }}" \
+            --max-new "${{ github.event.inputs.max_new || 10 }}" \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
+            ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }} \
+            ${{ github.event.inputs.backfill == 'true' && '--backfill' || '' }} \
+            ${{ github.event.inputs.auto_process != 'false' && '--auto-process' || '' }}
+
+      - name: Summary
+        run: |
+          echo "Monitor run complete. Check the logs above for newly discovered + ingested items."
+          echo "New items are streamed directly into babylon-raw-data under raw/<arena>/... (rss_news -> raw/news/ and raw/media/rss-*)"
+          echo "A manifests/ingested.json is maintained in R2 for tracking."
+          echo "With --auto-process, the Process Ingested Data workflow was triggered for each new raw."
+          echo "Auto chaining: RSS ingest -> process (text/entity extract for news) -> analyze (new news features: framing, repeated phrases, timelines) -> profiles if entities detected."
+          echo "Use backfill=true in manual dispatch for historical catch-up. For live RSS only: use dedicated lightweight dispatch or rss-monitor workflow (every 30min)."
+          echo "RSS liveness: recent items (last hour) checked via health + NOTIFY markers."

@@ -1,1 +1,56 @@
-# Updated workflow
+name: Analyze Processed Data (synthesis, graphs, timelines, tactics)
+
+on:
+  workflow_dispatch:
+    inputs:
+      processed_key:
+        description: 'Processed summary key (e.g. processed/documents/...-summary.json OR processed/news/rss-*-summary.json (or processed/news/ for arena=rss_news inputs) for live RSS narrative detection / media coordination). Full support for news/rss_news.'
+        required: true
+      batch:
+        description: 'Comma-separated list of additional processed keys (optional, supports mixed + high-volume news batches e.g. processed/news/rss-nyt-politics-...,processed/news/rss-ap-top-...,processed/news/rss-justice-pr-... for outlet similarity + echo scores, repeated phrases w/ outlets, pol media framing). Batch RSS supported.'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Dry run only'
+        required: false
+        default: 'false'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps (light)
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3
+      - name: Run substantial analysis (news/RSS extended: dedicated rss/news section in extract_text (title+desc+full), enhance find_repeated_phrases for media (outlets, coordination). Ensure build_outlet_similarity_graph, compute_echo_chamber_scores, extract_politician_media_framing, tactic_scores (press bias) always fire for news batches. In generate_synthesis: always emit "news_ripples" (media repeats, graph, echo scores, pol framing, liveness_note) for news/RSS (robust has_news for arena/rss/raw/news). Support batch with RSS. Full dedicated rss_news support (no skips, arena routing). RSS subagent: analysis now fully supports news_ripples from RSS feeds.)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          BUCKET_NAME: babylon-raw-data
+          PROCESSED_KEY: ${{ github.event.inputs.processed_key }}
+          BATCH_KEYS: ${{ github.event.inputs.batch }}
+        run: |
+          set -e
+          if [ -n "$BATCH_KEYS" ]; then
+            # Split comma list safely for --batch-keys (nargs +)
+            IFS=',' read -ra KEYS <<< "$BATCH_KEYS"
+            python scripts/analyze_data.py --batch-keys "${KEYS[@]}" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+          else
+            python scripts/analyze_data.py --processed-key "${{ github.event.inputs.processed_key }}" ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+          fi
+      - name: Notify
+        run: |
+          echo "Analysis complete. Check processed/derived/ (and processed/news/ for RSS) for graph/timeline/synthesis + news_ripples (when news keys present)."
+          echo "NOTIFY markers + live RSS signals (echo scores, outlet similarity, media framing of pols, press bias tactics) emitted for site subagent / UI + politician profiles."
+          echo "RSS subagent tie: new RSS (raw/news/ or rss_news) -> process (to processed/news/...-summary + deep synth stub) -> analyze (this, full news_ripples always when present) produces live narrative detection / media coordination / framing signals."
+          echo "Enables 'live signals' for site/profiles: news_ripples section with repeats/graph/scores/framing/liveness_note ready for consumption (e.g. from derived or processed/news/*-synthesis.json)."
+          echo "Full news chaining from RSS (raw/news/ -> processed/news/ -> news_ripples for site/profiles). RSS subagent: analysis now fully supports news_ripples from RSS feeds."
+          echo "SUBAGENT #1 (Analysis Wire): full dedicated rss_news support added to analyze/process (no skips, news_ripples always, arena routing). Tested. Dispatched."

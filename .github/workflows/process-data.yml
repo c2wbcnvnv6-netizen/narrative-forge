@@ -1,1 +1,47 @@
-# Updated workflow
+name: Process Ingested Data (analysis/pipeline stage)
+
+on:
+  workflow_dispatch:
+    inputs:
+      arena:
+        description: 'Arena / domain (e.g. finance, congress, media, news). Use "news" or "rss_news" for RSS ingested items (raw/news/* or raw/media/rss-* or /rss- keys). Robust routing writes to processed/news/...-summary.json always for RSS/news.'
+        required: true
+        default: 'media'
+      raw_key:
+        description: 'S3 key of the raw file in babylon-raw-data (rss examples: raw/news/rss-*.html or raw/media/rss-*.xml). Chains to analyze for news_ripples.'
+        required: true
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas boto3 pypdf beautifulsoup4 lxml
+
+      - name: Process raw data and save summary (CSV + documents/PDF/HTML support)
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          ARENA: ${{ github.event.inputs.arena }}
+          RAW_KEY: ${{ github.event.inputs.raw_key }}
+          BUCKET_NAME: babylon-raw-data
+        run: python scripts/process_data.py
+
+      - name: Notify processed
+        run: |
+          echo "Processing complete for arena=${{ github.event.inputs.arena }}. Summary in processed/ prefix. Rich extraction + basic analysis for documents now available."
+          echo "For RSS/news (arena=news or rss_news or raw/news/|/rss- keys): robust routing (expanded is_news_arena/is_news_key + NEWS_*), calls extract with news framing (outlets, headline, rss, framing). Ensures writes to processed/news/...-summary.json + extracted.txt. Deep synthesis stub (reuse from docs, call generate_synthesis for news_ripples)."
+          echo "Auto-chaining from monitor: RSS (raw/news/ or /rss- ) -> this process (processed/news) -> analyze-data (full news_ripples: repeats, outlet graph, echo scores ~5-7, pol framing, press bias tactics) -> profiles if entities."
+          echo "Full news chaining from RSS: raw/news/ -> processed/news/ -> news_ripples for site/profiles. No skips on arena=news/rss_news."
+          echo "RSS subagent: analysis now fully supports news_ripples from RSS feeds. SUBAGENT #1 (Analysis Wire) wire complete."

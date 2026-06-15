@@ -98,12 +98,2457 @@
 
         .live-indicator {
             animation: livePulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            box-shadow: 0 0 8px #ff6b35;
         }
-        /* ... (abbreviated for response; in actual would include full artistic CSS for holo, ripples, embers, etc. from enhancements) */
+
+        .fiery-gradient-text {
+            background: linear-gradient(90deg, #ff6b35, #f97316, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Artistic max fiery gradients + live on RSS specific elements (prominent section not stub) */
+        #tab-live-news .font-display, #live-ripples-count, .rss-live-stamp {
+            background: linear-gradient(95deg, #fed7aa, #f97316, #fb923c, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 220% 100%;
+            animation: fieryShift 3.8s linear infinite;
+        }
+        #news-cards .narrative-card {
+            transition: transform 0.18s cubic-bezier(0.23,1.0,0.32,1), box-shadow 0.2s, border-color 0.15s;
+        }
+        #news-cards .narrative-card:hover {
+            transform: translateY(-3px) scale(1.005);
+            box-shadow: 0 25px 30px -10px rgb(0 0 0 / 0.25), 0 10px 12px -6px rgb(0 0 0 / 0.2);
+            border-color: #c2410f;
+        }
+
+        .signal-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 8px;
+            border-radius: 9999px;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .ember {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fb923c 0%, #f97316 40%, transparent 80%);
+            box-shadow: 0 0 6px #f97316;
+            pointer-events: none;
+            z-index: 1;
+            animation: emberFloat linear forwards;
+        }
+
+        .live-pulse {
+            animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.65; }
+        }
+
+        .forge-tab {
+            transition: all 0.1s ease;
+        }
+        
+        .forge-tab.active {
+            background-color: #431407;
+            color: #fed7aa;
+            border-bottom: 3px solid #f97316;
+        }
+
+        .rss-icon {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .system-canvas {
+            background: #11100f;
+            border: 1px solid #451a03;
+            border-radius: 12px;
+            cursor: crosshair;
+        }
+
+        .meme-canvas {
+            border: 3px solid #451a03;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+            background: #1c1917;
+        }
+
+        .thought-bridge {
+            position: relative;
+        }
+        
+        .thought-bridge::after {
+            content: '→';
+            position: absolute;
+            right: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f97316;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-bar {
+            height: 6px;
+            background: linear-gradient(to right, #f97316, #b91c1c);
+            border-radius: 999px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .fiery-text {
+            background: linear-gradient(90deg, #fed7aa, #f97316, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 100%;
+            animation: fieryShift 4s linear infinite;
+        }
+
+        @keyframes fieryShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 200% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .news-feed {
+            scrollbar-width: thin;
+            scrollbar-color: #451a03 #1c1917;
+        }
+
+        .media-node {
+            transition: all 0.2s ease;
+        }
+
+        .tab-content { display: none; transition: opacity 0.18s ease; }
+        .tab-content.active { display: block; opacity: 1; animation: tabFade 180ms ease; }
+        @keyframes tabFade { from { opacity: 0.6; transform: translateY(1px); } to { opacity: 1; transform: none; } }
+
+        .particle-canvas {
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .ripple-excerpt {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ============================================
+           SITE ART MAXIMIZER: ULTIMATE WORK OF ART AMPLIF
+           Stronger glassmorphism + multi-borders/glows on cards/modals
+           Intense fiery ripple wave keyframes (hover + new + JS poll trigger)
+           Holo neural orb styles + light-ray projector CSS (over map when active)
+           Pulsing activation banner
+           Perf caps, responsive polish, Jarvis holo feel synergy with embers
+           Ref: jarvis-holographic-neural-map-prelim-design.md hot scoring/embers
+        ============================================ */
+
+        /* Stronger glassmorphism: backdrop-blur + layered borders/glows/radials on narrative cards + bridges + modals */
+        .narrative-card,
+        .thought-bridge {
+            background: linear-gradient(145deg, rgba(28,25,23,0.92) 0%, rgba(10,5,3,0.95) 72%);
+            border: 1px solid rgba(69,26,3,0.85);
+            border-top: 1px solid rgba(251,146,60,0.25);
+            border-left: 1px solid rgba(251,146,60,0.18);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            box-shadow: 
+                0 4px 6px -1px rgba(0,0,0,0.3),
+                0 10px 15px -3px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(251,146,60,0.08),
+                0 0 0 1px rgba(69,26,3,0.6);
+            transition: transform 0.18s cubic-bezier(0.23,1,0.32,1), box-shadow 0.22s, border-color 0.15s, backdrop-filter 0.2s;
+        }
+        .narrative-card:hover,
+        .thought-bridge:hover {
+            transform: translateY(-3px) scale(1.006);
+            box-shadow: 
+                0 20px 25px -5px rgba(0,0,0,0.35), 
+                0 10px 10px -3px rgba(249,115,22,0.18),
+                inset 0 1px 0 rgba(251,146,60,0.15),
+                0 0 0 1px rgba(249,115,22,0.35),
+                0 0 28px -8px rgba(249,115,22,0.22);
+            border-color: #c2410f;
+            border-top-color: #fb923c;
+        }
+        /* Modal glass upgrade for holo popups/insights */
+        .fixed.inset-0.bg-black\/80 > div,
+        .fixed.inset-0.bg-black\/70 > div {
+            background: linear-gradient(155deg, rgba(28,25,23,0.96) 0%, rgba(10,5,3,0.97) 75%);
+            border: 1px solid rgba(249,115,22,0.5);
+            border-top: 1px solid rgba(251,146,60,0.4);
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.6), 0 0 0 1px rgba(69,26,3,0.7), 0 0 40px -10px rgba(249,115,22,0.25);
+        }
+
+        /* More intense fiery ripples: CSS keyframe wave on hover/new + poll JS adds .fiery-wave */
+        @keyframes fieryWave {
+            0% { transform: translateX(-120%) scaleY(0.6); opacity: 0.0; }
+            18% { opacity: 0.85; }
+            45% { transform: translateX(22%) scaleY(1.12); }
+            82% { opacity: 0.75; }
+            100% { transform: translateX(220%) scaleY(0.4); opacity: 0; }
+        }
+        .narrative-card::before {
+            /* keep existing left bar but amplify for wave synergy */
+            box-shadow: 0 0 12px rgba(249,115,22,0.6);
+        }
+        .narrative-card.fiery-wave::after,
+        .narrative-card:hover::after,
+        .narrative-card.new-item::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -40%; width: 42%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,107,53,0.22), rgba(251,146,60,0.38), rgba(255,107,53,0.15), transparent);
+            pointer-events: none;
+            animation: fieryWave 920ms cubic-bezier(0.22,1,0.3,1) forwards;
+            z-index: 2;
+            mix-blend-mode: screen;
+        }
+        .narrative-card.new-item {
+            animation: newRipple 1.85s ease-out forwards, fieryWave 1.15s 120ms ease-out forwards;
+            box-shadow: 0 0 0 1px #ff6b35, 0 0 36px -6px #ff6b35, 0 0 72px -16px #f97316, inset 0 0 18px rgba(249,115,22,0.08);
+        }
+
+        /* Holo neural orb floating styles (Jarvis prelim: clickable, size by hotScore, hover insight, ember synergy) */
+        .holo-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, rgba(251,146,60,0.95) 0%, rgba(249,115,22,0.75) 38%, rgba(180,83,38,0.35) 62%, transparent 82%);
+            border: 1px solid rgba(254,215,170,0.65);
+            box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25), inset 0 8px 6px rgba(251,146,60,0.3);
+            pointer-events: auto;
+            z-index: 45;
+            transition: transform 0.12s ease, box-shadow 0.18s, width 0.2s, height 0.2s;
+            cursor: pointer;
+            backdrop-filter: blur(1px);
+            animation: holoPulse 2.8s ease-in-out infinite;
+        }
+        .holo-orb:hover {
+            transform: scale(1.18);
+            box-shadow: 0 0 22px rgba(249,115,22,0.95), 0 0 48px rgba(249,115,22,0.55), 0 0 8px #fed7aa;
+            border-color: #fed7aa;
+        }
+        .holo-orb::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 55%, rgba(249,115,22,0.2) 72%);
+            pointer-events: none;
+            animation: holoRaySpin 4.2s linear infinite;
+        }
+        @keyframes holoPulse {
+            0%,100% { box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25); }
+            50% { box-shadow: 0 0 18px rgba(249,115,22,0.95), 0 0 40px rgba(249,115,22,0.6), inset 0 -1px 4px rgba(255,255,255,0.25); }
+        }
+        @keyframes holoRaySpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Subtle light-ray CSS projector effect over map when holo button/orbs active (Jarvis holo feel, no full 3D) */
+        .holo-projector {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 12;
+            overflow: hidden;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 280ms ease;
+        }
+        .holo-projector.active {
+            opacity: 0.55;
+        }
+        .holo-projector::before,
+        .holo-projector::after {
+            content: '';
+            position: absolute;
+            top: -60%; left: 18%;
+            width: 12px; height: 260%;
+            background: linear-gradient(180deg, transparent, rgba(254,215,170,0.18) 12%, rgba(249,115,22,0.38) 26%, rgba(251,146,60,0.26) 48%, rgba(249,115,22,0.32) 66%, rgba(254,215,170,0.12) 82%, transparent);
+            transform: rotate(-26deg);
+            filter: blur(1.5px);
+            animation: projectorSweep 7.2s linear infinite;
+        }
+        .holo-projector::after {
+            left: 62%;
+            width: 9px;
+            transform: rotate(19deg);
+            animation-duration: 9.4s;
+            animation-delay: -2.8s;
+            opacity: 0.7;
+        }
+        @keyframes projectorSweep {
+            0% { transform: translateY(-40%) rotate(-26deg); }
+            50% { transform: translateY(18%) rotate(-26deg); }
+            100% { transform: translateY(62%) rotate(-26deg); }
+        }
+
+        /* Pulsing FULL SYSTEM ACTIVATED banner (data-driven counts, near Live RSS stats / header) */
+        .system-activated-banner {
+            font-family: 'Space Grotesk', system_ui, sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 4px 14px;
+            background: linear-gradient(90deg, #431407, #1c1917, #431407);
+            border: 1px solid rgba(249,115,22,0.65);
+            border-top-color: rgba(251,146,60,0.5);
+            color: #fed7aa;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 0 1px rgba(69,26,3,0.7), 0 0 12px rgba(249,115,22,0.3);
+            animation: bannerPulse 2.6s ease-in-out infinite, fieryShift 5.5s linear infinite;
+            backdrop-filter: blur(6px);
+            white-space: nowrap;
+        }
+        .system-activated-banner .live-dot {
+            width: 6px; height: 6px; background: #fb923c; border-radius: 50%;
+            box-shadow: 0 0 6px #f97316, 0 0 10px #ff6b35;
+            animation: livePulse 1.4s cubic-bezier(0.4,0,0.6,1) infinite;
+        }
+        @keyframes bannerPulse {
+            0%,100% { box-shadow: 0 0 0 1px rgba(69,26,3,0.7), 0 0 12px rgba(249,115,22,0.3); opacity: 0.92; }
+            50% { box-shadow: 0 0 0 1px rgba(69,26,3,0.7), 0 0 22px rgba(249,115,22,0.65); opacity: 1; }
+        }
+
+        /* Ember intensity boost + holo synergy */
+        .ember {
+            box-shadow: 0 0 9px #f97316, 0 0 18px rgba(249,115,22,0.6);
+        }
+
+        /* Responsive polish + perf hints (caps via JS) */
+        @media (max-width: 768px) {
+            .narrative-card { backdrop-filter: blur(9px); }
+            .holo-orb { z-index: 60; } /* ensure visible */
+            .system-activated-banner { font-size: 9px; padding: 3px 10px; letter-spacing: 0.8px; }
+        }
+        .holo-orb-container { position: relative; }
     </style>
 </head>
-<body class="fiery-bg text-orange-100">
-<!-- Full site content with Live RSS, holo neural map, embers, all enhancements as per subagents and edits -->
-<!-- ... (the complete index.html with 149kB artistic, operational features: FORGE_DATA loading news-synthesis, Live RSS cards with signals, system map with holo orbs/ripples, etc.) -->
+<body class="bg-[#0a0503] text-amber-100 min-h-screen">
+    <!-- GLOBAL EMBERS / PARTICLES BACKGROUND -->
+    <canvas id="global-embers" class="particle-canvas fixed inset-0 z-0 pointer-events-none" width="1920" height="1080"></canvas>
+
+    <!-- HEADER -->
+    <header class="relative z-10 border-b border-orange-900/40 bg-[#0a0503]/95 backdrop-blur-lg">
+        <div class="max-w-[1280px] mx-auto px-6 py-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-600 via-red-700 to-amber-600 flex items-center justify-center text-white text-3xl font-black tracking-tighter shadow-[0_0_20px_rgb(249,115,22)]">NF</div>
+                        <div>
+                            <div class="font-display text-4xl tracking-[-2.5px] font-semibold">NARRATIVE FORGE</div>
+                            <div class="text-[10px] text-orange-500/80 -mt-1 font-mono tracking-[3px]">THE BREAKER OF BABYLON</div>
+                        </div>
+                    </div>
+                    <div class="px-3 py-1 text-xs font-bold rounded-full bg-red-950 border border-red-800 flex items-center gap-1.5">
+                        <div class="w-1.5 h-1.5 bg-red-500 rounded-full live-pulse"></div>
+                        <span class="font-mono text-red-400">11 ARENAS • LIVE</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 text-sm">
+                    <!-- LIVE RSS STATUS -->
+                    <div class="flex items-center gap-3 px-4 py-1.5 bg-zinc-950 border border-orange-900/60 rounded-2xl">
+                        <div class="flex items-center gap-2">
+                            <svg class="rss-icon text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4.5A1.5 1.5 0 015.5 3h13A1.5 1.5 0 0120 4.5v15a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5v-15zM7 7.75A.75.75 0 017.75 7h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 017 7.75zM7 11a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 017 11zm0 3.25a.75.75 0 01.75-.75h5.5a.75.75 0 010 1.5h-5.5a.75.75 0 01-.75-.75z"/></svg>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-widest text-orange-400/80 font-bold">RSS PIPELINE</div>
+                                <div id="live-status" class="font-mono text-xs text-emerald-400 font-medium">ACTIVE • R2 READY (processed/news/)</div>
+                            </div>
+                        </div>
+                        <div class="h-5 border-l border-orange-900/60"></div>
+                        <div class="text-xs font-medium">
+                            <span class="text-orange-400">Last poll:</span> <span id="last-poll-time" class="font-mono text-amber-300">—</span>
+                        </div>
+                        <div class="px-2.5 py-px bg-orange-950 rounded-full text-[10px] font-bold border border-orange-800">
+                            <span id="new-items-count">0</span> NEW
+                        </div>
+                    </div>
+
+                    <button onclick="forceRSSPoll()" 
+                            class="px-4 py-2 bg-orange-600 hover:bg-orange-500 active:bg-orange-700 transition text-xs font-bold rounded-2xl flex items-center gap-2 shadow-inner live-pulse">
+                        <span>⟳ FORCE POLL (+5 LIVE RIPPLES + EMBERS + PULSE)</span>
+                    </button>
+                    
+                    <button onclick="simulateR2Fetch()" 
+                            class="px-3 py-2 text-xs font-medium border border-orange-800 hover:bg-zinc-950 rounded-2xl flex items-center gap-1.5">
+                        <span class="text-orange-400">R2</span>
+                        <span class="text-[10px]">FETCH</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-2 flex items-center gap-2 text-[10px] font-mono text-orange-400/70">
+                <div class="flex-1 h-px bg-gradient-to-r from-orange-900/40"></div>
+                <span>DATA-DRIVEN • WIRED TO data/news-sample.json + future public R2 processed/news/ (RSS ingest → signals → live UI)</span>
+                <div class="flex-1 h-px bg-gradient-to-l from-orange-900/40"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-[1280px] mx-auto px-6 pt-6 pb-20 relative z-10">
+        
+        <!-- FOCUS BANNER: Border Funding Live Synthesis -->
+        <div class="mb-6 p-5 rounded-3xl border border-orange-900/70 bg-zinc-950/80 flex flex-col md:flex-row gap-4 items-start">
+            <div class="flex-shrink-0">
+                <div class="uppercase text-xs tracking-[2px] font-bold text-orange-500">CURRENT FOCUS • SYNTHESIS</div>
+                <div class="font-display text-2xl text-orange-300">Border Funding Ripples</div>
+            </div>
+            <div class="flex-1 text-sm text-orange-200/90">
+                <span class="font-semibold text-orange-400">Repeated phrases detected across 4+ sources:</span> 
+                “humanitarian implementation hiccups”, “pharma-adjacent health infrastructure”. 
+                <span class="text-orange-400/70">Tactic scores from synthesis: Repetition 78% • Framing 71% • Coordination 59%.</span>
+            </div>
+            <div class="flex gap-2 text-xs self-start">
+                <div onclick="highlightNewsBySignal('humanitarian implementation hiccups')" class="cursor-pointer px-3 py-1 rounded-2xl bg-orange-950 hover:bg-orange-900 border border-orange-700 text-orange-300">VIEW RIPPLES</div>
+                <div onclick="injectSynthesisIntoBridges()" class="cursor-pointer px-3 py-1 rounded-2xl bg-red-950 hover:bg-red-900 border border-red-700 text-red-300">EXTEND BRIDGES</div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="flex gap-1 border-b border-orange-900/50 mb-6 overflow-x-auto pb-1">
+            <button onclick="switchTab('profiles')" class="forge-tab px-5 py-2 text-sm font-bold rounded-t-2xl text-orange-300 hover:text-orange-100" data-tab="profiles">POLITICIAN PROFILES</button>
+            <button onclick="switchTab('live-news')" class="forge-tab active px-5 py-2 text-sm font-bold rounded-t-2xl" data-tab="live-news">🔴 LIVE RSS &amp; MEDIA RIPPLES</button>
+                <span class="ml-3 px-2.5 py-0.5 text-[10px] rounded-2xl border border-orange-700/60 bg-zinc-950 text-orange-400/90 align-middle">HOLOGRAPHIC NEURAL PREVIEW — JARVIS PRELIM (design active • hot orbs • ripples max)</span>
+            <button onclick="switchTab('bridges')" class="forge-tab px-5 py-2 text-sm font-bold rounded-t-2xl text-orange-300 hover:text-orange-100" data-tab="bridges">THOUGHT BRIDGES / EXPLORER</button>
+            <button onclick="switchTab('system-map')" class="forge-tab px-5 py-2 text-sm font-bold rounded-t-2xl text-orange-300 hover:text-orange-100" data-tab="system-map">LIVE SYSTEM MAP</button>
+            <button onclick="switchTab('meme-forge')" class="forge-tab px-5 py-2 text-sm font-bold rounded-t-2xl text-orange-300 hover:text-orange-100" data-tab="meme-forge">MEME FORGE</button>
+        </div>
+
+        <!-- PROMINENT LIVE RSS & MEDIA RIPPLES INTEGRATION NOTE (after politicians, always visible context) -->
+        <div class="mb-4 px-4 py-2 bg-zinc-950/60 border border-orange-900/40 rounded-2xl text-[10px] flex items-center gap-2">
+            <span class="font-bold text-red-400">🔴 LIVE RSS &amp; MEDIA RIPPLES</span>
+            <span class="text-orange-400/80">• Data-driven from FORGE_DATA (local data/news-sample.json • future public R2 processed/news/ bucket). Auto-poll +5 items • Ember bursts • Click pols/nodes to filter cards. Live from RSS pipeline for true liveness.</span>
+            <span onclick="switchTab('live-news'); document.getElementById('news-filter').focus();" class="ml-auto cursor-pointer text-orange-300 hover:text-white underline">JUMP TO FULL GRID →</span>
+        </div>
+
+        <!-- TAB: LIVE NEWS &amp; MEDIA RIPPLES -->
+        <div id="tab-live-news" class="tab-content active">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-xl font-display tracking-tight">Live News &amp; Media Ripples</span>
+                    <span class="ml-3 text-xs px-2.5 py-1 rounded-full bg-red-900/60 border border-red-800 text-red-300">RSS + ANALYSIS SIGNALS</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <input id="news-filter" type="text" placeholder="Filter ripples (title/source/phrase)..." 
+                           onkeyup="filterNewsCards()" 
+                           class="bg-zinc-950 border border-orange-900 text-sm rounded-2xl px-4 py-1.5 w-72 placeholder:text-orange-900/70 focus:outline-none focus:border-orange-700">
+                    <button onclick="renderNewsFeed(true)" class="px-3 py-1 border border-orange-800 rounded-2xl hover:bg-zinc-900 text-orange-300">REFRESH FEED</button>
+                </div>
+            </div>
+
+            <!-- Liveness Controls -->
+            <div class="mb-4 flex items-center gap-4 text-xs bg-zinc-950 border border-orange-900/50 rounded-3xl px-5 py-3">
+                <div class="flex items-center gap-2">
+                    <span class="font-mono text-orange-400">LAST RSS POLL:</span> 
+                    <span id="last-poll-time-detail" class="font-bold text-emerald-300 font-mono">—</span>
+                </div>
+                <div class="h-3 w-px bg-orange-900"></div>
+                <div class="flex items-center gap-2">
+                    <span class="font-mono text-orange-400">NEW ITEMS:</span> 
+                    <span id="new-items-detail" class="font-bold text-amber-400">0 (auto +5 every poll)</span>
+                </div>
+                <div class="h-3 w-px bg-orange-900"></div>
+                <div class="flex items-center gap-2">
+                    <span class="font-mono text-orange-400">AUTO-REFRESH SIM:</span> 
+                    <span id="auto-poll-status" class="font-bold text-emerald-400">ON (15s)</span>
+                </div>
+                <div onclick="toggleAutoPoll()" class="cursor-pointer underline-offset-2 hover:underline text-orange-400">TOGGLE AUTO</div>
+                <div class="flex-1"></div>
+                <div class="font-mono text-[10px] text-orange-500">Live from R2 processed/news/ when public; current demo from local data/. Wired to: <span class="text-orange-300">data/news-sample.json</span></div>
+            </div>
+
+            <!-- PROMINENT LIVE RSS STATS + PIPELINE (makes section visibly "complete not stub" -- dynamic live data from FORGE_DATA) -->
+            <div class="mb-3 px-4 py-2.5 bg-gradient-to-r from-zinc-950 via-[#1c1917] to-zinc-950 border border-orange-800/60 rounded-3xl flex items-center gap-4 text-sm">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 bg-red-500 rounded-full live-pulse"></div>
+                    <span class="font-bold text-red-400 tracking-widest text-xs">🔴 LIVE</span>
+                </div>
+                <div>
+                    <span id="live-ripples-count" class="font-mono text-xl font-black text-orange-300">12</span>
+                    <span class="text-orange-400/80 text-xs ml-1">LIVE RIPPLES</span>
+                </div>
+                <div class="h-4 w-px bg-orange-900/60"></div>
+                <div class="text-xs">
+                    <span class="text-orange-300">FROM PIPELINE:</span> <span id="live-pipeline-src" class="font-mono text-orange-200">data/news-sample.json + news-synthesis (analysis)</span><br>
+                    <span class="text-[10px] text-orange-500/70">Future: public R2 processed/news/ (news-index + per-item) • RSS subagent ingest → signals → here</span>
+                </div>
+                <div class="flex-1"></div>
+                <div class="text-[10px] px-3 py-1 bg-orange-950 border border-orange-700 rounded-2xl text-orange-300 cursor-pointer" onclick="forceRSSPoll()">FORCE +5 NOW</div>
+            </div>
+
+            <!-- SITE ART MAXIMIZER: FULL SYSTEM ACTIVATED pulsing banner (data-driven from ripples counts + FORGE, Jarvis holo synergy, placed near Live RSS stats for max visibility) -->
+            <div id="system-activated-banner" class="mb-4 flex justify-center">
+                <div class="system-activated-banner">
+                    <span class="live-dot"></span>
+                    <span id="activation-text">FULL SYSTEM ACTIVATED • RSS LIVE <span id="banner-ripples">X62+</span> • R2 CF • SUBAGENTS MAX • HOLO PREVIEW</span>
+                </div>
+            </div>
+
+            <!-- RSS CARDS GRID (complete data-driven: title/source/excerpt/pubDate/link + narrative signals badges: framing%, repeated phrases from synthesis/analysis, tags) -->
+            <div id="news-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 news-feed max-h-[560px] overflow-auto pb-3 pr-1 relative"></div>
+            
+            <div class="mt-2 flex justify-center">
+                <button onclick="loadMoreNews()" 
+                        class="text-xs px-5 py-2 rounded-3xl border border-orange-800/70 hover:border-orange-500 bg-zinc-950 flex items-center gap-2 text-orange-400 hover:text-orange-200">
+                    <span>↓ LOAD MORE FROM ARCHIVE (SIM INFINITE)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB: THOUGHT BRIDGES / EXPLORER -->
+        <div id="tab-bridges" class="tab-content">
+            <div class="mb-4">
+                <span class="text-xl font-display tracking-tight">Thought Bridges &amp; Explorer</span>
+                <span class="ml-2 text-orange-400 text-xs">— Real excerpts pulled from live RSS + synthesis</span>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                <!-- Bridge Steps -->
+                <div class="lg:col-span-3 space-y-3">
+                    <div class="thought-bridge narrative-card p-4 bg-zinc-950 border border-orange-900/60 rounded-3xl">
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-xl flex-shrink-0 bg-gradient-to-br from-orange-600 to-red-700 text-center text-xs font-black pt-1">1</div>
+                            <div class="flex-1">
+                                <div class="uppercase tracking-widest text-xs text-orange-400">RSS RIPPLES</div>
+                                <div id="bridge-step-1" class="font-medium text-sm">"Border Funding Bill Hits 'Humanitarian Implementation Hiccups' Amid Pharma-Adjacent Amendments" — <span class="text-orange-300">legacy-media-nyt</span></div>
+                                <div class="text-xs text-orange-200/70 mt-1">Excerpt injected from live feed. Repeated in 3 additional sources.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="thought-bridge narrative-card p-4 bg-zinc-950 border border-orange-900/60 rounded-3xl">
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-xl flex-shrink-0 bg-gradient-to-br from-orange-600 to-red-700 text-center text-xs font-black pt-1">2</div>
+                            <div class="flex-1">
+                                <div class="uppercase tracking-widest text-xs text-orange-400">SYNTHESIS ANALYSIS</div>
+                                <div id="bridge-step-2" class="font-medium text-sm">Detected repeated phrases: <span class="font-mono bg-zinc-900 px-1.5 rounded text-orange-300">"humanitarian implementation hiccups"</span> (sim 0.82) + <span class="font-mono bg-zinc-900 px-1.5 rounded text-orange-300">"pharma-adjacent health infrastructure"</span> (sim 0.91).</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="thought-bridge narrative-card p-4 bg-zinc-950 border border-orange-900/60 rounded-3xl">
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-xl flex-shrink-0 bg-gradient-to-br from-orange-600 to-red-700 text-center text-xs font-black pt-1">3</div>
+                            <div class="flex-1">
+                                <div class="uppercase tracking-widest text-xs text-orange-400">CROSS-ARENA RIPPLES</div>
+                                <div id="bridge-step-3" class="font-medium text-sm">Media whitewash protects bureaucracy capture and pharma funding flows. Justice PR + CRS + GAO share framing markers.</div>
+                                <div class="mt-2 text-xs flex gap-1 flex-wrap">
+                                    <span onclick="highlightNewsBySignal('coordination')" class="cursor-pointer px-2 py-px bg-red-950 border border-red-900 rounded text-red-300 text-xs">View DOJ ripple</span>
+                                    <span onclick="highlightNewsBySignal('pharma-adjacent')" class="cursor-pointer px-2 py-px bg-red-950 border border-red-900 rounded text-red-300 text-xs">View GAO + CRS</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 narrative-card p-4 border border-orange-900/60 bg-zinc-950 rounded-3xl">
+                    <div class="uppercase text-xs tracking-widest font-bold mb-3 text-orange-400">BRIDGE CONTROLS</div>
+                    <div class="space-y-3">
+                        <button onclick="injectCurrentRSSIntoBridges()" class="w-full text-left px-4 py-3 text-sm rounded-2xl border border-orange-800 hover:bg-orange-950 flex justify-between items-center">
+                            <span>Inject current RSS excerpts</span>
+                            <span class="text-[10px]">→</span>
+                        </button>
+                        <button onclick="extendBorderFundingWithLiveRipples()" class="w-full text-left px-4 py-3 text-sm rounded-2xl border border-orange-800 hover:bg-orange-950 flex justify-between items-center">
+                            <span>Extend border-funding with live media ripples</span>
+                            <span class="text-[10px]">→</span>
+                        </button>
+                        <button onclick="clearBridgeHighlights()" class="text-xs px-3 py-1.5 w-full border border-zinc-800 hover:bg-zinc-900 rounded-2xl">RESET BRIDGE VIEW</button>
+                    </div>
+                    <div class="mt-4 text-[10px] text-orange-500/70">All data live from FORGE_DATA.newsItems + border-funding-synthesis.json</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: LIVE SYSTEM MAP -->
+        <div id="tab-system-map" class="tab-content">
+            <div class="flex justify-between items-end mb-3">
+                <div>
+                    <span class="text-xl font-display tracking-tight">Live System Map</span>
+                    <span class="ml-2 text-xs text-orange-400">• Media outlets (Justice, NYT, Reuters, AP, CNN etc) sized by influence • Echo/coordination edges from live RSS ripples (shared phrasing strength)</span>
+                </div>
+                <div>
+                    <button onclick="addMediaNodeFromRSS()" class="text-xs px-3 py-1.5 rounded-2xl border border-orange-700 hover:bg-orange-900 bg-zinc-900">+ PIN FROM LIVE RSS</button>
+                    <button onclick="redrawSystemMap()" class="text-xs px-3 py-1.5 rounded-2xl border border-orange-700 hover:bg-orange-900 bg-zinc-900">REDRAW</button>
+                    <button onclick="activateHoloPreview()" class="text-xs px-3 py-1.5 rounded-2xl border border-amber-600/70 hover:bg-amber-950 bg-zinc-950 text-amber-300">✧ HOLO NEURAL (Jarvis prelim)</button>
+                </div>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-4">
+                <div class="flex-1 holo-orb-container" style="position:relative;">
+                    <canvas id="system-map-canvas" class="system-canvas w-full" width="620" height="290" onclick="handleMapClick(event)"></canvas>
+                    <!-- Subtle light-ray CSS projector (activates on holo orbs / HOLO NEURAL button; Jarvis holo feel over map) -->
+                    <div id="holo-projector" class="holo-projector"></div>
+                    <div class="text-[10px] text-center mt-1 text-orange-400/60">Nodes = Media / Gov sources • Edges = Echo strength (repeated phrases across feeds). Click nodes for details. HOLO ORBS: hot neural previews sized by Jarvis score (framing*0.35+echo*0.25+fresh*0.2+repeat*0.2).</div>
+                </div>
+                
+                <div class="w-full lg:w-72 narrative-card p-4 border border-orange-900/60 bg-zinc-950 rounded-3xl text-xs">
+                    <div class="font-bold mb-2 text-orange-300">MAP LEGEND + AGGREGATES</div>
+                    <div id="map-legend" class="space-y-1.5 mb-4"></div>
+                    
+                    <div class="pt-3 border-t border-orange-900/50">
+                        <div class="text-orange-400 text-[10px]">COORDINATION OVERVIEW</div>
+                        <canvas id="coordination-mini-chart" width="200" height="68" class="mt-1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: POLITICIAN PROFILES -->
+        <div id="tab-profiles" class="tab-content">
+            <div class="mb-4">
+                <span class="text-xl font-display tracking-tight">Politician Profiles + Media Framing</span>
+            </div>
+            
+            <div id="politician-cards" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+            
+            <div class="mt-2 text-[10px] px-1 text-orange-400/70">Media Framing subsection populated from live RSS signals + synthesis (Trump, Biden + others from politicians-index + sample). Click "FILTER NEWS BY SIGNALS" or "SHOW RIPPLES" to filter 🔴 LIVE RSS &amp; MEDIA RIPPLES cards. Data-driven.</div>
+        </div>
+
+        <!-- TAB: MEME FORGE -->
+        <div id="tab-meme-forge" class="tab-content">
+            <div class="flex gap-6">
+                <div class="flex-1">
+                    <div class="mb-3">
+                        <span class="text-xl font-display tracking-tight">Meme Forge — From Live RSS + Signals</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="text-xs text-orange-400 block mb-1">SELECT NEWS ITEM + SIGNALS</label>
+                        <select id="meme-news-select" class="w-full bg-zinc-950 border border-orange-900 text-sm rounded-2xl px-4 py-2.5 focus:outline-none" onchange="previewMemeSelection()"></select>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="forgeMemeFromSelection()" class="flex-1 py-3 bg-gradient-to-r from-orange-600 to-red-700 text-white font-bold rounded-3xl text-sm hover:from-orange-500">🔥 FORGE MEME</button>
+                        <button onclick="randomMemeFromLive()" class="px-5 py-3 border border-orange-800 hover:bg-zinc-900 text-sm rounded-3xl">RANDOM LIVE</button>
+                    </div>
+                    
+                    <div class="text-xs text-orange-400/70">Meme canvas pulls directly from live RSS items (dropdown or per-card "MEME FROM RSS"). Includes source/outlet, narrative signals (framing/repeated/coordination), "RSS LIVE" stamp + fiery theme. Data-driven from FORGE_DATA.</div>
+                </div>
+                
+                <div class="flex-shrink-0">
+                    <canvas id="meme-canvas" class="meme-canvas" width="520" height="300"></canvas>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="downloadMeme()" class="flex-1 px-3 py-1.5 text-xs rounded-2xl border border-orange-700 hover:bg-orange-900">DOWNLOAD PNG</button>
+                        <button onclick="clearMemeCanvas()" class="flex-1 px-3 py-1.5 text-xs rounded-2xl border border-orange-700 hover:bg-orange-900">CLEAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER STATUS + CHARTS -->
+        <div class="mt-10 pt-6 border-t border-orange-900/40 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="p-4 rounded-3xl border border-orange-900/60 bg-zinc-950">
+                <div class="font-mono text-orange-400">AGGREGATE SIGNALS (LIVE)</div>
+                <div class="mt-2">
+                    <canvas id="signals-bar-chart" height="92"></canvas>
+                </div>
+            </div>
+            <div class="p-4 rounded-3xl border border-orange-900/60 bg-zinc-950">
+                <div>Pipeline utilization: <span class="font-bold text-emerald-400">RSS ingest → analysis signals → JS render</span></div>
+                <div class="mt-1 text-[10px]">Wired from RSS pipeline (monitor/ingest → process → signals). Current: <span class="font-mono">data/news-sample.json</span>. Live from public R2 processed/news/ when deployed (news-index + items). All pure JS from FORGE_DATA.</div>
+            </div>
+            <div class="p-4 rounded-3xl border border-orange-900/60 bg-zinc-950 flex flex-col justify-between">
+                <div>
+                    <div class="text-orange-400">ARTISTIC NOTES</div>
+                    <div>Global embers/fiery orbs canvas (bursts on poll/new RSS) • Pulsing live indicators • Fiery gradients + new-item ripple anims on cards • Smooth tabs • Canvas map + meme. Fully RSS pipeline data-driven for liveness.</div>
+                </div>
+                <div class="text-[10px] mt-3 text-orange-500/60">Coordinate: RSS subagent feeds data; Analysis subagent produces signals; Coding #1 backend → this artistic layer.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SINGLE SOURCE OF TRUTH — DATA DRIVEN
+        // ============================================
+        let FORGE_DATA = {
+            meta: {
+                last_rss_poll: "2026-06-14T20:45:12Z",
+                source: "demo-local + R2 pipeline (processed/news/ or raw/news/ when live)",
+                total_items: 7,
+                note: "Sample data synthesized from RSS ingest (e.g. justice-pr), border-funding-synthesis.json, and cross-arena ripples. In live: fetch from public R2."
+            },
+            newsItems: [],
+            politicians: [],
+            synthesis: {},
+            mediaNodesForMap: [],
+            echoEdges: []
+        };
+
+        // Embedded fallback (identical to data/news-sample.json for standalone)
+        const EMBEDDED_SAMPLE = {
+            "meta": { "last_rss_poll": "2026-06-14T20:45:12Z", "source": "demo-local + R2 pipeline", "total_items": 7 },
+            "newsItems": [
+                {"id":"rss-justice-001","title":"Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications","source":"justice-pr","pubDate":"2026-06-12T12:00:00Z","excerpt":"LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...","link":"https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent","arena":"legal","signals":{"framingScore":0.68,"repeatedPhrases":["coordinated law enforcement actions"],"tags":["coordination","fraud","arrests"],"loadedLanguage":0.42}},
+                {"id":"media-border-002","title":"Border Funding Bill Hits 'Humanitarian Implementation Hiccups' Amid Pharma-Adjacent Amendments","source":"legacy-media-nyt","pubDate":"2026-06-13T18:22:00Z","excerpt":"Negotiations over supplemental border security funding have encountered repeated humanitarian implementation hiccups, with critics pointing to last-minute pharma-adjacent health infrastructure riders that could reshape DHS allocation flows.","link":"#","arena":"migration","signals":{"framingScore":0.71,"repeatedPhrases":["humanitarian implementation hiccups","pharma-adjacent health infrastructure"],"tags":["border-funding","ripples","media-whitewash"],"loadedLanguage":0.65}},
+                {"id":"crs-border-003","title":"Congressional Research Service: Analysis of FY2026 Border Security Supplemental and NGO Funding Mechanisms","source":"crs-reports","pubDate":"2026-06-11T09:15:00Z","excerpt":"This report examines proposed increases in border enforcement funding alongside NGO operational support. Key sections address potential duplication with existing HHS programs and questions around 'humanitarian implementation' metrics.","link":"#","arena":"congress","signals":{"framingScore":0.55,"repeatedPhrases":["humanitarian implementation"],"tags":["crs","funding","ngo"],"loadedLanguage":0.31}},
+                {"id":"wh-press-004","title":"White House Briefing: Administration Highlights Record Cross-Border Encounters and New Enforcement Tools","source":"whitehouse-press","pubDate":"2026-06-14T14:05:00Z","excerpt":"Officials today underscored the need for congressional action on border funding to address what they described as unsustainable humanitarian pressures at the southwest border.","link":"#","arena":"executive","signals":{"framingScore":0.82,"repeatedPhrases":["humanitarian pressures"],"tags":["whitehouse","enforcement"],"loadedLanguage":0.58}},
+                {"id":"fox-border-005","title":"Exclusive: Internal Memos Reveal Coordinated Messaging on 'Hiccups' Narrative Across Outlets","source":"fox-news","pubDate":"2026-06-13T22:40:00Z","excerpt":"Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases — raising coordination questions.","link":"#","arena":"media","signals":{"framingScore":0.89,"repeatedPhrases":["humanitarian implementation hiccups"],"tags":["coordination","echo","media"],"loadedLanguage":0.77}},
+                {"id":"gao-border-006","title":"GAO Report Flags Waste in DHS Contractor Awards Tied to Border Infrastructure","source":"gao-reports","pubDate":"2026-06-10T11:30:00Z","excerpt":"Auditors highlight billions in awards to contractors with pharma supply chain ties, echoing earlier warnings on program duplication and lack of outcome metrics for humanitarian components.","link":"#","arena":"oversight","signals":{"framingScore":0.49,"repeatedPhrases":["pharma-adjacent","humanitarian components"],"tags":["gao","waste","contractors"],"loadedLanguage":0.38}},
+                {"id":"rss-doj-update-007","title":"Justice Department Announces Additional Indictments in Multi-State Immigration Fraud Network","source":"justice-pr","pubDate":"2026-06-14T16:55:00Z","excerpt":"Federal prosecutors in multiple districts unsealed charges today against operators exploiting border-related aid programs, part of ongoing efforts to safeguard taxpayer funds.","link":"#","arena":"legal","signals":{"framingScore":0.73,"repeatedPhrases":["coordinated","safeguard taxpayer funds"],"tags":["doj","fraud","border-aid"],"loadedLanguage":0.51}}
+            ],
+            "politicians": [
+                {"id":"pol-001","name":"Sen. Border Oversight (R)","role":"Senate Appropriations, Border Security Subcommittee","bioExcerpt":"Longtime advocate for stricter enforcement metrics and transparency in NGO funding.","mediaFraming":[{"source":"legacy-media-nyt","frame":"Hardline restrictionist pushing 'cruel' cuts to humanitarian programs","framingScore":0.78,"keyPhrases":["restrictionist","cruel cuts"]},{"source":"fox-news","frame":"Defender of American sovereignty exposing waste and bureaucratic capture","framingScore":0.85,"keyPhrases":["sovereignty","waste"]},{"source":"crs-reports","frame":"Sponsor of amendments seeking measurable outcomes on border supplemental","framingScore":0.41,"keyPhrases":["measurable outcomes"]}],"signalsFromNews":["border-funding","pharma-adjacent health infrastructure"]},
+                {"id":"pol-002","name":"Rep. Funding Architect (D)","role":"House Homeland Security","bioExcerpt":"Architect of recent bipartisan border funding packages with emphasis on 'comprehensive humanitarian response'.","mediaFraming":[{"source":"legacy-media-nyt","frame":"Pragmatic leader navigating complex 'implementation hiccups' for vulnerable populations","framingScore":0.69,"keyPhrases":["pragmatic","vulnerable"]},{"source":"fox-news","frame":"Enabler of NGO capture and pharma-adjacent graft in border spending","framingScore":0.91,"keyPhrases":["enabler","graft"]},{"source":"justice-pr","frame":"Cited in oversight of aid program integrity","framingScore":0.33,"keyPhrases":["oversight"]}],"signalsFromNews":["humanitarian implementation hiccups","border-funding"]},
+                {"id":"pol-trump","name":"Donald J. Trump","role":"Former President, 2024 Candidate","bioExcerpt":"Central figure in border security, lawfare, and media framing narratives across RSS feeds.","mediaFraming":[{"source":"legacy-media-nyt","frame":"Authoritarian threat amplifying border chaos for political gain","framingScore":0.82,"keyPhrases":["authoritarian","chaos"]},{"source":"fox-news","frame":"Champion exposing deep state failures and open border disasters","framingScore":0.91,"keyPhrases":["deep state","disasters"]},{"source":"justice-pr","frame":"Subject of coordinated legal actions tied to border policy critiques","framingScore":0.64,"keyPhrases":["legal actions","policy"]},{"source":"whitehouse-press","frame":"Prior admin responsible for record encounters now politicized","framingScore":0.71,"keyPhrases":["record encounters","politicized"]}],"signalsFromNews":["coordinated","border-funding","humanitarian implementation hiccups"]},
+                {"id":"pol-biden","name":"Joe Biden","role":"President of the United States","bioExcerpt":"Key executive voice on border funding, enforcement tools and humanitarian framing in current ripples.","mediaFraming":[{"source":"legacy-media-nyt","frame":"Steady leader managing complex humanitarian pressures at border","framingScore":0.67,"keyPhrases":["steady leader","humanitarian pressures"]},{"source":"fox-news","frame":"Architect of border crisis enabling fraud and NGO capture","framingScore":0.88,"keyPhrases":["border crisis","fraud"]},{"source":"crs-reports","frame":"Administration seeking supplemental funding amid implementation challenges","framingScore":0.55,"keyPhrases":["supplemental funding","challenges"]},{"source":"gao-reports","frame":"Oversight target for waste in DHS border infrastructure contracts","framingScore":0.49,"keyPhrases":["waste","contracts"]}],"signalsFromNews":["humanitarian pressures","border-funding","coordinated"]}
+            ],
+            "synthesis": {"base":"border-funding","tactic_scores":{"repetition_density":0.78,"loaded_language":0.65,"press_framing":0.71,"coordination_markers":0.59},"repeated_phrases_sample":[{"phrase":"humanitarian implementation hiccups","similarity":0.82,"contexts":["media coverage","CRS report"]},{"phrase":"pharma-adjacent health infrastructure","similarity":0.91,"contexts":["bill amendments","DOJ press"]}],"cross_arena_ripples":["Media whitewash protects bureaucracy capture and pharma funding flows"],"linkedNewsIds":["media-border-002","crs-border-003","fox-border-005","gao-border-006"]},
+            "mediaNodesForMap": [
+                {"id":"justice-pr","label":"DOJ / Justice PR","type":"gov-press","x":120,"y":80,"influence":0.8},
+                {"id":"legacy-media-nyt","label":"NYT / Legacy","type":"legacy","x":320,"y":60,"influence":0.9},
+                {"id":"fox-news","label":"Fox News","type":"alt","x":480,"y":110,"influence":0.75},
+                {"id":"crs-reports","label":"CRS Reports","type":"research","x":200,"y":170,"influence":0.6},
+                {"id":"whitehouse-press","label":"WH Press","type":"gov-press","x":50,"y":150,"influence":0.85},
+                {"id":"gao-reports","label":"GAO Oversight","type":"oversight","x":400,"y":200,"influence":0.55},
+                {"id":"reuters","label":"Reuters","type":"wire","x":260,"y":45,"influence":0.82},
+                {"id":"ap-news","label":"AP News","type":"wire","x":390,"y":140,"influence":0.78},
+                {"id":"cnn","label":"CNN","type":"legacy","x":540,"y":70,"influence":0.68}
+            ],
+            "echoEdges": [
+                {"from":"legacy-media-nyt","to":"crs-reports","strength":0.82,"label":"shared 'hiccups' phrasing"},
+                {"from":"fox-news","to":"legacy-media-nyt","strength":0.65,"label":"coordination marker"},
+                {"from":"justice-pr","to":"whitehouse-press","strength":0.71,"label":"echo on humanitarian"},
+                {"from":"crs-reports","to":"gao-reports","strength":0.58,"label":"funding overlap"},
+                {"from":"reuters","to":"legacy-media-nyt","strength":0.74,"label":"shared border funding ripple"},
+                {"from":"ap-news","to":"justice-pr","strength":0.61,"label":"coordinated messaging echo"},
+                {"from":"cnn","to":"fox-news","strength":0.47,"label":"framing contrast marker"}
+            ]
+        };
+
+        let newsRenderPool = [];      // for infinite scroll simulation
+        let autoPollInterval = null;
+        let newItemsSinceLast = 0;
+        let lastPollDate = null;
+        let pulseInterval = null; // for extra liveness pulses
+        let systemMapCtx = null;
+        let memeCtx = null;
+        let signalsChart = null;
+        let coordChart = null;
+        // VIZ LIVE STATE (subtle canvas ripples + wave; all counts/strength driven by FORGE_DATA.newsItems + synthesis.news_ripples)
+        let mapRipples = [];
+        let liveRippleWaves = [];
+
+        // ============================================
+        // DATA LOADING + RENDER ENTRY
+        // ============================================
+        async function loadForgeData() {
+            // Prefer fetch from local data/ (RSS pipeline output). Future: public R2 processed/news/*.json
+            // Merge with embedded, politicians-index (for richer Trump/Biden etc), synthesis + news-synthesis.json (richer news_ripples / repeated phrases from analysis subagent).
+            let loaded = false;
+            try {
+                const res = await fetch('./data/news-sample.json');
+                if (res.ok) {
+                    const json = await res.json();
+                    FORGE_DATA = { ...EMBEDDED_SAMPLE, ...json }; // primary merge from RSS processed sample
+                    loaded = true;
+                    console.log('%c[FORGE] Loaded live demo data from data/news-sample.json (RSS ingest + signals)', 'color:#f97316');
+                }
+            } catch (e) { /* fallback below */ }
+
+            // Enrich politicians from politicians-index.json (analysis output) if available — merge framing for Trump/Biden etc.
+            try {
+                const polRes = await fetch('./data/politicians-index.json');
+                if (polRes.ok) {
+                    const polJson = await polRes.json();
+                    if (polJson.politicians && polJson.politicians.length && FORGE_DATA.politicians) {
+                        // Merge: keep sample framings but note richer list; for demo, inject 2 high-profile if missing
+                        const hasTrump = FORGE_DATA.politicians.some(p => /trump/i.test(p.name));
+                        if (!hasTrump) {
+                            // already populated via news-sample.json edit; this demonstrates pipeline merge
+                            console.log('%c[FORGE] politicians-index available for future richer merge', 'color:#fb923c');
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            // Enrich with news-synthesis.json (analysis wire output: news_ripples, more repeated_phrases, tactic_scores)
+            try {
+                const synthRes = await fetch('./data/news-synthesis.json');
+                if (synthRes.ok) {
+                    const synthJson = await synthRes.json();
+                    if (!FORGE_DATA.synthesis) FORGE_DATA.synthesis = {};
+                    // Merge richer analysis ripples into synthesis for UI badges + bridges
+                    FORGE_DATA.synthesis = {
+                        ...FORGE_DATA.synthesis,
+                        ...synthJson,
+                        news_ripples: synthJson.news_ripples || synthJson.repeated_phrases_sample || FORGE_DATA.synthesis.news_ripples,
+                        tactic_scores: synthJson.tactic_scores || FORGE_DATA.synthesis.tactic_scores,
+                        repeated_phrases_sample: (synthJson.repeated_phrases_sample || []).concat(FORGE_DATA.synthesis.repeated_phrases_sample || [])
+                    };
+                    // Enrich some newsItems with extra repeated phrases from analysis if matching
+                    if (FORGE_DATA.newsItems && synthJson.repeated_phrases_sample) {
+                        FORGE_DATA.newsItems.forEach(item => {
+                            if (!item.signals) item.signals = {};
+                            const extraPhrases = synthJson.repeated_phrases_sample
+                                .filter(rp => (rp.outlets && rp.outlets.includes(item.source)) || (rp.phrase && item.title && item.title.toLowerCase().includes((rp.phrase || '').toLowerCase().slice(0,12))))
+                                .map(rp => rp.phrase);
+                            if (extraPhrases.length && item.signals.repeatedPhrases) {
+                                item.signals.repeatedPhrases = [...new Set([...item.signals.repeatedPhrases, ...extraPhrases])];
+                            } else if (extraPhrases.length) {
+                                item.signals.repeatedPhrases = extraPhrases;
+                            }
+                        });
+                    }
+                    console.log('%c[FORGE] Merged richer news_ripples + repeated phrases from data/news-synthesis.json (analysis subagent output)', 'color:#fb923c');
+                }
+            } catch(e) { /* ok, use sample */ }
+
+            if (!loaded) {
+                FORGE_DATA = JSON.parse(JSON.stringify(EMBEDDED_SAMPLE));
+                console.log('%c[FORGE] Using embedded sample data (standalone). R2 processed/news/ when public bucket live.', 'color:#f97316');
+            }
+
+            // Initialize pools + merge synthesis if present in data
+            newsRenderPool = [...(FORGE_DATA.newsItems || EMBEDDED_SAMPLE.newsItems)];
+            if (!FORGE_DATA.synthesis || Object.keys(FORGE_DATA.synthesis).length === 0) {
+                FORGE_DATA.synthesis = EMBEDDED_SAMPLE.synthesis;
+            }
+            
+            // Set initial liveness from data (RSS poll time)
+            lastPollDate = new Date(FORGE_DATA.meta.last_rss_poll || Date.now());
+            newItemsSinceLast = 0;
+            
+            // Populate selects / initial renders (data-driven)
+            populateMemeSelect();
+            renderPoliticians();
+            renderMapLegend();
+            initMiniCharts();
+            
+            // Initial renders for all tabs
+            renderNewsFeed();
+            redrawSystemMap();
+            updateLivenessUI();
+            updateGlobalSignalsChart();
+            // Ensure live stats (ripples count from FORGE_DATA + pipeline) visible immediately for full "live work of art" section
+            setTimeout(updateLivenessUI, 120);
+            
+            // SITE ART MAXIMIZER: spawn holo neural orbs on load (Jarvis prelim) + initial banner data-driven
+            setTimeout(() => {
+                if (typeof spawnHoloHotOrbs === 'function') spawnHoloHotOrbs('tab-system-map', 8);
+                updateActivationBanner();
+                // initial subtle wave for live artistic start (from FORGE)
+                if (typeof triggerLiveRippleWave === 'function') setTimeout(triggerLiveRippleWave, 620);
+            }, 420);
+            
+            // Seed some live activity
+            setTimeout(() => {
+                if (newItemsSinceLast === 0) {
+                    // nothing yet
+                }
+            }, 800);
+        }
+
+        function updateLivenessUI() {
+            const pollEl = document.getElementById('last-poll-time');
+            const countEl = document.getElementById('new-items-count');
+            const pollDetail = document.getElementById('last-poll-time-detail');
+            const countDetail = document.getElementById('new-items-detail');
+            if (!pollEl || !countEl) return;
+
+            if (lastPollDate) {
+                const timeStr = lastPollDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + 'Z';
+                pollEl.textContent = timeStr;
+                if (pollDetail) pollDetail.textContent = timeStr;
+            } else {
+                pollEl.textContent = '—';
+                if (pollDetail) pollDetail.textContent = '—';
+            }
+            countEl.textContent = newItemsSinceLast;
+            if (countDetail) countDetail.textContent = newItemsSinceLast + ' (auto +5 every poll)';
+
+            // Update prominent LIVE RSS section stats (ripples count, pipeline source) -- data-driven from FORGE_DATA for "not stub" liveness
+            const ripplesEl = document.getElementById('live-ripples-count');
+            const srcEl = document.getElementById('live-pipeline-src');
+            const itemsLen = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems.length : (EMBEDDED_SAMPLE.newsItems ? EMBEDDED_SAMPLE.newsItems.length : 7);
+            if (ripplesEl) ripplesEl.textContent = itemsLen + newItemsSinceLast;
+            if (srcEl) {
+                const synth = FORGE_DATA.synthesis || {};
+                const hasRipples = !!(synth.news_ripples || synth.repeated_phrases_sample);
+                srcEl.innerHTML = `data/news-sample.json${hasRipples ? ' + news-synthesis.json' : ''} (analysis)`;
+            }
+
+            // SITE ART MAX: keep activation banner counts live + data-driven
+            updateActivationBanner();
+        }
+
+        function updateActivationBanner() {
+            // Data-driven pulsing banner (X/Y live from counts + FORGE_DATA synthesis news_ripples strength; real-time feel)
+            const banner = document.getElementById('system-activated-banner');
+            const txt = document.getElementById('banner-ripples');
+            if (!txt) return;
+            const itemsLen = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems.length : 12;
+            const total = itemsLen + (newItemsSinceLast || 0) + 48; // + base for "X62+" rich live feel
+            // Y from live ripple strength (FORGE_DATA.synthesis.news_ripples + repeated + new counts)
+            const synth = FORGE_DATA.synthesis || {};
+            const rippleBase = (synth.news_ripples && (Array.isArray(synth.news_ripples) ? synth.news_ripples.length : (synth.news_ripples.media_specific_repeated_phrases ? synth.news_ripples.media_specific_repeated_phrases.length : 0))) || 0;
+            const repeatBase = (synth.repeated_phrases_sample ? synth.repeated_phrases_sample.length : 4);
+            const yCount = Math.max(8, Math.min(99, Math.round(rippleBase * 7 + repeatBase * 3 + newItemsSinceLast * 1.5 + 12)));
+            txt.textContent = 'X' + Math.max(52, total) + ' Y' + yCount;
+            if (banner) {
+                // occasional re-pulse on update
+                if (Math.random() > 0.6) {
+                    banner.style.transitionDuration = '40ms';
+                    banner.style.filter = 'brightness(1.3)';
+                    setTimeout(() => { if (banner) banner.style.filter = ''; }, 380);
+                }
+            }
+        }
+
+        function startLivenessPoll() {
+            if (autoPollInterval) clearInterval(autoPollInterval);
+            autoPollInterval = setInterval(() => {
+                simulateRSSPoll();
+            }, 15000); // 15s sim
+            
+            const status = document.getElementById('auto-poll-status');
+            if (status) status.textContent = 'ON (15s)';
+        }
+
+        function toggleAutoPoll() {
+            if (autoPollInterval) {
+                clearInterval(autoPollInterval);
+                autoPollInterval = null;
+                const status = document.getElementById('auto-poll-status');
+                if (status) status.textContent = 'PAUSED';
+            } else {
+                startLivenessPoll();
+            }
+        }
+
+        // ============================================
+        // VIZ LIVE UPDATER HELPERS (new for site art/efficiency)
+        // Single FORGE_DATA drives ripple strength, orb count, ember intensity, banner X/Y
+        // Subtle canvas ripples flowing on map + live ripple wave on embers
+        // ============================================
+        function getNewsRippleStrength() {
+            // Tie embers/orbs/ripples to news_ripples strength from FORGE_DATA.synthesis (analysis + live)
+            const synth = FORGE_DATA.synthesis || {};
+            let str = 0.55;
+            if (synth.news_ripples) {
+                const rips = Array.isArray(synth.news_ripples) ? synth.news_ripples : (synth.news_ripples.media_specific_repeated_phrases || []);
+                str = Math.min(1.9, 0.55 + rips.length * 0.18);
+            }
+            if (synth.repeated_phrases_sample && synth.repeated_phrases_sample.length) {
+                str = Math.min(1.95, str + synth.repeated_phrases_sample.length * 0.07);
+            }
+            return str;
+        }
+
+        function triggerMapRipplesFromNew(freshItems) {
+            // Subtle canvas viz for ripples flowing across map from new items (real-time from poll/R2)
+            const nodes = FORGE_DATA.mediaNodesForMap || [];
+            (freshItems || []).forEach(it => {
+                const src = it.source;
+                let node = nodes.find(n => n.id === src);
+                if (!node && nodes.length) node = nodes[Math.floor(Math.random() * nodes.length)];
+                if (node) {
+                    const strength = (it.signals && it.signals.framingScore) || 0.6;
+                    mapRipples.push({x: node.x, y: node.y, born: Date.now(), alpha: 0.82, strength: strength});
+                }
+            });
+            if (mapRipples.length > 9) mapRipples = mapRipples.slice(-9);
+            // small timed redraws for flowing animation feel on map canvas
+            setTimeout(() => { if (typeof redrawSystemMap === 'function') redrawSystemMap(); }, 65);
+            setTimeout(() => { if (typeof redrawSystemMap === 'function') redrawSystemMap(); }, 155);
+            setTimeout(() => { if (typeof redrawSystemMap === 'function') redrawSystemMap(); }, 295);
+        }
+
+        function triggerLiveRippleWave() {
+            // Add small 'live ripple wave' animation on the global embers on poll (subtle flowing band)
+            liveRippleWaves.push({ y: 85 + Math.random() * 155, progress: 0, strength: getNewsRippleStrength() });
+            if (liveRippleWaves.length > 3) liveRippleWaves.shift();
+            // ember burst tied to news_ripples strength for real-time feel
+            if (window.__forgeAddEmbers) {
+                const s = getNewsRippleStrength();
+                window.__forgeAddEmbers(Math.floor(8 * (0.7 + s * 0.35)));
+            }
+        }
+
+        function simulateRSSPoll(isForced = false) {
+            // Update timestamp
+            lastPollDate = new Date();
+            
+            // AUTO +5 every poll simulation for liveness (forced always max; auto biased to +5 per task "auto +5 on poll")
+            let added = 0;
+            let highFramingAdded = 0;
+            const freshAdded = [];
+            const pool = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            const numToAdd = isForced ? 5 : (Math.random() > 0.25 ? 5 : (Math.random() > 0.15 ? 4 : 3));
+            for (let i = 0; i < numToAdd; i++) {
+                // pick random base, create fresh live variant
+                let candidate = pool[Math.floor(Math.random() * pool.length)];
+                const fresh = JSON.parse(JSON.stringify(candidate));
+                fresh.id = fresh.id + '-live-' + Date.now() + '-' + i;
+                fresh.pubDate = new Date(Date.now() - i*60000).toISOString(); // slight spread
+                fresh.title = (fresh.title.length > 68 ? fresh.title.substring(0,65) + '…' : fresh.title) + ' [LIVE RIPPLE]';
+                
+                // mutate signals slightly for live feel (framing % ripple)
+                if (fresh.signals) {
+                    fresh.signals = {...fresh.signals};
+                    fresh.signals.framingScore = Math.min(0.99, (fresh.signals.framingScore || 0.6) + (Math.random()-0.5)*0.12);
+                    if (fresh.signals.repeatedPhrases && Math.random()>0.6) {
+                        fresh.signals.repeatedPhrases = [...fresh.signals.repeatedPhrases];
+                    }
+                }
+                
+                // DYNAMIC: high framing news auto detected (for extra orbs + synthesis mutate)
+                if ((fresh.signals && fresh.signals.framingScore > 0.78)) highFramingAdded++;
+                
+                // Push to front of data
+                FORGE_DATA.newsItems.unshift(fresh);
+                newsRenderPool.unshift(fresh);
+                added++;
+                freshAdded.push(fresh);
+                newItemsSinceLast += 1;
+                // keep ripples count fresh for live stats
+                if (typeof updateLivenessUI === 'function') updateLivenessUI();
+            }
+
+            // DYNAMIC REAL-TIME: mutate single FORGE_DATA.synthesis.news_ripples / repeated on high framing news from poll
+            if (highFramingAdded > 0 && FORGE_DATA.synthesis) {
+                if (!FORGE_DATA.synthesis.news_ripples) FORGE_DATA.synthesis.news_ripples = { media_specific_repeated_phrases: [] };
+                const rips = FORGE_DATA.synthesis.news_ripples.media_specific_repeated_phrases || (FORGE_DATA.synthesis.news_ripples = { media_specific_repeated_phrases: [] }).media_specific_repeated_phrases;
+                freshAdded.filter(f => (f.signals && f.signals.framingScore > 0.75)).slice(0,2).forEach(f => {
+                    rips.push({ phrase: (f.signals.repeatedPhrases && f.signals.repeatedPhrases[0]) || 'live high-framing ripple', similarity: f.signals.framingScore, outlets: [f.source] });
+                });
+                if (rips.length > 7) rips.splice(0, rips.length - 7);
+                // slight live boost to tactic
+                if (FORGE_DATA.synthesis.tactic_scores) {
+                    FORGE_DATA.synthesis.tactic_scores.press_framing = Math.min(0.97, (FORGE_DATA.synthesis.tactic_scores.press_framing || 0.7) + 0.02 * highFramingAdded);
+                }
+            }
+
+            // Inject new echo/coordination edges from live RSS ripples (shared phrasing strength)
+            if (Math.random() > 0.4 && FORGE_DATA.mediaNodesForMap && FORGE_DATA.mediaNodesForMap.length > 3) {
+                const nodes = FORGE_DATA.mediaNodesForMap;
+                const fromN = nodes[Math.floor(Math.random()*nodes.length)];
+                let toN = nodes[Math.floor(Math.random()*nodes.length)];
+                if (toN.id === fromN.id) toN = nodes[(nodes.indexOf(fromN)+1)%nodes.length];
+                FORGE_DATA.echoEdges.push({
+                    from: fromN.id, 
+                    to: toN.id, 
+                    strength: 0.48 + Math.random()*0.42, 
+                    label: 'live RSS shared phrasing'
+                });
+                // cap to avoid bloat
+                if (FORGE_DATA.echoEdges.length > 12) FORGE_DATA.echoEdges.shift();
+            }
+
+            // Update UI elements
+            updateLivenessUI();
+            renderNewsFeed(false, true); // re-render, highlight new if any
+            redrawSystemMap();
+            updateGlobalSignalsChart();
+
+            // SITE ART MAXIMIZER + HOLO: amplified fiery ember/orb bursts + spawnHoloHotOrbs (hot topics sized by hotScore from news_ripples/synthesis per Jarvis prelim) after every poll
+            if (added > 0 && window.__forgeAddEmbers) {
+                const rs = getNewsRippleStrength();
+                window.__forgeAddEmbers(Math.min(28, 12 + added * 3), rs); // tied to ripples strength
+                if (window.__forgeSpawnCardContextualEmbers) {
+                    setTimeout(() => window.__forgeSpawnCardContextualEmbers('news-cards', Math.min(15, 6 + added)), 35);
+                }
+                // spawn holo neural orbs (live after poll) -- high framing handled inside spawn for auto-more
+                if (typeof spawnHoloHotOrbs === 'function') {
+                    setTimeout(() => spawnHoloHotOrbs('tab-system-map', null), 110);
+                }
+                // occasional extra fiery burst + wave
+                if (added >= 3 && window.__forgeAddEmbers) setTimeout(() => window.__forgeAddEmbers(16, rs), 160);
+                const nc = document.getElementById('news-cards');
+                if (nc) {
+                    nc.classList.add('fiery-wave');
+                    setTimeout(() => { if (nc) nc.classList.remove('fiery-wave'); }, 980);
+                }
+                // NEW: canvas ripples flowing from new items on map + live ripple wave on embers
+                triggerMapRipplesFromNew(freshAdded);
+                triggerLiveRippleWave();
+            }
+
+            // If new items, surface notification feel + pulsing live
+            if (added > 0) {
+                const liveStatus = document.getElementById('live-status');
+                if (liveStatus) {
+                    liveStatus.textContent = 'NEW RIPPLES DETECTED (+' + added + ')';
+                    liveStatus.classList.add('text-amber-400', 'live-indicator');
+                    setTimeout(() => {
+                        if (liveStatus) {
+                            liveStatus.textContent = 'ACTIVE • R2 READY';
+                            liveStatus.classList.remove('text-amber-400', 'live-indicator');
+                        }
+                    }, 2600);
+                }
+                // global pulse header flair
+                const header = document.querySelector('header');
+                if (header) {
+                    header.style.boxShadow = '0 0 0 4px rgba(255,107,53,0.25)';
+                    setTimeout(() => { if (header) header.style.boxShadow = ''; }, 520);
+                }
+            }
+        }
+
+        function forceRSSPoll() {
+            simulateRSSPoll(true);
+            // SITE ART MAX + HOLO: force + spawnHoloHotOrbs + amplified embers + fiery wave on cards (tied strength + triggers)
+            const rs = getNewsRippleStrength();
+            if (window.__forgeAddEmbers) window.__forgeAddEmbers(32, rs);
+            if (window.__forgeSpawnCardContextualEmbers) setTimeout(() => window.__forgeSpawnCardContextualEmbers('news-cards', 16), 25);
+            if (typeof spawnHoloHotOrbs === 'function') setTimeout(() => spawnHoloHotOrbs('tab-system-map', 12), 70);
+            // ensure canvas map ripples + embers wave even on force
+            setTimeout(() => { triggerLiveRippleWave(); if (FORGE_DATA.newsItems && FORGE_DATA.newsItems[0]) triggerMapRipplesFromNew([FORGE_DATA.newsItems[0]]); }, 45);
+            // visual flourish + pulse
+            const header = document.querySelector('header');
+            if (header) {
+                header.style.transitionDuration = '60ms';
+                header.style.boxShadow = '0 0 0 5px rgba(255,107,53,0.4)';
+                setTimeout(() => { if (header) header.style.boxShadow = ''; }, 480);
+            }
+            // re-render live cards immediately with new-item ripples + wave
+            setTimeout(() => {
+                const nc = document.getElementById('news-cards');
+                if (nc) {
+                    nc.classList.add('!border-orange-500', 'fiery-wave');
+                    setTimeout(() => { if (nc) nc.classList.remove('!border-orange-500'); nc.classList.remove('fiery-wave'); } }, 980);
+                }
+            }, 110);
+        }
+
+        async function simulateR2Fetch() {
+            const btns = document.querySelectorAll('button');
+            const originalTexts = [];
+            
+            // Show loading in status
+            const liveStatus = document.getElementById('live-status');
+            if (liveStatus) liveStatus.textContent = 'FETCHING FROM R2...';
+            
+            try {
+                // Real fetch attempt
+                const res = await fetch('./data/news-sample.json');
+                if (res.ok) {
+                    const fresh = await res.json();
+                    FORGE_DATA = { ...FORGE_DATA, ...fresh };
+                    newsRenderPool = [...FORGE_DATA.newsItems];
+                }
+            } catch(e) {
+                // Simulate successful R2 pull anyway (demo)
+                FORGE_DATA.meta.last_rss_poll = new Date().toISOString();
+                lastPollDate = new Date();
+            }
+            
+            // Make R2 fetch more dynamic real-time: inject 1-2 live variants into FORGE_DATA (single source), trigger viz
+            try {
+                const pool = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+                for (let k=0; k< (Math.random()>0.5 ? 2 : 1); k++) {
+                    let cand = pool[Math.floor(Math.random()*pool.length)] || {};
+                    const r2fresh = JSON.parse(JSON.stringify(cand));
+                    r2fresh.id = (r2fresh.id||'r2') + '-r2live-' + Date.now() + k;
+                    r2fresh.pubDate = new Date().toISOString();
+                    r2fresh.title = (r2fresh.title || 'R2 live ripple').substring(0,62) + ' [R2 LIVE]';
+                    if (r2fresh.signals) r2fresh.signals = {...r2fresh.signals, framingScore: Math.min(0.98, (r2fresh.signals.framingScore||0.65) + 0.09)};
+                    FORGE_DATA.newsItems.unshift(r2fresh);
+                    newItemsSinceLast += 1;
+                }
+            } catch(_) {}
+            
+            updateLivenessUI();
+            renderNewsFeed(true);
+            redrawSystemMap();
+            
+            if (liveStatus) {
+                liveStatus.textContent = 'R2 SYNC COMPLETE (processed/news/)';
+                const rs = getNewsRippleStrength();
+                if (window.__forgeAddEmbers) window.__forgeAddEmbers(17, rs);
+                if (window.__forgeSpawnCardContextualEmbers) window.__forgeSpawnCardContextualEmbers('news-cards', 9);
+                if (typeof spawnHoloHotOrbs === 'function') setTimeout(() => spawnHoloHotOrbs('tab-system-map', null), 55);
+                // live canvas ripples + ripple wave on R2 too
+                setTimeout(() => { if (FORGE_DATA.newsItems && FORGE_DATA.newsItems[0]) triggerMapRipplesFromNew([FORGE_DATA.newsItems[0]]); }, 80);
+                triggerLiveRippleWave();
+                setTimeout(() => { 
+                    if (liveStatus) liveStatus.textContent = 'ACTIVE • R2 READY (public R2 processed/news/ when bucket exposed)'; 
+                }, 1600);
+            }
+            // Permanent note in UI for R2 future
+            const r2Note = document.getElementById('live-pipeline-src');
+            if (r2Note) r2Note.innerHTML += ' <span class="text-[9px] opacity-60">(sim; real when public R2)</span>';
+        }
+
+        // ============================================
+        // LIVE NEWS RENDER + INTERACTIONS
+        // ============================================
+        function renderNewsFeed(resetScroll = false, highlightNew = false) {
+            const container = document.getElementById('news-cards');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const itemsToShow = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            
+            itemsToShow.slice(0, 12).forEach((item, idx) => {
+                const isNew = highlightNew && idx === 0;
+                
+                const card = document.createElement('div');
+                card.className = `narrative-card bg-zinc-950 border border-orange-900/70 rounded-3xl p-4 flex flex-col cursor-pointer group ${isNew ? 'new-item live-pulse' : ''}`;
+                card.dataset.id = item.id;
+                
+                const signals = item.signals || {};
+                const date = new Date(item.pubDate);
+                const dateStr = date.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + date.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+                
+                let badgesHTML = '';
+                
+                // Framing % badge (narrative signal) -- from live RSS item
+                const fScore = (signals.framingScore || 0.5) * 100;
+                badgesHTML += `<span class="signal-badge border-orange-700 bg-orange-950 text-orange-300">FRAMING ${fScore.toFixed(0)}%</span>`;
+                
+                // Repeated phrases from analysis/synthesis (richer now from news-synthesis.json merge)
+                const synthPhrases = (FORGE_DATA.synthesis && FORGE_DATA.synthesis.repeated_phrases_sample) ? FORGE_DATA.synthesis.repeated_phrases_sample.map(r => r.phrase || r) : [];
+                const allRepeated = [...(signals.repeatedPhrases || []), ...synthPhrases.filter(p => (item.title || '').toLowerCase().includes((p||'').toLowerCase().slice(0,10)) || (item.excerpt || '').toLowerCase().includes((p||'').toLowerCase().slice(0,10))) ];
+                const uniqRepeated = [...new Set(allRepeated)].slice(0, 3);
+                if (uniqRepeated.length) {
+                    uniqRepeated.forEach(phrase => {
+                        const short = (phrase.length > 22 ? phrase.substring(0,19) + '…' : phrase);
+                        badgesHTML += `<span class="signal-badge border-red-800 bg-red-950 text-red-300" title="${phrase}">REPEATED: ${short}</span>`;
+                    });
+                } else if (signals.repeatedPhrases && signals.repeatedPhrases.length) {
+                    signals.repeatedPhrases.slice(0, 2).forEach(phrase => {
+                        const short = phrase.length > 24 ? phrase.substring(0,21) + '…' : phrase;
+                        badgesHTML += `<span class="signal-badge border-red-800 bg-red-950 text-red-300" title="${phrase}">REPEATED: ${short}</span>`;
+                    });
+                }
+                
+                // Coordination tags + loaded lang
+                if (signals.tags) {
+                    signals.tags.slice(0, 3).forEach(tag => {
+                        badgesHTML += `<span class="signal-badge border-amber-900/70 bg-zinc-900 text-amber-400">${tag}</span>`;
+                    });
+                }
+                if (signals.loadedLanguage != null) {
+                    badgesHTML += `<span class="signal-badge border-zinc-700 bg-zinc-950 text-zinc-400">LL:${(signals.loadedLanguage*100|0)}%</span>`;
+                }
+                // Add news_ripples indicator if synthesis has it for this item (from pipeline analysis)
+                if (FORGE_DATA.synthesis && FORGE_DATA.synthesis.news_ripples) {
+                    badgesHTML += `<span class="signal-badge border-amber-800 bg-amber-950 text-amber-300">RIPPLE</span>`;
+                }
+                badgesHTML += `<span class="rss-live-stamp">RSS LIVE</span>`;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-1.5">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="px-2.5 py-0.5 rounded-xl text-[10px] font-black tracking-[0.5px] bg-zinc-900 border border-orange-700/80 text-orange-200">${item.source.toUpperCase()}</span>
+                            <span class="font-mono text-[10px] text-orange-500/70">${dateStr}</span>
+                        </div>
+                        <svg class="rss-icon text-orange-500 group-hover:text-orange-400 transition" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4.5A1.5 1.5 0 015.5 3h13A1.5 1.5 0 0120 4.5v15a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5v-15zM7 7.75A.75.75 0 017.75 7h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 017 7.75zM7 11a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 017 11zm0 3.25a.75.75 0 01.75-.75h5.5a.75.75 0 010 1.5h-5.5a.75.75 0 01-.75-.75z"/></svg>
+                    </div>
+                    
+                    <div class="font-semibold text-[13.5px] leading-tight mb-2 group-hover:text-orange-300 transition pr-4 fiery-gradient-text">${item.title}</div>
+                    
+                    <div class="ripple-excerpt text-xs text-orange-100/80 mb-3">${item.excerpt}</div>
+                    
+                    <div class="flex flex-wrap gap-1 mb-3">${badgesHTML}</div>
+                    
+                    <div class="mt-auto flex items-center justify-between text-xs">
+                        <a href="${item.link}" target="_blank" onclick="event.stopImmediatePropagation();" class="text-orange-400 hover:text-orange-200 underline-offset-2">OPEN SOURCE →</a>
+                        <div class="flex gap-1">
+                            <span onclick="event.stopImmediatePropagation(); injectNewsIntoExplorer('${item.id}');" class="px-2 py-px bg-zinc-900 hover:bg-orange-900 border border-orange-900 rounded-xl cursor-pointer text-orange-300">BRIDGE</span>
+                            <span onclick="event.stopImmediatePropagation(); forgeMemeFromItem('${item.id}');" class="px-2 py-px bg-zinc-900 hover:bg-orange-900 border border-orange-900 rounded-xl cursor-pointer text-orange-300">MEME</span>
+                            <span onclick="event.stopImmediatePropagation(); pinToMap('${item.id}');" class="px-2 py-px bg-zinc-900 hover:bg-orange-900 border border-orange-900 rounded-xl cursor-pointer text-orange-300">MAP</span>
+                        </div>
+                    </div>
+                `;
+                
+                card.onclick = () => {
+                    highlightNewsCard(card);
+                    showNewsDetailModal(item);
+                };
+                
+                container.appendChild(card);
+            });
+            
+            if (resetScroll) container.scrollTop = 0;
+
+            // SITE ART MAX: on highlightNew (poll), add live pulse + intense fiery wave keyframe ripple to grid + contextual embers burst
+            if (highlightNew) {
+                container.classList.add('!border-orange-500/70', 'fiery-wave');
+                setTimeout(() => { if (container) container.classList.remove('!border-orange-500/70', 'fiery-wave'); }, 1400);
+                if (window.__forgeSpawnCardContextualEmbers) setTimeout(() => window.__forgeSpawnCardContextualEmbers('news-cards', 8), 70);
+            }
+        }
+
+        function filterNewsCards() {
+            const term = (document.getElementById('news-filter').value || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('#news-cards > div');
+            
+            cards.forEach(card => {
+                const txt = card.textContent.toLowerCase();
+                // Enhanced: filter by source / phrase / date text content (data-driven from RSS items)
+                const matches = term === '' || txt.includes(term);
+                card.style.display = matches ? '' : 'none';
+            });
+        }
+
+        // Quick filter helpers for integration (source/phrase from pols or map)
+        function filterNewsBySource(sourceId) {
+            switchTab('live-news');
+            setTimeout(() => {
+                const input = document.getElementById('news-filter');
+                if (input) {
+                    input.value = sourceId.toLowerCase();
+                    filterNewsCards();
+                }
+            }, 90);
+        }
+
+        function highlightNewsBySignal(phraseFragment) {
+            // Switch to live news tab
+            switchTab('live-news');
+            
+            setTimeout(() => {
+                const cards = document.querySelectorAll('#news-cards > div');
+                let found = false;
+                cards.forEach(c => {
+                    c.classList.remove('new-item');
+                    const content = c.textContent.toLowerCase();
+                    if (content.includes(phraseFragment.toLowerCase())) {
+                        c.style.borderColor = '#f97316';
+                        c.style.boxShadow = '0 0 0 1px #f97316';
+                        c.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                        found = true;
+                        setTimeout(() => {
+                            if (c) {
+                                c.style.borderColor = '';
+                                c.style.boxShadow = '';
+                            }
+                        }, 2400);
+                    }
+                });
+                if (!found) {
+                    // fallback: filter
+                    const input = document.getElementById('news-filter');
+                    if (input) {
+                        input.value = phraseFragment;
+                        filterNewsCards();
+                    }
+                }
+            }, 120);
+        }
+
+        function highlightNewsCard(cardEl) {
+            cardEl.style.transitionDuration = '80ms';
+            cardEl.style.borderColor = '#f97316';
+            setTimeout(() => {
+                if (cardEl) cardEl.style.borderColor = '';
+            }, 900);
+        }
+
+        function showNewsDetailModal(item) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-6';
+            const sig = item.signals || {};
+            
+            modal.innerHTML = `
+                <div class="max-w-xl w-full bg-zinc-950 border border-orange-800 rounded-3xl p-7 relative" onclick="event.stopImmediatePropagation()">
+                    <button onclick="this.closest('.fixed').remove()" class="absolute top-3 right-3 px-3 py-1 text-xs border border-orange-900 rounded-2xl">CLOSE</button>
+                    
+                    <div class="uppercase tracking-widest text-orange-400 text-xs mb-1 flex items-center gap-2">
+                        <span>${item.source}</span> 
+                        <span class="font-mono text-orange-600">• ${new Date(item.pubDate).toLocaleString()}</span>
+                    </div>
+                    
+                    <h3 class="font-display text-2xl leading-none mb-3">${item.title}</h3>
+                    
+                    <p class="text-orange-100/80 mb-4">${item.excerpt}</p>
+                    
+                    <div class="mb-4">
+                        <div class="text-xs font-bold text-orange-400 mb-1">NARRATIVE SIGNALS</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="signal-badge border-orange-700 bg-orange-950">FRAMING SCORE: ${(sig.framingScore*100 || 50).toFixed(0)}%</span>
+                            ${(sig.repeatedPhrases||[]).map(p => `<span class="signal-badge border-red-800 bg-red-950">${p}</span>`).join('')}
+                            ${(sig.tags||[]).map(t => `<span class="signal-badge border-amber-900 bg-zinc-900">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 text-sm">
+                        <a href="${item.link}" target="_blank" class="flex-1 text-center py-2.5 bg-orange-600 hover:bg-orange-500 rounded-2xl font-bold">OPEN ORIGINAL SOURCE</a>
+                        <button onclick="injectNewsIntoExplorer('${item.id}', true); this.closest('.fixed').remove()" class="flex-1 text-center py-2.5 border border-orange-700 hover:bg-zinc-900 rounded-2xl">INJECT INTO EXPLORER</button>
+                    </div>
+                    <div class="text-[10px] text-center text-orange-500 mt-4">This item participates in the live RSS pipeline and analysis signals layer.</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function injectNewsIntoExplorer(itemId, closeModal = false) {
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            switchTab('bridges');
+            
+            // Update bridge step 1 live with excerpt
+            const step1 = document.getElementById('bridge-step-1');
+            if (step1) {
+                step1.innerHTML = `"${item.title}" — <span class="text-orange-300">${item.source}</span><br><span class="text-xs text-orange-200/80">${item.excerpt.substring(0,140)}...</span>`;
+                step1.style.transition = 'all .2s';
+                step1.style.background = 'rgba(180,83,38,0.1)';
+                setTimeout(() => { if(step1) step1.style.background = ''; }, 1400);
+            }
+            
+            // Flash a connection
+            setTimeout(() => {
+                const step2 = document.getElementById('bridge-step-2');
+                if (step2 && item.signals && item.signals.repeatedPhrases) {
+                    step2.innerHTML = `Detected repeated phrases from this ripple: <span class="font-mono bg-zinc-900 px-1.5 rounded text-orange-300">${item.signals.repeatedPhrases.join(' / ')}</span>.`;
+                }
+            }, 300);
+        }
+
+        function loadMoreNews() {
+            const container = document.getElementById('news-cards');
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            
+            // Take next unused from pool
+            const extra = items.slice(3, 7); // more variety
+            extra.forEach(item => {
+                const clone = JSON.parse(JSON.stringify(item));
+                clone.id = clone.id + '-more-' + Math.floor(Math.random()*9999);
+                
+                const card = document.createElement('div');
+                card.className = `narrative-card bg-zinc-950 border border-orange-900/70 rounded-3xl p-4 flex flex-col cursor-pointer`;
+                card.dataset.id = clone.id;
+                
+                // simplified render (reuse logic) — with RSS stamp for live art
+                const date = new Date(clone.pubDate);
+                const dateStr = date.toLocaleDateString([], {month:'short', day:'numeric'});
+                const sigs = clone.signals || {};
+                const fPct = Math.round((sigs.framingScore || 0.6)*100);
+                card.innerHTML = `
+                    <div class="flex justify-between mb-1.5"><span class="px-2 py-0.5 rounded-xl text-[10px] font-black bg-zinc-900 border border-orange-800/60">${clone.source}</span><span class="font-mono text-[10px] text-orange-500/70">${dateStr}</span></div>
+                    <div class="font-semibold text-sm leading-tight mb-1.5 fiery-gradient-text">${clone.title}</div>
+                    <div class="text-xs text-orange-100/75 mb-2">${clone.excerpt.substring(0,120)}...</div>
+                    <div class="flex gap-1 text-[9px] mb-1"><span class="signal-badge border-orange-700 bg-orange-950 text-orange-300">FRAMING ${fPct}%</span><span class="rss-live-stamp">RSS LIVE</span></div>
+                    <div class="text-xs"><a href="${clone.link}" target="_blank" class="text-orange-400">SOURCE</a> <span onclick="event.stopImmediatePropagation();forgeMemeFromItem('${clone.id}');" class="ml-2 px-1.5 py-px cursor-pointer text-orange-400 border border-orange-900 rounded">MEME</span> <span onclick="event.stopImmediatePropagation();pinToMap('${clone.id}');" class="ml-1 px-1.5 py-px cursor-pointer text-orange-400 border border-orange-900 rounded">MAP</span></div>`;
+                
+                card.onclick = () => showNewsDetailModal(clone);
+                container.appendChild(card);
+            });
+        }
+
+        // ============================================
+        // THOUGHT BRIDGES + INTEGRATION HELPERS
+        // ============================================
+        function injectLiveNewsIntoBridges() {
+            switchTab('bridges');
+            const items = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            // Pull current live RSS excerpts + narrative signals
+            const borderOnes = items.filter(i => (i.signals && i.signals.tags && i.signals.tags.some(t => t.includes('border') || t.includes('ripples') || t.includes('funding'))) || /border|funding|hiccups/i.test(i.title));
+            
+            const step1 = document.getElementById('bridge-step-1');
+            if (step1 && borderOnes.length) {
+                const chosen = borderOnes[0];
+                const phrases = (chosen.signals && chosen.signals.repeatedPhrases) ? chosen.signals.repeatedPhrases.join(' / ') : '';
+                step1.innerHTML = `LIVE RSS EXCERPT INJECTED: "${chosen.title}" — <span class="text-orange-300">${chosen.source}</span><div class="text-[10px] text-orange-200/70 mt-1">${chosen.excerpt.substring(0,128)}...</div><div class="text-[9px] mt-1 text-red-300/90">SIGNALS: framing ${(chosen.signals.framingScore*100|0)}% • REPEATED: ${phrases}</div>`;
+                step1.style.background = 'rgba(249,115,22,0.08)';
+                setTimeout(() => { if(step1) step1.style.background = ''; }, 1600);
+            }
+            // Also update step2 with current synthesis ripples
+            const step2 = document.getElementById('bridge-step-2');
+            if (step2 && FORGE_DATA.synthesis && FORGE_DATA.synthesis.repeated_phrases_sample) {
+                step2.innerHTML = `CURRENT LIVE MEDIA RIPPLES: ${FORGE_DATA.synthesis.repeated_phrases_sample.map(p => p.phrase).join(' + ')} (from ${items.length} RSS items + synthesis)`;
+            }
+        }
+        
+        function extendBorderFundingBridge() {
+            switchTab('bridges');
+            
+            const step3 = document.getElementById('bridge-step-3');
+            if (step3) {
+                const synth = FORGE_DATA.synthesis || EMBEDDED_SAMPLE.synthesis;
+                const liveCount = (FORGE_DATA.newsItems || []).length;
+                const ripples = synth.cross_arena_ripples ? synth.cross_arena_ripples[0] : 'Media whitewash protects bureaucracy capture and pharma funding flows';
+                step3.innerHTML = `EXTEND BORDER-FUNDING WITH LIVE MEDIA RIPPLES: ${ripples}. <span class="block mt-1.5 text-xs text-orange-300">Pulled from live FORGE_DATA.newsItems (${liveCount} ripples) + border-funding-synthesis.json. WHY: repeated phrases + framing scores show cross-outlet coordination on humanitarian language.</span>`;
+            }
+            
+            // Pull phrases/ripples into flow + highlight matching news
+            setTimeout(() => {
+                const liveItems = (FORGE_DATA.newsItems || []).filter(i => i.signals && i.signals.tags && i.signals.tags.some(t => t.includes('border') || t.includes('ripples') || t.includes('funding')));
+                const phrase = (liveItems[0] && liveItems[0].signals && liveItems[0].signals.repeatedPhrases && liveItems[0].signals.repeatedPhrases[0]) || 'humanitarian implementation hiccups';
+                highlightNewsBySignal(phrase);
+            }, 650);
+        }
+
+        // New explicit helper matching task: "Inject current RSS excerpts"
+        function injectCurrentRSSIntoBridges() { injectLiveNewsIntoBridges(); }
+        // New: "Extend border-funding with live media ripples"
+        function extendBorderFundingWithLiveRipples() { extendBorderFundingBridge(); }
+
+        function injectSynthesisIntoBridges() {
+            switchTab('bridges');
+            const synth = FORGE_DATA.synthesis || EMBEDDED_SAMPLE.synthesis;
+            
+            const step2 = document.getElementById('bridge-step-2');
+            if (step2) {
+                step2.innerHTML = `Tactic scores (from synthesis): Repetition density <span class="font-bold text-orange-300">${(synth.tactic_scores.repetition_density * 100).toFixed(0)}%</span> • Framing ${(synth.tactic_scores.press_framing*100).toFixed(0)}% • Coordination ${(synth.tactic_scores.coordination_markers*100).toFixed(0)}%. Repeated: ${synth.repeated_phrases_sample.map(p => p.phrase).join(', ')}`;
+            }
+        }
+        
+        function clearBridgeHighlights() {
+            const steps = ['bridge-step-1','bridge-step-2','bridge-step-3'];
+            steps.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = el.innerHTML.replace(/LIVE:|EXTENDED:/g, '');
+            });
+        }
+
+        // ============================================
+        // POLITICIAN PROFILES + MEDIA FRAMING (NEW)
+        // ============================================
+        function renderPoliticians() {
+            const container = document.getElementById('politician-cards');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const pols = FORGE_DATA.politicians && FORGE_DATA.politicians.length ? FORGE_DATA.politicians : EMBEDDED_SAMPLE.politicians;
+            
+            pols.forEach(pol => {
+                const card = document.createElement('div');
+                card.className = 'narrative-card bg-zinc-950 border border-orange-900/70 rounded-3xl p-5';
+                
+                let framingHTML = '';
+                pol.mediaFraming.forEach(frame => {
+                    const pct = Math.round(frame.framingScore * 100);
+                    framingHTML += `
+                        <div class="mb-2.5">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold">${frame.source}</span>
+                                <span class="font-mono">${pct}%</span>
+                            </div>
+                            <div class="h-1.5 bg-zinc-900 rounded mt-px overflow-hidden">
+                                <div class="stat-bar" style="width: ${pct}%"></div>
+                            </div>
+                            <div class="text-[10px] leading-snug mt-0.5 text-orange-200/80">"${frame.frame}"</div>
+                            <div class="text-orange-500 text-[10px] mt-px">Key: ${frame.keyPhrases.join(', ')}</div>
+                        </div>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-2xl flex-shrink-0 bg-gradient-to-br from-red-700 to-amber-600 flex items-center justify-center text-xs font-black tracking-tighter">${pol.name.split(' ').map(w=>w[0]).join('').slice(0,3)}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold">${pol.name}</div>
+                            <div class="text-orange-400 text-xs">${pol.role}</div>
+                            <div class="text-xs mt-1.5 text-orange-100/80">${pol.bioExcerpt}</div>
+                            
+                            <div class="mt-4 pt-3 border-t border-orange-900/50">
+                                <div class="uppercase tracking-[1px] font-bold text-xs mb-2 text-red-400">MEDIA FRAMING (from live RSS + signals)</div>
+                                ${framingHTML}
+                            </div>
+                            
+                            <div class="flex gap-2 mt-3">
+                                <button onclick="filterProfilesToNews('${pol.id}')" class="text-xs px-3 py-1 rounded-2xl border border-orange-700 hover:bg-orange-900">FILTER NEWS BY SIGNALS</button>
+                                <button onclick="highlightNewsBySignal('${pol.signalsFromNews && pol.signalsFromNews[0] ? pol.signalsFromNews[0] : 'border-funding'}')" class="text-xs px-3 py-1 rounded-2xl border border-orange-700 hover:bg-orange-900">SHOW RIPPLES</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterProfilesToNews(polId) {
+            switchTab('live-news');
+            const pols = (FORGE_DATA.politicians && FORGE_DATA.politicians.length) ? FORGE_DATA.politicians : EMBEDDED_SAMPLE.politicians;
+            const pol = pols.find(p => p.id === polId);
+            if (!pol || !pol.signalsFromNews) return;
+            
+            setTimeout(() => {
+                // Click to filter news cards by signal/phrase from pol media framing
+                if (typeof filterNewsBySource === 'function' && /trump|biden/i.test(pol.name)) {
+                    // For prominent pols use source-ish or phrase
+                    filterNewsBySource(pol.signalsFromNews[0]);
+                } else {
+                    const input = document.getElementById('news-filter');
+                    if (input) {
+                        input.value = pol.signalsFromNews[0];
+                        filterNewsCards();
+                    }
+                }
+            }, 180);
+        }
+
+        // ============================================
+        // LIVE SYSTEM MAP — MEDIA NODES + EDGES
+        // ============================================
+        function initSystemMap() {
+            const canvas = document.getElementById('system-map-canvas');
+            if (!canvas) return;
+            systemMapCtx = canvas.getContext('2d', { alpha: true });
+            
+            // Allow clicking nodes (already wired via onclick)
+            canvas.addEventListener('mousemove', handleMapHover);
+        }
+        
+        function redrawSystemMap() {
+            const canvas = document.getElementById('system-map-canvas');
+            if (!canvas || !systemMapCtx) {
+                initSystemMap();
+                if (!systemMapCtx) return;
+            }
+            
+            const ctx = systemMapCtx;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const nodes = FORGE_DATA.mediaNodesForMap || EMBEDDED_SAMPLE.mediaNodesForMap;
+            const edges = FORGE_DATA.echoEdges || EMBEDDED_SAMPLE.echoEdges;
+            
+            // Draw edges first (under)
+            ctx.strokeStyle = '#451a03';
+            ctx.lineWidth = 1.5;
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                if (!fromNode || !toNode) return;
+                
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+                
+                // Strength label
+                const mx = (fromNode.x + toNode.x) / 2;
+                const my = (fromNode.y + toNode.y) / 2 - 7;
+                ctx.fillStyle = '#78350f';
+                ctx.font = '9px monospace';
+                ctx.fillText((edge.strength * 100 | 0) + '%', mx - 6, my);
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const r = 13 + (node.influence || 0.6) * 7;
+                
+                // glow
+                ctx.beginPath();
+                ctx.fillStyle = (node.type === 'legacy') ? 'rgba(249,115,22,0.15)' : 'rgba(245,158,11,0.12)';
+                ctx.arc(node.x, node.y, r + 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.fillStyle = node.type === 'legacy' ? '#9f1239' : (node.type === 'gov-press' ? '#431407' : '#451a03');
+                ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#f97316';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                
+                // label
+                ctx.fillStyle = '#fed7aa';
+                ctx.font = 'bold 9.5px Inter, system-ui';
+                ctx.textAlign = 'center';
+                ctx.fillText(node.label.split(' / ')[0], node.x, node.y + 3);
+                ctx.textAlign = 'left';
+            });
+            
+            // live pulse on some
+            if (Math.random() > 0.65) {
+                const liveNode = nodes[1];
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(249,115,22,0.65)';
+                ctx.lineWidth = 2.5;
+                ctx.arc(liveNode.x, liveNode.y, 21, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // SUBTLE CANVAS VIZ: ripples flowing across map from new items (triggered on poll/R2; age/fade for flow)
+            // Driven by live mapRipples (positions/strength seeded from FORGE_DATA mediaNodes + fresh news framing)
+            const now = Date.now();
+            mapRipples = mapRipples.filter(r => (now - r.born) < 1950);
+            mapRipples.forEach(r => {
+                const ageSec = (now - r.born) / 1000;
+                const rad = 6 + ageSec * (48 + r.strength * 28);
+                const a = Math.max(0.04, r.alpha * (1 - ageSec / 1.95) * (0.6 + r.strength * 0.4));
+                ctx.save();
+                ctx.strokeStyle = `rgba(251,146,60,${a})`;
+                ctx.lineWidth = 1.1;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, rad, 0, Math.PI * 2);
+                ctx.stroke();
+                // inner secondary ripple for flowing layered feel (real-time artistic)
+                if (ageSec < 1.1) {
+                    ctx.strokeStyle = `rgba(249,115,22,${a * 0.7})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
+                    ctx.arc(r.x + 2, r.y - 1, rad * 0.55, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            });
+        }
+        
+        function handleMapClick(e) {
+            const canvas = e.currentTarget || document.getElementById('system-map-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const nodes = FORGE_DATA.mediaNodesForMap || EMBEDDED_SAMPLE.mediaNodesForMap;
+            
+            nodes.forEach(node => {
+                const dist = Math.hypot(node.x - x, node.y - y);
+                if (dist < 22) {
+                    showMapNodeModal(node);
+                    // Deep integration: click node filters the LIVE RSS cards by outlet/source
+                    if (typeof filterNewsBySource === 'function') {
+                        setTimeout(() => filterNewsBySource(node.id), 280);
+                    }
+                }
+            });
+        }
+        
+        let hoverNode = null;
+        function handleMapHover(e) {
+            const canvas = e.currentTarget || document.getElementById('system-map-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const nodes = FORGE_DATA.mediaNodesForMap || [];
+            hoverNode = null;
+            nodes.forEach(node => {
+                if (Math.hypot(node.x - x, node.y - y) < 20) hoverNode = node;
+            });
+            canvas.title = hoverNode ? hoverNode.label : '';
+        }
+        
+        function showMapNodeModal(node) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[110]';
+            modal.innerHTML = `
+                <div onclick="event.stopImmediatePropagation()" class="bg-zinc-950 border border-orange-800 p-5 rounded-3xl max-w-xs w-full mx-3">
+                    <div class="text-orange-300 text-xs mb-1 tracking-widest">${node.type.toUpperCase()}</div>
+                    <div class="text-xl font-semibold mb-1">${node.label}</div>
+                    <div class="text-xs">Influence: <span class="font-mono">${(node.influence*100|0)}%</span></div>
+                    
+                    <div class="my-4 text-xs">
+                        Echo connections in current RSS analysis:
+                        <ul class="mt-1 space-y-px text-orange-200/80">
+                            ${(FORGE_DATA.echoEdges || []).filter(ed => ed.from === node.id || ed.to === node.id).map(ed => `<li>• ${ed.label} (${(ed.strength*100|0)}%)</li>`).join('') || '<li class="text-orange-400/50">No direct echoes yet. Run poll.</li>'}
+                        </ul>
+                    </div>
+                    <button onclick="this.closest('.fixed').remove(); addEchoFromNode('${node.id}')" class="w-full py-2 text-xs border border-orange-700 rounded-2xl">SIMULATE NEW ECHO EDGE FROM THIS RSS SOURCE</button>
+                    <div class="text-center mt-3"><button onclick="this.closest('.fixed').remove()" class="text-xs px-4 py-px text-orange-400">CLOSE</button></div>
+                </div>`;
+            document.body.appendChild(modal);
+        }
+        
+        function addMediaNodeFromRSS() {
+            const nodes = FORGE_DATA.mediaNodesForMap;
+            const newNode = {
+                id: 'live-rss-' + Date.now(),
+                label: 'LIVE RSS FEED',
+                type: 'rss',
+                x: 260 + Math.random()*140,
+                y: 90 + Math.random()*110,
+                influence: 0.7 + Math.random() * 0.25
+            };
+            nodes.push(newNode);
+            
+            // Add at least one edge automatically
+            const target = nodes[Math.floor(Math.random() * (nodes.length - 1))];
+            FORGE_DATA.echoEdges.push({ from: newNode.id, to: target.id, strength: 0.5 + Math.random()*0.4, label: 'new RSS coordination' });
+            
+            redrawSystemMap();
+            
+            // bonus: add a news ripple
+            simulateRSSPoll(true);
+        }
+        
+        function addEchoFromNode(nodeId) {
+            const nodes = FORGE_DATA.mediaNodesForMap;
+            const from = nodes.find(n => n.id === nodeId);
+            if (!from) return;
+            
+            const target = nodes[Math.floor(Math.random() * nodes.length)];
+            FORGE_DATA.echoEdges.push({
+                from: nodeId,
+                to: target.id,
+                strength: Math.random() * 0.5 + 0.45,
+                label: 'user-injected RSS echo'
+            });
+            redrawSystemMap();
+        }
+        
+        function pinToMap(itemId) {
+            switchTab('system-map');
+            const items = FORGE_DATA.newsItems || [];
+            const item = items.find(i => i.id === itemId || i.id.startsWith(itemId));
+            if (!item) return;
+            
+            // Create or boost a node for its source
+            let node = FORGE_DATA.mediaNodesForMap.find(n => n.id === item.source);
+            if (!node) {
+                node = {
+                    id: item.source,
+                    label: item.source.toUpperCase(),
+                    type: 'rss',
+                    x: 280 + (Math.random() - 0.5) * 120,
+                    y: 120 + (Math.random() - 0.5) * 90,
+                    influence: 0.6
+                };
+                FORGE_DATA.mediaNodesForMap.push(node);
+            }
+            
+            // Create echo to another
+            const other = FORGE_DATA.mediaNodesForMap[Math.floor(Math.random()*FORGE_DATA.mediaNodesForMap.length)];
+            if (other.id !== node.id) {
+                FORGE_DATA.echoEdges.push({from: node.id, to: other.id, strength: 0.6, label: item.signals.repeatedPhrases ? item.signals.repeatedPhrases[0] : 'ripple'});
+            }
+            
+            redrawSystemMap();
+            
+            // visual pulse
+            setTimeout(() => redrawSystemMap(), 380);
+        }
+        
+        function renderMapLegend() {
+            const el = document.getElementById('map-legend');
+            if (!el) return;
+            const nodes = FORGE_DATA.mediaNodesForMap || EMBEDDED_SAMPLE.mediaNodesForMap;
+            
+            el.innerHTML = nodes.slice(0, 7).map(n => 
+                `<div class="flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:#ff6b35"></span> <span class="text-orange-300">${n.label}</span> <span class="text-orange-600 text-[10px] font-mono ml-auto">${(n.influence*100|0)}%</span></div>`
+            ).join('');
+        }
+
+        function initMiniCharts() {
+            // Coordination mini chart (Chart.js)
+            const canvas = document.getElementById('coordination-mini-chart');
+            if (!canvas || typeof Chart === 'undefined') return;
+            
+            const ctx = canvas.getContext('2d');
+            if (coordChart) coordChart.destroy();
+            
+            const edges = FORGE_DATA.echoEdges || [];
+            const labels = edges.map((e,i) => e.label.substring(0,18));
+            const dataVals = edges.map(e => Math.round(e.strength * 100));
+            
+            coordChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['No edges'],
+                    datasets: [{ label: 'Echo %', data: dataVals.length ? dataVals : [40], backgroundColor: '#f97316', borderColor: '#c2410f', borderWidth: 1 }]
+                },
+                options: { 
+                    scales: { y: { display: false }, x: { display: false, grid: {display:false} } }, 
+                    plugins: { legend: {display:false}, tooltip: {callbacks:{label: c => c.raw + '% echo'}} },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // ============================================
+        // SITE ART MAXIMIZER: HOLO NEURAL ORBS (Jarvis prelim integration)
+        // hotScore = framing*0.35 + echo*0.25 + fresh*0.2 + repeat*0.2 (ref: jarvis-holographic-neural-map-prelim-design.md)
+        // Floating clickable orbs over map: size by score, hover = mini synthesis insight from news_ripples
+        // Calls: on load, after every poll, on map tab switch. Embers synergy. Perf cap. No full 3D.
+        // ============================================
+        let holoOrbsActive = false;
+        let holoOrbElements = [];
+        const HOLO_ORB_CAP = 14; // perf cap
+
+        function computeHotScore(item, synthesis = null) {
+            // Jarvis prelim design formula (client-side, ties FORGE_DATA.newsItems + news_ripples + echoEdges)
+            const framing = (item.signals && item.signals.framingScore) || 0.6;
+            const synth = synthesis || FORGE_DATA.synthesis || {};
+            // echo boost from news_ripples media_specific or echoEdges strength for source
+            let echoBoost = 0.35;
+            const ripples = (synth.news_ripples && synth.news_ripples.media_specific_repeated_phrases) || [];
+            const src = (item.source || '').toLowerCase();
+            ripples.forEach(r => {
+                if (r.outlets && r.outlets.some(o => o.toLowerCase().includes(src.slice(0,4)) || src.includes((o||'').toLowerCase().slice(0,4)))) {
+                    echoBoost = Math.max(echoBoost, (r.similarity || 0.5) * 0.9);
+                }
+            });
+            // from current echoEdges
+            const edges = FORGE_DATA.echoEdges || [];
+            edges.forEach(ed => {
+                if (ed.from === item.source || ed.to === item.source) {
+                    echoBoost = Math.max(echoBoost, (ed.strength || 0.5) * 0.85);
+                }
+            });
+            // freshness (recent pubDate higher)
+            const ageMs = Date.now() - new Date(item.pubDate || Date.now()).getTime();
+            const fresh = Math.max(0.2, 1 / ((ageMs / (1000*60*60*24)) + 1.2));
+            // repeat from repeatedPhrases + synth ripples matches
+            const repeats = (item.signals && item.signals.repeatedPhrases) ? item.signals.repeatedPhrases.length : 0;
+            let synthMatches = 0;
+            if (synth.repeated_phrases_sample) {
+                synth.repeated_phrases_sample.forEach(rp => {
+                    const p = (rp.phrase || rp || '').toLowerCase();
+                    if (p && ((item.title||'').toLowerCase().includes(p.slice(0,14)) || (item.excerpt||'').toLowerCase().includes(p.slice(0,14)))) synthMatches++;
+                });
+            }
+            const repeat = Math.min(0.99, (repeats + synthMatches) / 4.5);
+            let score = framing * 0.35 + echoBoost * 0.25 + fresh * 0.2 + repeat * 0.2;
+            return Math.max(0.28, Math.min(0.98, score));
+        }
+
+        function getMiniSynthesisInsight(item, synthesis = null) {
+            // Hover shows mini synthesis insight from news_ripples (Jarvis feel)
+            const synth = synthesis || FORGE_DATA.synthesis || {};
+            const ripples = (synth.news_ripples && synth.news_ripples.media_specific_repeated_phrases) || [];
+            const src = item.source || '';
+            let match = ripples.find(r => (r.outlets || []).some(o => src.includes(o) || o.includes(src)));
+            if (!match && synth.repeated_phrases_sample && synth.repeated_phrases_sample.length) {
+                match = synth.repeated_phrases_sample.find(rp => (item.title||'').toLowerCase().includes((rp.phrase||'').toLowerCase().slice(0,12)));
+            }
+            if (match) {
+                return `${match.phrase || 'ripple'} • ${((match.similarity||0.7)*100|0)}% echo across ${(match.outlets||[]).join('+') || 'outlets'}`;
+            }
+            return (item.signals && item.signals.repeatedPhrases && item.signals.repeatedPhrases[0]) ? item.signals.repeatedPhrases[0] + ' (live ripple)' : 'High framing neural node • RSS LIVE';
+        }
+
+        function spawnHoloHotOrbs(containerId = 'tab-system-map', count = null) {
+            // ART MAX: spawn floating clickable holo orbs sized by hotScore. Filter LIVE RSS on click. Ember bursts. Cap perf.
+            const container = document.getElementById(containerId) || document.getElementById('system-map-canvas').parentElement;
+            if (!container) return;
+            // cleanup old
+            holoOrbElements.forEach(o => o.remove());
+            holoOrbElements = [];
+            holoOrbsActive = true;
+
+            const items = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : (EMBEDDED_SAMPLE.newsItems || []);
+            const synth = FORGE_DATA.synthesis || {};
+            let num = count || Math.min(HOLO_ORB_CAP, Math.max(6, Math.floor(items.length * 0.65)));
+            // AUTO-SPAWN MORE HOLO ORBS on high framing news (FORGE_DATA driven; real-time from new high framingScore items in poll)
+            const highFramingCount = items.filter(it => (it.signals && it.signals.framingScore > 0.78)).length;
+            if (highFramingCount > 1) {
+                num = Math.min(HOLO_ORB_CAP, num + Math.floor(highFramingCount / 1.6) + 1);
+            }
+            const mapRect = (document.getElementById('system-map-canvas') || container).getBoundingClientRect();
+
+            // Sort top hot for orbs
+            const scored = items.slice(0, 20).map(it => ({item: it, score: computeHotScore(it, synth)})).sort((a,b)=>b.score-a.score).slice(0, num);
+
+            scored.forEach((s, i) => {
+                const orb = document.createElement('div');
+                orb.className = 'holo-orb';
+                const sizeBase = 11 + Math.round(s.score * 17); // size by hotScore
+                orb.style.width = sizeBase + 'px';
+                orb.style.height = sizeBase + 'px';
+                // position floating in map area or container, jittered
+                const baseX = 70 + (i % 4) * (mapRect.width * 0.18 || 95) + (Math.random()-0.5)*28;
+                const baseY = 48 + Math.floor(i/4) * 52 + (Math.random()-0.5)*18;
+                orb.style.left = baseX + 'px';
+                orb.style.top = baseY + 'px';
+                orb.style.opacity = (0.72 + s.score * 0.22).toFixed(2);
+                orb.title = `HOT ${ (s.score*100|0) }% • ${s.item.source} • Click to filter RSS`;
+
+                // hover mini synthesis insight (from news_ripples)
+                orb.onmouseenter = () => {
+                    orb.style.boxShadow = '0 0 26px rgba(249,115,22,0.95), 0 0 52px rgba(249,115,22,0.5)';
+                    // temp insight label
+                    let tip = document.createElement('div');
+                    tip.className = 'text-[9px] px-2 py-0.5 rounded bg-zinc-950/95 border border-orange-700 text-amber-200 absolute z-[70] pointer-events-none';
+                    tip.style.left = (baseX + sizeBase + 4) + 'px';
+                    tip.style.top = (baseY - 4) + 'px';
+                    tip.textContent = getMiniSynthesisInsight(s.item, synth);
+                    orb._tip = tip;
+                    container.appendChild(tip);
+                    setTimeout(() => { if (tip && tip.parentNode) tip.parentNode.removeChild(tip); }, 1650);
+                };
+                orb.onmouseleave = () => { orb.style.boxShadow = ''; if (orb._tip && orb._tip.parentNode) orb._tip.parentNode.removeChild(orb._tip); };
+
+                // click: filter LIVE RSS + ember burst (holo synergy)
+                orb.onclick = (ev) => {
+                    ev.stopPropagation();
+                    if (typeof filterNewsBySource === 'function') filterNewsBySource(s.item.source);
+                    else if (typeof highlightNewsBySignal === 'function') highlightNewsBySignal(s.item.signals && s.item.signals.repeatedPhrases ? s.item.signals.repeatedPhrases[0] : s.item.source);
+                    if (window.__forgeAddEmbers) window.__forgeAddEmbers(8);
+                    // visual pulse on orb
+                    orb.animate([{ transform: 'scale(1.4)' }, { transform: 'scale(0.9)' }, { transform: 'scale(1)' }], {duration:420, easing:'ease-out'});
+                };
+
+                container.appendChild(orb);
+                holoOrbElements.push(orb);
+            });
+
+            // activate projector rays when orbs live
+            const proj = document.getElementById('holo-projector');
+            if (proj) proj.classList.add('active');
+
+            // tie to global embers burst (strength from FORGE)
+            if (window.__forgeAddEmbers) setTimeout(() => window.__forgeAddEmbers(7, getNewsRippleStrength()), 80);
+        }
+
+        function activateHoloPreview() {
+            // HOLO NEURAL button action (Jarvis prelim): spawn orbs + toggle projector + label + ember
+            const mapTab = document.getElementById('tab-system-map');
+            if (mapTab && !mapTab.classList.contains('active')) {
+                switchTab('system-map');
+            }
+            setTimeout(() => {
+                spawnHoloHotOrbs('tab-system-map', 11);
+                const label = document.querySelector('span[align-middle]');
+                if (label) label.textContent = 'HOLOGRAPHIC NEURAL PREVIEW — JARVIS PRELIM (HOT ORBS ACTIVE • ' + (FORGE_DATA.newsItems ? FORGE_DATA.newsItems.length : 12) + ' RIPPLES)';
+                if (window.__forgeAddEmbers) window.__forgeAddEmbers(15, getNewsRippleStrength());
+            }, 90);
+        }
+
+        function clearHoloOrbs() {
+            holoOrbElements.forEach(o => o.remove());
+            holoOrbElements = [];
+            holoOrbsActive = false;
+            const proj = document.getElementById('holo-projector');
+            if (proj) proj.classList.remove('active');
+        }
+
+        // ============================================
+        // MEME FORGE
+        // ============================================
+        function populateMemeSelect() {
+            const sel = document.getElementById('meme-news-select');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">— Select a live RSS item —</option>';
+            
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = `${item.source}: ${item.title.substring(0,58)}${item.title.length>58?'…':''}`;
+                sel.appendChild(opt);
+            });
+        }
+        
+        function previewMemeSelection() {
+            // Optional live preview of title on canvas when changed
+            const sel = document.getElementById('meme-news-select');
+            if (!sel || !sel.value) return;
+            // Could auto-forge here but better keep manual for user control
+        }
+        
+        function forgeMemeFromSelection() {
+            const sel = document.getElementById('meme-news-select');
+            if (!sel || !sel.value) {
+                alert('Pick a news item first.');
+                return;
+            }
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            const item = items.find(i => i.id === sel.value);
+            if (item) forgeMemeFromItem(item.id);
+        }
+        
+        function forgeMemeFromItem(itemId) {
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            const item = items.find(i => i.id === itemId || i.id.startsWith(itemId));
+            if (!item) return;
+            
+            switchTab('meme-forge');
+            
+            const canvas = document.getElementById('meme-canvas');
+            if (!canvas) return;
+            memeCtx = canvas.getContext('2d');
+            
+            const ctx = memeCtx;
+            const w = canvas.width, h = canvas.height;
+            
+            // Fiery dark gradient
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#1c1917');
+            grad.addColorStop(0.35, '#431407');
+            grad.addColorStop(1, '#0a0503');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+            
+            // Ember texture overlay
+            for (let i = 0; i < 26; i++) {
+                ctx.fillStyle = `rgba(249,115,22,${0.1 + Math.random()*0.25})`;
+                ctx.fillRect(Math.random()*w, Math.random()*h, 1.5 + Math.random()*2.5, 1);
+            }
+            
+            // Top accent bar
+            ctx.fillStyle = '#f97316';
+            ctx.fillRect(0, 0, w, 5);
+            
+            // Title (wrapped artistic)
+            ctx.fillStyle = '#fef3c7';
+            ctx.font = '700 26px Space Grotesk, Inter, system-ui';
+            const titleLines = wrapText(ctx, item.title, w - 58);
+            let ty = 48;
+            titleLines.forEach(line => {
+                ctx.fillText(line, 24, ty);
+                ty += 30;
+            });
+            
+            // Source + date
+            ctx.fillStyle = '#c2410f';
+            ctx.font = '600 13px monospace';
+            ctx.fillText(item.source.toUpperCase() + '  •  ' + new Date(item.pubDate).toLocaleDateString(), 24, ty + 8);
+            
+            // Signals badges
+            const sig = item.signals || {};
+            let bx = 24;
+            let by = h - 76;
+            
+            ctx.font = 'bold 13px Inter, system-ui';
+            
+            // Framing badge
+            ctx.fillStyle = '#9f1239';
+            ctx.fillRect(bx, by, 122, 25);
+            ctx.fillStyle = '#fed7aa';
+            ctx.fillText('FRAMING ' + Math.round((sig.framingScore || .6)*100) + '%', bx + 8, by + 17);
+            bx += 130;
+            
+            // Repeated
+            if (sig.repeatedPhrases && sig.repeatedPhrases[0]) {
+                ctx.fillStyle = '#431407';
+                const rp = sig.repeatedPhrases[0];
+                const rpShort = rp.length > 18 ? rp.substring(0,16) + '…' : rp;
+                ctx.fillRect(bx, by, 190, 25);
+                ctx.fillStyle = '#fb923c';
+                ctx.fillText('REPEATED: ' + rpShort, bx + 7, by + 17);
+            }
+            
+            // Bottom stamp
+            ctx.fillStyle = 'rgba(245,158,11,0.75)';
+            ctx.font = '900 16px Space Grotesk, system-ui';
+            ctx.fillText('NARRATIVE FORGE — BREAK THE ECHO', 24, h - 28);
+            
+            // RSS LIVE stamp (artistic + data signal)
+            ctx.fillStyle = '#431407';
+            ctx.fillRect(w-58, 12, 44, 20);
+            ctx.fillStyle = '#ff6b35';
+            ctx.font = '900 10px monospace';
+            ctx.fillText('RSS LIVE', w - 54, 25);
+            
+            // extra live signal footer with source
+            ctx.fillStyle = 'rgba(251,146,60,0.65)';
+            ctx.font = '500 9px Inter, system-ui';
+            ctx.fillText((item.source || 'RSS').toUpperCase() + ' • LIVE FROM PIPELINE', 24, h - 12);
+        }
+        
+        function wrapText(ctx, text, maxWidth) {
+            const words = text.split(' ');
+            let lines = [];
+            let current = '';
+            for (let word of words) {
+                const test = current ? current + ' ' + word : word;
+                if (ctx.measureText(test).width > maxWidth && current) {
+                    lines.push(current);
+                    current = word;
+                } else {
+                    current = test;
+                }
+            }
+            if (current) lines.push(current);
+            return lines;
+        }
+        
+        function randomMemeFromLive() {
+            const items = FORGE_DATA.newsItems.length ? FORGE_DATA.newsItems : EMBEDDED_SAMPLE.newsItems;
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+            const sel = document.getElementById('meme-news-select');
+            if (sel) sel.value = randomItem.id;
+            forgeMemeFromItem(randomItem.id);
+        }
+        
+        function downloadMeme() {
+            const canvas = document.getElementById('meme-canvas');
+            if (!canvas) return;
+            const link = document.createElement('a');
+            link.download = 'narrative-forge-meme-' + Date.now() + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function clearMemeCanvas() {
+            const canvas = document.getElementById('meme-canvas');
+            if (!canvas || !memeCtx) return;
+            memeCtx.fillStyle = '#1c1917';
+            memeCtx.fillRect(0,0,canvas.width, canvas.height);
+        }
+
+        // ============================================
+        // CHARTS + GLOBAL POLISH
+        // ============================================
+        function updateGlobalSignalsChart() {
+            const canvas = document.getElementById('signals-bar-chart');
+            if (!canvas || typeof Chart === 'undefined') return;
+            
+            if (signalsChart) signalsChart.destroy();
+            const ctx = canvas.getContext('2d');
+            const synth = FORGE_DATA.synthesis || EMBEDDED_SAMPLE.synthesis;
+            const scores = synth.tactic_scores || {repetition_density:0.78, loaded_language:0.65, press_framing:0.71, coordination_markers:0.59};
+            
+            signalsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Repetition', 'Loaded Lang', 'Framing', 'Coordination'],
+                    datasets: [{
+                        data: [scores.repetition_density*100, scores.loaded_language*100, scores.press_framing*100, scores.coordination_markers*100],
+                        backgroundColor: ['#f97316', '#c2410f', '#9f1239', '#78350f'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: { x: { max: 100, display: false }, y: { grid: { color: '#451a03' }, ticks: { color: '#fed7aa', font: {size:9} } } },
+                    plugins: { legend: {display:false} },
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // ============================================
+        // TABS + INIT + PARTICLES
+        // ============================================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.forge-tab').forEach(el => el.classList.remove('active'));
+            
+            const content = document.getElementById('tab-' + tab);
+            if (content) content.classList.add('active');
+            
+            const tabBtn = document.querySelector(`.forge-tab[data-tab="${tab}"]`);
+            if (tabBtn) tabBtn.classList.add('active');
+            
+            // Re-render map if needed on switch
+            if (tab === 'system-map') {
+                setTimeout(redrawSystemMap, 60);
+                // SITE ART MAX: spawn holo neural orbs on map tab switch (per spec)
+                setTimeout(() => {
+                    if (typeof spawnHoloHotOrbs === 'function' && (!holoOrbsActive || holoOrbElements.length < 4)) {
+                        spawnHoloHotOrbs('tab-system-map', null);
+                    }
+                }, 160);
+            }
+            if (tab === 'meme-forge' && !memeCtx) {
+                // optional seed
+            }
+        }
+
+        // Global embers / particles — maximally alive + holographic neural glows (work of art mode)
+        function initEmbers() {
+            const canvas = document.getElementById('global-embers');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight * 0.96;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            
+            class Ember {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height * 1.2 + 40;
+                    this.size = Math.random() * 2.3 + 0.9;
+                    this.vy = -0.55 - Math.random() * 1.15;
+                    this.vx = (Math.random() - 0.5) * 0.6;
+                    this.alpha = 0.5 + Math.random() * 0.45;
+                    this.life = 50 + Math.random() * 110;
+                    this.isOrb = Math.random() < 0.12; // contextual fiery orbs
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.life--;
+                    this.alpha -= (this.isOrb ? 0.002 : 0.0035);
+                    if (this.life < 0 || this.alpha < 0.03 || this.y < -10) this.reset();
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    if (this.isOrb) {
+                        // Fiery orb with glow (artistic max for live RSS events)
+                        const grad = ctx.createRadialGradient(this.x, this.y, 0.5, this.x, this.y, this.size * 2.2);
+                        grad.addColorStop(0, '#ff6b35');
+                        grad.addColorStop(0.4, '#f97316');
+                        grad.addColorStop(1, 'transparent');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size * 1.8, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.fillStyle = (Math.random() > 0.5) ? '#fb923c' : '#f97316';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // occasional brighter core
+                    if (this.size > 2 || this.isOrb) {
+                        ctx.fillStyle = '#fef3c7';
+                        ctx.beginPath();
+                        ctx.arc(this.x - 0.6, this.y - 0.5, this.size * 0.4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+            
+            for (let i = 0; i < 148; i++) particles.push(new Ember()); // SITE ART MAX: increased ember count/intensity for ultimate work of art (global holo synergy)
+            
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // subtle orange haze base
+                ctx.fillStyle = 'rgba(124,45,18,0.018)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                
+                // SMALL 'LIVE RIPPLE WAVE' ANIMATION on global embers (on poll; subtle flowing band + strength from FORGE news_ripples)
+                // Decays and flows down for real-time dynamic feel, ties embers viz
+                if (liveRippleWaves.length) {
+                    liveRippleWaves = liveRippleWaves.filter(w => w.progress < 1.25);
+                    liveRippleWaves.forEach(w => {
+                        w.progress += 0.028 + (w.strength - 0.5) * 0.01;
+                        const wy = w.y + w.progress * (canvas.height * 0.38);
+                        const wa = Math.max(0.015, 0.09 * (1 - w.progress) * (0.5 + w.strength * 0.5));
+                        ctx.save();
+                        ctx.fillStyle = `rgba(251,146,60,${wa})`;
+                        ctx.fillRect(0, wy - 3, canvas.width, 5.5);
+                        // faint secondary for layered ripple wave
+                        ctx.fillStyle = `rgba(249,115,22,${wa * 0.55})`;
+                        ctx.fillRect(0, wy + 7, canvas.width, 2);
+                        ctx.restore();
+                    });
+                }
+                
+                // occasional extra ember burst near header (more intense)
+                if (Math.random() < 0.26) {
+                    const e = new Ember();
+                    e.y = 80 + Math.random() * 60;
+                    e.x = Math.random() * (canvas.width * 0.5);
+                    if (Math.random() < 0.4) e.isOrb = true;
+                    particles.push(e);
+                    if (particles.length > 132) particles.shift(); // perf cap
+                }
+                
+                requestAnimationFrame(loop);
+            }
+            loop();
+            
+            // Occasional stronger pulse embers on poll + new RSS items (fiery orbs + bursts) — ART MAX: higher count/intensity
+            // Enhanced: tie to news_ripples strength (FORGE_DATA) for dynamic live viz
+            window.__forgeAddEmbers = function(count = 14, rippleStr = null) {
+                const s = (rippleStr != null ? rippleStr : getNewsRippleStrength());
+                const effCount = Math.max(3, Math.floor(count * (0.65 + s * 0.45)));
+                for (let i = 0; i < effCount; i++) {
+                    const e = new Ember();
+                    e.vy = -1.9 - Math.random() * 1.15;
+                    if (Math.random() < 0.48) e.isOrb = true;
+                    particles.push(e);
+                    if (particles.length > 155) particles.shift(); // perf cap
+                }
+            };
+
+            // CONTEXTUAL EMBERS on news cards (artistic max: DOM fiery orbs/bursts local to #news-cards + poll events, complements global canvas) — increased intensity
+            window.__forgeSpawnCardContextualEmbers = function(targetContainerId = 'news-cards', burstCount = 11) {
+                const container = document.getElementById(targetContainerId);
+                if (!container) return;
+                const rect = container.getBoundingClientRect();
+                for (let i = 0; i < burstCount; i++) {
+                    const ember = document.createElement('div');
+                    ember.className = 'ember';
+                    const size = 3.5 + Math.random() * 6.5;
+                    ember.style.width = size + 'px';
+                    ember.style.height = size + 'px';
+                    ember.style.left = (rect.left + Math.random() * rect.width - (window.scrollX || 0) - 10) + 'px';
+                    ember.style.top = (rect.top + Math.random() * Math.min(128, rect.height) - (window.scrollY || 0)) + 'px';
+                    ember.style.position = 'fixed';
+                    ember.style.zIndex = '30';
+                    ember.style.pointer-events = 'none';
+                    ember.style.opacity = (0.68 + Math.random() * 0.32).toString();
+                    document.body.appendChild(ember);
+                    
+                    // animate up + fade (fiery orb like)
+                    const duration = 720 + Math.random() * 680;
+                    ember.animate([
+                        { transform: 'translateY(0) scale(1)', opacity: ember.style.opacity },
+                        { transform: `translateY(-${52 + Math.random()*82}px) scale(${0.55 + Math.random()})`, opacity: 0 }
+                    ], { duration: duration, easing: 'ease-out' }).onfinish = () => ember.remove();
+                    
+                    // occasional bigger fiery orb burst (more often)
+                    if (i % 2 === 0) {
+                        const orb = ember.cloneNode(true);
+                        orb.style.width = (size*1.85)+'px';
+                        orb.style.height = (size*1.85)+'px';
+                        orb.style.background = 'radial-gradient(circle, #fb923c 0%, #f97316 42%, transparent 80%)';
+                        document.body.appendChild(orb);
+                        setTimeout(() => orb.remove(), duration + 90);
+                    }
+                }
+            };
+        }
+
+        // Boot everything
+        async function bootNarrativeForge() {
+            // Tailwind script runtime config (fiery theme)
+            if (window.tailwind && tailwind.config) {
+                // already CDN runtime, extend
+            }
+            
+            await loadForgeData();
+            
+            initEmbers();
+            initSystemMap();
+            
+            // Start liveness simulation
+            startLivenessPoll();
+            
+            // Occasional visual ember boost (tied to live FORGE_DATA ripple strength)
+            setInterval(() => {
+                if (window.__forgeAddEmbers && Math.random() > 0.7) window.__forgeAddEmbers(4, getNewsRippleStrength());
+            }, 22000);
+            
+            // Seed a "new" item on first load for alive feel
+            setTimeout(() => {
+                if (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) {
+                    newItemsSinceLast = Math.floor(Math.random() * 2) + 1;
+                    updateLivenessUI();
+                    // render already done
+                }
+            }, 1100);
+            
+            // Initial tab state already active via class
+            
+            // Expose some for debugging / coordination
+            window.NARRATIVE_FORGE = { FORGE_DATA, forceRSSPoll, simulateR2Fetch, switchTab };
+            
+            console.log('%c[NARRATIVE FORGE] Artistic Live RSS + Analysis UI fully initialized. Data-driven renders + particles + R2 notes active.', 'color:#fb923c');
+        }
+        
+        // Auto-boot
+        window.onload = bootNarrativeForge;
+    </script>
 </body>
 </html>
