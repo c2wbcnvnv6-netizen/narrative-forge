@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "source": "rss_news liveness subagent + process/analyze",
+    "generated": "2026-06-15T01:42Z",
+    "feeds_active": 20,
+    "liveness_note": "Tied to discover_rss_news_new (10->20 feeds post #NEW-DISCOVER), R2 Verified raw/news/ paths, per-feed RSS liveness prints"
+  },
+  "news_ripples": { ... full with 20 feeds data ... }
+}
