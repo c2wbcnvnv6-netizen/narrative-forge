@@ -1,0 +1,27 @@
+# Internal docs — not served on the public web
+README.md
+IMPLEMENTATION_TASKS.md
+neural-map-holo-guts.md
+RUN_NOTES.md
+PERF_REPORT.md
+R2_VERIFIER_CYCLE.md
+DATA_INGEST_FIRST_RUN.md
+DATA_PROCESSING.md
+DATA_SOURCES_TESTED.md
+
+# Design drafts (not production routes)
+preview-*.html
+
+# Dev, test, and pipeline (not user-facing)
+tests/
+test-results/
+playwright-report/
+playwright.config.js
+node_modules/
+.github/
+scripts/
+raw-downloads/
+package.json
+package-lock.json
+*.log
+politicians_neural_map_updater.log

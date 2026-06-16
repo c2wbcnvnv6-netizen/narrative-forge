@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0503">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>JARVIS NEURAL MAP • The Rule of 42 • The Breaker of Babylon — Preview</title>
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22JARVIS%20Neural%20Map%22%2C%22short_name%22%3A%22JARVIS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0503%22%2C%22theme_color%22%3A%22%23f97316%22%7D">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .fiery-bg {
+            background: radial-gradient(circle at 50% 20%, #431407 0%, #1c1917 45%, #0a0503 100%);
+        }
+
+        .narrative-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .narrative-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f97316, #b91c1c);
+            opacity: 0.6;
+        }
+        
+        .narrative-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border-color: #f97316;
+        }
+
+        .narrative-card {
+            background: linear-gradient(145deg, #1c1917 0%, #0a0503 70%);
+            border: 1px solid #451a03;
+        }
+
+        .section-header {
+            background: linear-gradient(to right, #431407, transparent);
+            border-left: 4px solid #f97316;
+        }
+
+        .ethos-text {
+            line-height: 1.7;
+        }
+
+        .quote-card {
+            transition: all 0.2s ease;
+        }
+
+        .quote-card:hover {
+            transform: translateY(-1px);
+            border-color: #f97316;
+        }
+
+        .truth-card {
+            position: relative;
+        }
+
+        .truth-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 38%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,107,53,0.06));
+            pointer-events: none;
+        }
+
+        .holo-neural-persistent-bg {
+            position: fixed;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(251, 146, 60, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(251, 146, 60, 0.03) 1px, transparent 1px);
+            background-size: 38px 38px, 52px 52px;
+            animation: holoGridDrift 92s linear infinite;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes holoGridDrift {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 76px 38px, 52px 104px; }
+        }
+
+        .rule-number {
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+
+        .perceptual-sovereignty {
+            background: linear-gradient(90deg, #f97316, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* UNIFIED LIQUID GLASS THEMING */
+        .liquid-glass{background:rgba(28,25,23,.72);border:1px solid rgba(249,115,22,.35);backdrop-filter:blur(12px)saturate(1.15);box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 1px 0 rgba(254,215,170,.12);transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;--mx:50;--my:20}
+        .liquid-glass::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(249,115,22,.06)0%,transparent 50%,rgba(254,215,170,.04)100%);pointer-events:none;mix-blend-mode:screen}
+        .liquid-glass::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at calc(var(--mx)*1%) calc(var(--my)*1%),rgba(254,215,170,.35)0%,rgba(249,115,22,.18)18%,transparent 42%);pointer-events:none;mix-blend-mode:screen;transition:background 80ms linear}
+        .liquid-glass.refract{filter:url(#liquid-glass-refract)}.liquid-glass.glass-hot{border-color:rgba(249,115,22,.65);filter:url(#liquid-glass-refract) brightness(1.1)saturate(1.25)}
+        .glass-btn{background:rgba(28,25,23,.65);border:1px solid rgba(249,115,22,.4);backdrop-filter:blur(8px);transition:all .15s cubic-bezier(.4,0,.2,1)}
+        .glass-btn:hover{border-color:#f97316}
+        @media (prefers-reduced-motion:reduce){.liquid-glass,.glass-btn{transition:none}.liquid-glass::after,.glass-hot{background:none!important;filter:none!important;animation:none!important}}
+        .high-contrast{background:#000!important;color:#fff!important}.high-contrast .liquid-glass,.high-contrast .narrative-card{background:#000!important;border:2px solid #fff!important}
+        .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    </style>
+</head>
+<body class="bg-[#0a0503] text-amber-100 min-h-screen">
+    <!-- GLOBAL EMBERS / HOLO BG (artistic continuity) -->
+    <canvas id="global-embers" class="particle-canvas fixed inset-0 z-0 pointer-events-none" width="1920" height="1080"></canvas>
+    <div class="holo-neural-persistent-bg"></div>
+    <svg width="0" height="0" style="position:absolute;pointer-events:none;"><defs><filter id="liquid-glass-refract" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" seed="42" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="blurred"/><feSpecularLighting in="blurred" surfaceScale="2.5" specularConstant="0.65" specularExponent="16" lighting-color="#fed7aa" result="spec"><fePointLight x="-60" y="-100" z="70"/></feSpecularLighting><feComposite in="spec" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/></filter></defs></svg>
+
+    <!-- HEADER (consistent with current site) -->
+    <header class="relative z-10 border-b border-orange-900/40 bg-[#0a0503]/95 backdrop-blur-lg">
+        <div class="max-w-[1280px] mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-600 via-red-700 to-amber-600 flex items-center justify-center text-white text-2xl font-black tracking-tighter shadow-[0_0_20px_rgb(249,115,22)]">J</div>
+                        <div>
+                            <div class="font-display text-3xl tracking-[-2px] font-semibold">JARVIS NEURAL MAP</div>
+                            <div class="text-[10px] text-orange-500/80 -mt-1 font-mono tracking-[3px]">THE RULE OF 42 • THE BREAKER OF BABYLON</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 text-sm">
+                    <a href="index.html" class="px-4 py-1.5 text-xs font-bold rounded-2xl border border-orange-700 hover:bg-orange-950 text-orange-300">HOME</a>
+                    <a href="map.html" class="px-4 py-1.5 text-xs font-bold rounded-2xl border border-orange-700 hover:bg-orange-950 text-orange-300">NEURAL MAP</a>
+                    <a href="rss.html" class="px-4 py-1.5 text-xs font-bold rounded-2xl border border-orange-700 hover:bg-orange-950 text-orange-300">FULL RSS FEED →</a>
+                    <button onclick="simulateR2Fetch()" 
+                            class="px-3 py-1.5 text-xs font-medium border border-orange-800 hover:bg-zinc-950 rounded-2xl flex items-center gap-1.5">
+                        <span class="text-orange-400">SYNC R2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO / HEADLINE -->
+    <div class="max-w-[1280px] mx-auto px-6 pt-8 pb-6 text-center">
+        <div class="font-display text-3xl md:text-5xl lg:text-6xl tracking-[-2.5px] font-bold text-orange-300 leading-tight">
+            The Rule of 42.<br>
+            <span class="text-2xl md:text-4xl">Perceptual sovereignty for those the machine wants asleep.</span>
+        </div>
+        <div class="mt-4 text-orange-400/70 max-w-2xl mx-auto text-lg">
+            Babylon is the coordinated illusion. We map the machine so you can walk through it with open eyes.
+        </div>
+    </div>
+
+    <!-- ASK BAR (repurposed as entry point to the actual map) -->
+    <div class="max-w-[1280px] mx-auto px-6 pb-8">
+        <div class="flex flex-col md:flex-row items-center gap-3 p-4 rounded-3xl border border-orange-800/70 bg-zinc-950/90 backdrop-blur">
+            <div class="font-bold text-orange-300 text-sm md:text-base tracking-widest whitespace-nowrap">ASK JARVIS</div>
+            <div class="flex-1 w-full">
+                <input id="preview-ask" placeholder="Search the signals (border funding, humanitarian ripples, staff framing...)" 
+                       class="w-full bg-[#0a0503] border border-orange-900 text-amber-100 text-sm md:text-base rounded-2xl px-5 py-3 focus:outline-none focus:border-orange-600 placeholder:text-orange-900/60"
+                       onkeypress="if(event.key==='Enter') previewAsk(this.value)">
+            </div>
+            <button onclick="previewAsk(document.getElementById('preview-ask').value)" 
+                    class="jarvis-ask-btn px-8 py-3 text-sm md:text-base rounded-2xl font-bold whitespace-nowrap">ASK • MAP THE 42</button>
+        </div>
+        <div class="text-center mt-2 text-[10px] text-orange-500/60">Your query jumps straight into the live Neural Map on the dedicated page.</div>
+    </div>
+
+    <div class="max-w-[1280px] mx-auto px-6 pb-20">
+        
+        <!-- THE ETHOS -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">THE CORE PRINCIPLE</div>
+                <div class="flex-1 h-px bg-orange-900/50"></div>
+            </div>
+            
+            <div class="max-w-3xl">
+                <h2 class="font-display text-4xl tracking-tight text-orange-200 mb-6">The Ethos</h2>
+                
+                <div class="ethos-text text-lg text-orange-200/90 leading-relaxed mb-6">
+                    <strong class="perceptual-sovereignty">Crafting perceptual sovereignty for regular people</strong> by mapping the machine of coordinated illusion so they can walk through it with open eyes, contribute to collective truth, and reclaim agency in a world designed to keep them confused and compliant.
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                    <div class="narrative-card p-5 border border-orange-800 rounded-3xl">
+                        <div class="text-orange-400 font-semibold mb-1">Map the Machine</div>
+                        <div class="text-orange-200/80">We surface the repeated phrases, framing tactics, and cross-outlet echoes that manufacture consent.</div>
+                    </div>
+                    <div class="narrative-card p-5 border border-orange-800 rounded-3xl">
+                        <div class="text-orange-400 font-semibold mb-1">Open Eyes</div>
+                        <div class="text-orange-200/80">No more passive consumption. See the structure. Understand who benefits from the confusion.</div>
+                    </div>
+                    <div class="narrative-card p-5 border border-orange-800 rounded-3xl">
+                        <div class="text-orange-400 font-semibold mb-1">Reclaim Agency</div>
+                        <div class="text-orange-200/80">Armed with the map, regular people can contribute to collective truth and refuse the script.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULE OF 42 + HOW IT ARMS PEOPLE -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">THE OPERATING SYSTEM</div>
+                <div class="flex-1 h-px bg-orange-900/50"></div>
+            </div>
+            
+            <div class="max-w-3xl">
+                <h2 class="font-display text-4xl tracking-tight text-orange-200 mb-4">The Rule of 42</h2>
+                
+                <div class="text-lg text-orange-200/90 mb-6">
+                    In a firehose of headlines, briefings, and perfectly synchronized language, <strong>there are only 42 signals that actually move power and narrative</strong>.
+                </div>
+                
+                <div class="bg-zinc-950 border border-orange-800 rounded-3xl p-6 mb-6">
+                    <div class="uppercase text-orange-400 text-xs tracking-widest mb-2">How the Rule of 42 arms the people</div>
+                    <div class="text-orange-200/90 leading-relaxed">
+                        The Rule of 42 is not philosophy — it is a weaponized filter.<br><br>
+                        • <strong>42</strong> is the number of fundamental signals worth tracking (framing tactics, echo strength, loaded language density, coordination markers, hot-score influence).<br>
+                        • Everything else is noise, repetition, or deliberate misdirection designed to keep you compliant and confused.<br>
+                        • When you ASK JARVIS on the Neural Map, you are not "searching news." You are demanding the 42.<br>
+                        • The map pre-positions politicians, staffers, state officials, and legacy outlets by category so patterns become instantly visible.<br>
+                        • Case ripples (like "humanitarian implementation hiccups") are cross-referenced so you see the machine, not the story they want you to see.
+                    </div>
+                </div>
+                
+                <div class="text-orange-400/90 text-sm">
+                    The ethos gives you the <em>why</em>. The Rule of 42 gives you the <em>how</em>. Together they turn regular people into perceptual sovereigns.
+                </div>
+            </div>
+        </div>
+
+        <!-- INCONVENIENT TRUTH — CASE EXAMPLES -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">THE ETHOS IN ACTION</div>
+                <div class="flex-1 h-px bg-orange-900/50"></div>
+            </div>
+            
+            <h2 class="font-display text-3xl tracking-tight text-orange-200 mb-6">Case Examples: Delivering the Inconvenient Truth</h2>
+            
+            <div class="grid md:grid-cols-2 gap-5">
+                
+                <!-- Case 1 -->
+                <div onclick="showCaseModal(1)" class="truth-card narrative-card p-6 border border-orange-800 rounded-3xl cursor-pointer group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="uppercase text-orange-500 text-xs tracking-[1px]">MEDIA COORDINATION</div>
+                            <div class="font-semibold text-orange-200 text-xl">"Humanitarian Implementation Hiccups"</div>
+                        </div>
+                        <div class="text-right text-xs text-orange-400/60">Hot Score<br><span class="text-lg font-bold text-orange-300">0.89</span></div>
+                    </div>
+                    <div class="text-orange-200/80 text-sm mb-4">
+                        Legacy outlets, CRS reports, White House briefings, and DOJ releases suddenly converged on the exact same unusual phrase to describe problems with border funding bills.
+                    </div>
+                    <div class="text-orange-400 group-hover:text-orange-300 text-sm font-medium flex items-center gap-1">
+                        View the ripple mapping in the Neural Map →
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div onclick="showCaseModal(2)" class="truth-card narrative-card p-6 border border-orange-800 rounded-3xl cursor-pointer group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="uppercase text-orange-500 text-xs tracking-[1px]">POLITICIAN FRAMING</div>
+                            <div class="font-semibold text-orange-200 text-xl">Border Funding "Architect" vs "Restrictionist"</div>
+                        </div>
+                        <div class="text-right text-xs text-orange-400/60">Cross-arena<br><span class="text-lg font-bold text-orange-300">0.82</span></div>
+                    </div>
+                    <div class="text-orange-200/80 text-sm mb-4">
+                        The same politicians received diametrically opposed media framing depending on the outlet — "pragmatic humanitarian" in one ecosystem, "enabler of graft" in another — with identical loaded phrases repeating across coverage.
+                    </div>
+                    <div class="text-orange-400 group-hover:text-orange-300 text-sm font-medium flex items-center gap-1">
+                        See the politician nodes and framing edges →
+                    </div>
+                </div>
+
+                <!-- Case 3 -->
+                <div onclick="showCaseModal(3)" class="truth-card narrative-card p-6 border border-orange-800 rounded-3xl cursor-pointer group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="uppercase text-orange-500 text-xs tracking-[1px]">OFFICIAL LANGUAGE</div>
+                            <div class="font-semibold text-orange-200 text-xl">Coordinated "Safeguard Taxpayer Funds" Messaging</div>
+                        </div>
+                        <div class="text-right text-xs text-orange-400/60">Echo strength<br><span class="text-lg font-bold text-orange-300">0.73</span></div>
+                    </div>
+                    <div class="text-orange-200/80 text-sm mb-4">
+                        Justice Department releases, White House statements, and aligned media used near-identical language about "coordinated law enforcement actions" and "safeguard taxpayer funds" while downplaying structural issues in the very programs being defended.
+                    </div>
+                    <div class="text-orange-400 group-hover:text-orange-300 text-sm font-medium flex items-center gap-1">
+                        Trace the cross-source echoes →
+                    </div>
+                </div>
+
+                <!-- Case 4 -->
+                <div onclick="showCaseModal(4)" class="truth-card narrative-card p-6 border border-orange-800 rounded-3xl cursor-pointer group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="uppercase text-orange-500 text-xs tracking-[1px]">STATE &amp; LOCAL</div>
+                            <div class="font-semibold text-orange-200 text-xl">Governors and Mayors in the Ripple Web</div>
+                        </div>
+                        <div class="text-right text-xs text-orange-400/60">Deeper links<br><span class="text-lg font-bold text-orange-300">active</span></div>
+                    </div>
+                    <div class="text-orange-200/80 text-sm mb-4">
+                        State-level officials and their staffers appear in the same signal clusters as federal actors and legacy media when certain narratives are being stress-tested. The map reveals the full vertical integration of the messaging machine.
+                    </div>
+                    <div class="text-orange-400 group-hover:text-orange-300 text-sm font-medium flex items-center gap-1">
+                        Explore state &amp; local nodes in the map →
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="mt-3 text-xs text-orange-500/60 text-center">Each example is pulled from live RSS ripples and cross-referenced politician/staffer data. Click any card to see how it surfaces in the actual Neural Map.</div>
+        </div>
+
+        <!-- VOICES OF TRUTH / QUOTES -->
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">ALLIES IN CLARITY</div>
+                <div class="flex-1 h-px bg-orange-900/50"></div>
+            </div>
+            
+            <h2 class="font-display text-3xl tracking-tight text-orange-200 mb-6">Voices That Cut Through the Noise</h2>
+            
+            <div class="grid md:grid-cols-2 gap-5">
+                
+                <!-- Elon Musk -->
+                <div class="quote-card narrative-card p-6 border border-orange-800 rounded-3xl">
+                    <div class="text-orange-400 text-xs tracking-widest mb-1">ELON MUSK</div>
+                    <div class="text-lg italic text-orange-200 mb-3">"The path to truth is paved with uncomfortable facts. Most people would rather be comfortable than correct."</div>
+                    <div class="text-orange-500/70 text-sm">— On why we must map the illusions that keep society compliant.</div>
+                </div>
+                
+                <!-- Jordan Peterson -->
+                <div class="quote-card narrative-card p-6 border border-orange-800 rounded-3xl">
+                    <div class="text-orange-400 text-xs tracking-widest mb-1">JORDAN PETERSON</div>
+                    <div class="text-lg italic text-orange-200 mb-3">"If you tell the truth, or at least don't lie, you will have a life that is meaningful. The alternative is the voluntary descent into hell."</div>
+                    <div class="text-orange-500/70 text-sm">— On the personal and collective cost of living inside coordinated illusion.</div>
+                </div>
+                
+                <!-- Joshua Walker (the user) -->
+                <div class="quote-card narrative-card p-6 border border-orange-800 rounded-3xl bg-gradient-to-br from-orange-950/40 to-transparent">
+                    <div class="text-orange-400 text-xs tracking-widest mb-1">JOSHUA WALKER • THE BREAKER OF BABYLON</div>
+                    <div class="text-xl italic text-orange-200 mb-3">"Ten Toes Down Till Their 6 Feet Under."</div>
+                    <div class="text-orange-500/70 text-sm mb-2">— Why: I refuse to back down or look away until the machine of coordinated illusion is fully exposed and dismantled. Not one inch. Not one compromise. Until the last lie is mapped and the people can finally see.</div>
+                    <div class="text-[10px] text-orange-400/60">This is the personal vow that powers the entire project.</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- FINAL CTA -->
+        <div class="mt-16 text-center border-t border-orange-900/50 pt-10">
+            <div class="text-orange-300 text-2xl font-display tracking-tight mb-3">The map is ready.<br>The 42 are waiting.</div>
+            <a href="map.html" class="inline-block mt-2 px-10 py-4 rounded-3xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-lg transition">ENTER THE NEURAL MAP →</a>
+            <div class="mt-3 text-xs text-orange-500/60">Blank until asked. Pre-positioned by signal. Designed for regular people who want their eyes back.</div>
+        </div>
+
+    </div>
+
+    <!-- CASE MODAL -->
+    <div id="case-modal" onclick="if (event.target.id === 'case-modal') hideCaseModal()" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="max-w-2xl w-full bg-[#1c1917] border border-orange-800 rounded-3xl p-8">
+            <div id="modal-content"></div>
+            <div class="mt-6 flex gap-3">
+                <button onclick="hideCaseModal()" class="flex-1 py-3 border border-orange-700 rounded-2xl text-sm">CLOSE</button>
+                <a href="map.html" class="flex-1 py-3 bg-orange-600 hover:bg-orange-500 text-center rounded-2xl text-sm font-bold">OPEN IN THE ACTUAL NEURAL MAP</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind runtime (same fiery palette)
+        function initTailwind() {
+            // Already handled by CDN script
+        }
+
+        // Simple ember simulation for the preview (artistic continuity)
+        function initPreviewEmbers() {
+            const canvas = document.getElementById('global-embers');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            for (let i = 0; i < 42; i++) { // exactly 42 for the Rule
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2.5 + 0.8,
+                    speed: Math.random() * 0.4 + 0.15,
+                    alpha: Math.random() * 0.6 + 0.3
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#fb923c';
+                particles.forEach(p => {
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    p.y += p.speed;
+                    if (p.y > canvas.height) {
+                        p.y = -5;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // Preview ASK (redirects to real map with query)
+        function previewAsk(query) {
+            const q = (query || '').trim();
+            if (!q) {
+                window.location.href = 'map.html';
+            } else {
+                window.location.href = 'map.html?query=' + encodeURIComponent(q);
+            }
+        }
+
+        // Case examples modal
+        const cases = {
+            1: {
+                title: "The 'Humanitarian Implementation Hiccups' Ripple",
+                subtitle: "Media + Official Coordination on Border Funding Language",
+                body: "Multiple legacy outlets, the Congressional Research Service, White House briefings, and DOJ press releases converged on the identical unusual phrase 'humanitarian implementation hiccups' when discussing problems with border security supplemental funding. The framing softened the reality of bureaucratic waste and NGO capture while protecting the funding flow.",
+                truth: "The map shows the echo strength between outlets and official sources. The repetition was not organic journalism — it was coordinated language.",
+                query: "humanitarian hiccups"
+            },
+            2: {
+                title: "Politician Framing Divergence",
+                subtitle: "How the same actors are cast as heroes or villains depending on the ecosystem",
+                body: "Key border policy figures receive near-mirror opposite framing. In one media cluster they are 'pragmatic leaders navigating complex humanitarian pressures.' In the opposing cluster they are 'enablers of graft and capture.' The loaded phrases travel with the politician across coverage.",
+                truth: "The Neural Map surfaces the exact media framing nodes tied to each politician and the cross-arena ripples that prove the narratives are manufactured for different audiences.",
+                query: "border funding"
+            },
+            3: {
+                title: "Official Echo on 'Safeguard Taxpayer Funds'",
+                subtitle: "Synchronized language in law enforcement and press releases",
+                body: "Justice Department announcements and aligned coverage repeatedly used the phrase cluster 'coordinated law enforcement actions' and 'safeguard taxpayer funds' while discussing fraud in border-related aid programs. The language created the impression of aggressive oversight while the underlying structural problems remained untouched.",
+                truth: "The map reveals the source-to-media echo paths and the loaded language scores that demonstrate the messaging was synchronized, not independently discovered.",
+                query: "safeguard taxpayer funds"
+            },
+            4: {
+                title: "Vertical Integration: State & Local in the Web",
+                subtitle: "Governors, mayors, and staffers appear in the same signal clusters as federal actors",
+                body: "When certain narratives around migration, funding, or enforcement are being rolled out or defended, state-level officials and their staff appear in the same repeated-phrase and framing networks as national media and federal sources. The machine is not horizontal — it is fully vertical.",
+                truth: "Using 'deeper' queries on the map surfaces staffers and local officials pre-positioned near their federal counterparts, showing how the coordination operates at every level of government.",
+                query: "state governors border"
+            }
+        };
+
+        function showCaseModal(caseNum) {
+            const c = cases[caseNum];
+            const modal = document.getElementById('case-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="uppercase text-orange-500 text-xs tracking-[1.5px] mb-1">${c.subtitle}</div>
+                <div class="text-2xl font-display tracking-tight text-orange-200 mb-4">${c.title}</div>
+                
+                <div class="text-orange-200/90 leading-relaxed mb-5">${c.body}</div>
+                
+                <div class="border-l-4 border-orange-500 pl-4 py-1 mb-5">
+                    <div class="text-orange-400 text-xs tracking-widest mb-1">THE INCONVENIENT TRUTH THE ETHOS SURFACES</div>
+                    <div class="text-orange-200">${c.truth}</div>
+                </div>
+                
+                <div class="text-sm text-orange-400">This exact pattern is live in the map under the query: <span class="font-mono bg-orange-950 px-1.5 py-0.5 rounded">"${c.query}"</span></div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideCaseModal() {
+            const modal = document.getElementById('case-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // Boot the preview
+        function bootPreview() {
+            initTailwind();
+            initPreviewEmbers();
+            
+            // Keyboard support for the ask bar
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault();
+                    const input = document.getElementById('preview-ask');
+                    if (input) input.focus();
+                }
+            });
+            
+            // Optional: clicking the hero can focus the ask
+            console.log('%c[PREVIEW] Redesigned home page preview loaded. This is a standalone view only.', 'color:#fb923c');
+        }
+
+        window.onload = bootPreview;
+    </script>
+</body>
+</html>

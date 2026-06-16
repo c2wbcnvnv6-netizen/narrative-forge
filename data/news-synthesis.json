@@ -4,7 +4,7 @@
     "generated": "2026-06-15T02:00Z",
     "feeds_active": 20,
     "liveness_note": "Tied to discover_rss_news_new (10->20 feeds post #NEW-DISCOVER), R2 Verified raw/news/ paths, per-feed RSS liveness prints. Synced post 2751945* dispatches via gh logs + check_r2 + MCP.",
-    "last_activation": "2026-06-15T03:11:04Z",
+    "last_activation": "2026-06-15T16:12:29Z",
     "rss_liveness": {
       "whitehouse": 30,
       "justice": 25
@@ -14,7 +14,7 @@
     "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
     "updated_by": "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB | JARVIS-NEURAL-MAP-ART-MAX subagent",
     "last_art_max": "2026-06-15T02:46:54Z",
-    "last_art_max_cycle": "2026-06-15T03:11:04Z"
+    "last_art_max_cycle": "2026-06-15T16:12:29Z"
   },
   "news_ripples": {
     "media_specific_repeated_phrases": [
@@ -48,6 +48,19 @@
         ],
         "similarity": 0.69,
         "liveness": "homeownership, flag-day, nspm-11/12, fishing, nominations"
+      },
+      {
+        "phrase": "Elon Musk zur Jagd auf Migranten aufgerufen",
+        "outlets": [
+          "zdf",
+          "zdf-heute",
+          "ard"
+        ],
+        "similarity": 0.95,
+        "liveness": "Elon legal action 2026-06-15; ZDF correction note 'imprecise and misleading' after Reichelt callout",
+        "r2_path": "babylon-raw-data/raw/news/zdf-musk-jagd-lie-2026-06-15.html",
+        "provenance": "ZDF Heute broadcast misquote of Musk 'Only by protesting REPEATEDLY and LOUDLY will there be any change!!' (Belfast context, Tommy Robinson related) as racist mob hunt call by 'British far-right extremist and tech billionaire Elon Musk'. Elon: 'Legal action is being taken against ZDF for their outrageous lies'. Widespread German support vs GEZ fees funding propaganda.",
+        "correction": "ZDF added note admitting imprecise/misleading; no full retraction or accountability yet. Echoed in replies: support for suit, calls to dismantle ZDF/ARD, 'buy ZDF', AfD praise, links to coordinated disinfo and AI-generated harassment narratives."
       }
     ],
     "outlet_similarity_graph": {
@@ -56,7 +69,10 @@
         "legacy-media-nyt",
         "fox-news",
         "whitehouse",
-        "politico-congress"
+        "politico-congress",
+        "zdf",
+        "zdf-heute",
+        "ard"
       ],
       "edges": [
         {
@@ -76,6 +92,18 @@
           "to": "politico-congress",
           "weight": 0.65,
           "phrase": "nspm"
+        },
+        {
+          "from": "zdf",
+          "to": "zdf-heute",
+          "weight": 0.95,
+          "phrase": "Jagd auf Migranten lie"
+        },
+        {
+          "from": "zdf",
+          "to": "ard",
+          "weight": 0.71,
+          "phrase": "state media coordination"
         }
       ]
     },
@@ -89,13 +117,22 @@
     },
     "politician_media_framing": {
       "Trump": "border crisis champion",
-      "Biden": "steady humanitarian pressures"
+      "Biden": "steady humanitarian pressures",
+      "ZDF Heute": "state propaganda liar - 'Jagd auf Migranten' Musk call fabricated",
+      "Elon Musk": "target of coordinated German public media hit piece; responder with legal action"
     },
     "tactic_scores": {
       "press_framing": 0.73,
       "loaded_language": 0.68,
       "repetition": 0.81,
-      "cross_outlet_coord": 0.64
+      "cross_outlet_coord": 0.64,
+      "zdf_musk_lie": {
+        "loaded_language": 0.92,
+        "repetition": 0.88,
+        "cross_outlet_coord": 0.71,
+        "ai_manipulation": 0.65,
+        "weak_correction": 0.95
+      }
     }
   },
   "tactic_scores": {

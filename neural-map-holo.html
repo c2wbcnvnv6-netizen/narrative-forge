@@ -1289,7 +1289,7 @@ function filterByArchetype(arch) {
         }
 
         // === REAL R2 SAMPLES + LIVE DELTA POLL PORT (follow-up to R2 sup 019ecd14-ddac-7002-ad6f-a82a94dd49f9 and objects lister 019ecd19-f001-7e93-9a5a-25344345251f) ===
-        // Pretrained from MCP 8 buckets (babylon-raw-data + ckg-holo-analytics health), real objects (rss-whitehouse-*-nspm-12.html, justice antitrust, hiccups 0.82 etc).
+        // Pretrained from MCP 8 buckets (babylon-raw-data + babylon-holo-analytics health), real objects (rss-whitehouse-*-nspm-12.html, justice antitrust, hiccups 0.82 etc).
         // createLiveRipple with fromRealR2/r2_path/provenance/hot EXACT (framing*0.35+echo*0.25+fresh*0.2+repeats*0.2)
         // pollR2Deltas / pollRealR2Deltas / simulateR2Sync / startDeltaInjectorLoop parity.
         // MASTER_CATALOG (by_arch/arena/hot/r2_path). 3D visible via addRipple + pulse + sonify + Rule42.
@@ -1437,7 +1437,7 @@ function filterByArchetype(arch) {
                   provenance: {source:'news-sample.json + analyze_data', r2:'babylon-raw-data'} },
                 { id: 'case-zdf', label: 'ZDF "Jagd auf Migranten" Musk Lie (Elon Legal Action)', type: 'case', value: 0.95, archetype: 'nimrod', hotScore: 0.95, isRule42: true,
                   sources: [{title:'ZDF Heute broadcast', url:'#', excerpt:'False claim: Elon Musk "called for hunt on migrants" (racist mob + British extremist + tech billionaire). Actual: Musk quote of "Only by protesting REPEATEDLY and LOUDLY will there be any change!!" (Belfast context). ZDF note: "imprecise and misleading". Elon: "Legal action is being taken against ZDF for their outrageous lies".', r2_path:'babylon-raw-data/raw/news/zdf-musk-jagd-lie-2026-06-15.html', r2_verified:true}],
-                  provenance: {source:'news-synthesis.json + Reichelt/Elon X 2026-06-15 + German reactions', r2:'babylon-raw-data', tactic:'loaded_language+weak_correction+state_media', echo:'AfD support, GEZ outrage, calls to dismantle ZDF, Charlie Kirk AI tie-in' } }
+                  provenance: {source:'news-synthesis.json + Reichelt/Elon X 2026-06-15 + German reactions', r2:'babylon-raw-data', tactic:'loaded_language+weak_correction+state_media', echo:'AfD support, GEZ outrage, calls to dismantle ZDF, coordinated disinfo echo' } }
             ];
             nodes.push(...cases);
             // === POLITICIANS: real 691+ (full metadata for seeding; viz caps via Rule42/hot in practice) ===
