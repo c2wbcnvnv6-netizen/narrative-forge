@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS • Neural Command Center • Interactive Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
+        .fiery-bg { background: radial-gradient(circle at 50% 20%, #431407 0%, #1c1917 45%, #0a0503 100%); }
+        .holo-panel { background: linear-gradient(145deg, rgba(28,25,23,0.95) 0%, rgba(10,5,3,0.98) 72%); border: 1px solid rgba(249,115,22,0.5); backdrop-filter: blur(12px) saturate(140%); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgba(69,26,3,0.6); }
+        .neural-canvas { background: #0f0e0d; border: 1px solid #451a03; border-radius: 8px; }
+        .holo-orb { position: absolute; border-radius: 50%; background: radial-gradient(circle at 32% 28%, rgba(251,146,60,0.95) 0%, rgba(249,115,22,0.75) 38%, rgba(180,83,38,0.35) 62%, transparent 82%); border: 1px solid rgba(254,215,170,0.65); box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25); pointer-events: auto; z-index: 45; transition: transform .1s, box-shadow .15s; cursor: pointer; animation: holoPulse 2.6s ease-in-out infinite; }
+        .holo-orb:hover { transform: scale(1.2); box-shadow: 0 0 26px rgba(249,115,22,0.95), 0 0 52px rgba(249,115,22,0.55); }
+        .holo-orb.top-hot { animation: holoPulse 1.1s ease-in-out infinite, topHotPulse 1.7s ease-in-out infinite; }
+        @keyframes holoPulse { 0%,100% { box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25); } 50% { box-shadow: 0 0 18px rgba(249,115,22,0.95), 0 0 40px rgba(249,115,22,0.6); } }
+        @keyframes topHotPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+        .neural-edge { stroke: #451a03; stroke-width: 1.8; opacity: .75; }
+        .neural-edge.pulse { stroke: #f97316; stroke-width: 3; animation: edgePulse 900ms ease-in-out 2; }
+        .ember { position: absolute; border-radius: 50%; background: radial-gradient(circle, #fb923c 0%, #f97316 40%, transparent 80%); box-shadow: 0 0 6px #f97316; pointer-events: none; z-index: 30; animation: emberFloat linear forwards; }
+        .fiery-gradient-text { background: linear-gradient(90deg, #ff6b35, #f97316, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hud-text { font-family: 'Space Grotesk', monospace; letter-spacing: 1.5px; }
+    </style>
+</head>
+<body class="bg-[#0a0503] text-amber-100 min-h-screen fiery-bg">
+    <div class="max-w-[1400px] mx-auto p-6">
+        <div class="flex items-center gap-4 mb-5">
+            <img src="data/jarvis-neural-logo.jpg" class="w-14 h-14 rounded-2xl border border-orange-900/70 object-cover" onerror="this.style.display='none'">
+            <div>
+                <div class="font-display text-4xl tracking-[-2.5px] font-semibold fiery-gradient-text">JARVIS NEURAL COMMAND CENTER</div>
+                <div class="text-orange-500/70 text-sm -mt-1 tracking-[1px] font-mono">INTERACTIVE HOLOGRAPHIC NEURAL INTERFACE DEMOS • EDIT &amp; SAVE ON DESKTOP</div>
+            </div>
+            <div class="ml-auto flex gap-2 text-xs">
+                <button onclick="injectLiveRipple()" class="px-5 py-2 bg-orange-600 hover:bg-orange-500 rounded-2xl font-bold">+ LIVE RIPPLE INJECTION</button>
+                <button onclick="resetAll()" class="px-4 py-2 border border-orange-800 hover:bg-zinc-950 rounded-2xl">RESET VIZ</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+            <!-- Primary Neural Map -->
+            <div class="xl:col-span-7 holo-panel rounded-3xl p-4 border border-orange-900/60">
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <div class="uppercase text-xs tracking-[2px] text-orange-400">PRIMARY NEURAL CONSTELLATION • HOT TOPICS + ECHO EDGES</div>
+                    <div class="text-[10px] text-orange-500/60 font-mono">HotScore formula live • Click nodes • Type in ASK to mutate</div>
+                </div>
+                <div class="relative" style="height: 440px;">
+                    <canvas id="main-map" class="neural-canvas w-full h-full rounded-2xl" width="920" height="440"></canvas>
+                    <div id="map-orbs" class="absolute inset-0" style="width:920px;height:440px; pointer-events:none;"></div>
+                </div>
+            </div>
+
+            <!-- Echo / Ripple Graph + Live Ticker -->
+            <div class="xl:col-span-5 flex flex-col gap-4">
+                <div class="holo-panel rounded-3xl p-4 border border-orange-900/60 flex-1">
+                    <div class="uppercase text-xs tracking-[2px] text-orange-400 mb-2">OUTLET ECHO CHAMBER GRAPH (from news_ripples)</div>
+                    <canvas id="echo-graph" class="neural-canvas w-full" width="420" height="178" style="height:178px;"></canvas>
+                </div>
+                <div class="holo-panel rounded-3xl p-4 border border-orange-900/60">
+                    <div class="uppercase text-xs tracking-[2px] text-orange-400 mb-1">LIVE RIPPLE TICKER (simulated RSS feed)</div>
+                    <div id="ticker" class="font-mono text-xs h-16 overflow-hidden text-orange-200/80 leading-tight"></div>
+                </div>
+            </div>
+
+            <!-- ASK JARVIS + Controls -->
+            <div class="xl:col-span-5 holo-panel rounded-3xl p-4 border border-orange-900/60">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="uppercase text-xs tracking-[2px] text-orange-400">ASK JARVIS (affects both maps)</div>
+                    <div class="flex-1 h-px bg-orange-900/50"></div>
+                </div>
+                <div class="flex gap-2">
+                    <input id="ask-input" class="flex-1 bg-zinc-950 border border-orange-900 rounded-2xl px-4 py-2.5 text-sm focus:border-orange-500" placeholder="e.g. border coordination or trump framing" onkeyup="if(event.key==='Enter') askJarvis()">
+                    <button onclick="askJarvis()" class="px-6 bg-gradient-to-r from-orange-600 to-red-700 rounded-2xl font-bold text-sm">SEND</button>
+                </div>
+                <div id="jarvis-out" class="mt-3 min-h-[68px] text-xs text-orange-100/85 bg-black/30 rounded-2xl p-3 border border-orange-900/40"></div>
+            </div>
+
+            <div class="xl:col-span-7 holo-panel rounded-3xl p-4 border border-orange-900/60">
+                <div class="uppercase text-xs tracking-[2px] text-orange-400 mb-2">HOT NEURON LIST (click to focus both visualizations)</div>
+                <div id="hot-list" class="grid grid-cols-2 md:grid-cols-3 gap-1.5 text-sm"></div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-[10px] text-orange-500/50 px-1 flex gap-3">
+            <div>These are standalone interactive examples of the neural interfaces. Open in browser, edit the HTML/JS directly on desktop, save — tell me the changes and I will fold the best parts into the main Narrative Forge site (index.html Live System Map + holo orbs).</div>
+            <div class="ml-auto">Uses same hot scoring + news_ripples logic as production. Fiery holo aesthetic preserved.</div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data (same spirit as main site news-synthesis + FORGE_DATA)
+        let ripples = [
+            {id:'r1', phrase:'humanitarian implementation hiccups', sim:0.82, outlets:['nyt','fox','crs','gao'], score:0.91},
+            {id:'r2', phrase:'coordinated law enforcement actions', sim:0.78, outlets:['justice','ap'], score:0.84},
+            {id:'r3', phrase:'pharma-adjacent health infrastructure', sim:0.91, outlets:['nyt','gao'], score:0.88},
+            {id:'r4', phrase:'border funding bill', sim:0.71, outlets:['wh','nyt'], score:0.79}
+        ];
+        let nodes = [
+            {id:'o1', label:'NYT', x:140, y:110, score:0.82, type:'outlet'},
+            {id:'o2', label:'Fox', x:480, y:90, score:0.89, type:'outlet'},
+            {id:'o3', label:'Justice PR', x:90, y:260, score:0.73, type:'outlet'},
+            {id:'o4', label:'CRS', x:290, y:300, score:0.68, type:'outlet'},
+            {id:'o5', label:'WH Press', x:60, y:150, score:0.82, type:'outlet'},
+            {id:'p1', label:'Trump', x:380, y:220, score:0.85, type:'pol'},
+            {id:'p2', label:'Biden', x:230, y:170, score:0.71, type:'pol'}
+        ];
+        let edges = [
+            {a:'o1', b:'o2', w:0.82}, {a:'o3', b:'o5', w:0.71},
+            {a:'o1', b:'o4', w:0.65}, {a:'p1', b:'o2', w:0.88}
+        ];
+
+        let mainCanvas, mainCtx, orbLayer;
+        let echoCanvas, echoCtx;
+        let selected = null;
+        let tickInterval = null;
+
+        function init() {
+            // Main map
+            mainCanvas = document.getElementById('main-map');
+            mainCtx = mainCanvas.getContext('2d');
+            orbLayer = document.getElementById('map-orbs');
+            mainCanvas.addEventListener('click', onMainClick);
+            mainCanvas.addEventListener('mousemove', onMainHover);
+
+            // Echo graph
+            echoCanvas = document.getElementById('echo-graph');
+            echoCtx = echoCanvas.getContext('2d');
+
+            spawnOrbs();
+            drawMain();
+            drawEchoGraph();
+            renderHotList();
+            startTicker();
+
+            // Initial selection
+            setTimeout(() => {
+                focusItem('r1');
+                addEmbers(4);
+            }, 380);
+
+            // Keyboard hint
+            console.log('%c[JARVIS COMMAND CENTER DEMO] Edit this file freely on desktop. Save updates and tell me to merge improvements back into the live Narrative Forge site.', 'color:#fb923c');
+        }
+
+        function spawnOrbs() {
+            orbLayer.innerHTML = '';
+            const all = [...nodes, ...ripples.map(r => ({...r, x: 110 + Math.random()*700, y: 70 + Math.random()*300, isRipple:true}))];
+            all.forEach(item => {
+                const s = item.score || item.sim || 0.6;
+                const size = 12 + s * 15;
+                const div = document.createElement('div');
+                div.className = 'holo-orb ' + (s > 0.82 ? 'top-hot' : '');
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.left = (item.x || 200) + 'px';
+                div.style.top = (item.y || 140) + 'px';
+                div.style.opacity = 0.75 + s * 0.2;
+                div.onclick = (e) => { e.stopPropagation(); focusItem(item.id); };
+                div.title = (item.label || item.phrase) + ' • ' + Math.round((item.score||item.sim)*100) + '%';
+                orbLayer.appendChild(div);
+                item._el = div;
+            });
+        }
+
+        function drawMain() {
+            const c = mainCtx; const w = mainCanvas.width; const h = mainCanvas.height;
+            c.clearRect(0,0,w,h);
+
+            // faint field
+            c.strokeStyle = 'rgba(69,26,3,0.2)';
+            c.lineWidth = 1;
+            for (let i=30; i<w; i+=70) { c.beginPath(); c.moveTo(i,15); c.lineTo(i,h-15); c.stroke(); }
+            for (let i=30; i<h; i+=70) { c.beginPath(); c.moveTo(15,i); c.lineTo(w-15,i); c.stroke(); }
+
+            // edges
+            edges.forEach(ed => {
+                const a = nodes.find(n=>n.id===ed.a) || ripples.find(r=>r.id===ed.a);
+                const b = nodes.find(n=>n.id===ed.b) || ripples.find(r=>r.id===ed.b);
+                if (!a || !b) return;
+                const ax = a.x || 200, ay = a.y || 140;
+                const bx = b.x || 200, by = b.y || 140;
+                c.strokeStyle = ed.w > 0.75 ? '#f97316' : '#451a03';
+                c.lineWidth = 1.5 + ed.w * 2.2;
+                c.beginPath(); c.moveTo(ax+8, ay+8); c.lineTo(bx+8, by+8); c.stroke();
+            });
+
+            // flowing dots on strong edges
+            if (Math.random() < .7) {
+                edges.filter(e=>e.w>0.7).forEach(ed => {
+                    const a = nodes.find(n=>n.id===ed.a) || ripples.find(r=>r.id===ed.a);
+                    const b = nodes.find(n=>n.id===ed.b) || ripples.find(r=>r.id===ed.b);
+                    if (!a || !b) return;
+                    const t = ((Date.now()/900) % 1);
+                    const px = a.x + (b.x - a.x)*t + 8;
+                    const py = a.y + (b.y - a.y)*t + 8;
+                    c.fillStyle = '#fb923c';
+                    c.beginPath(); c.arc(px, py, 2.2, 0, Math.PI*2); c.fill();
+                });
+            }
+            requestAnimationFrame(drawMain);
+        }
+
+        function drawEchoGraph() {
+            const c = echoCtx; const w = echoCanvas.width; const h = echoCanvas.height;
+            c.clearRect(0,0,w,h);
+            c.fillStyle = 'rgba(69,26,3,0.3)';
+            c.fillRect(0, h*0.5, w, 1);
+
+            const outlets = ['nyt','fox','justice','crs','wh','ap'];
+            const pos = {};
+            outlets.forEach((o,i) => { pos[o] = {x: 40 + i*(w-80)/5 , y: h*0.35 + (i%2)* (h*0.3) }; });
+
+            // simple nodes
+            outlets.forEach(o => {
+                const p = pos[o];
+                c.fillStyle = '#451a03';
+                c.beginPath(); c.arc(p.x, p.y, 11, 0, Math.PI*2); c.fill();
+                c.fillStyle = '#fed7aa';
+                c.font = '9px monospace';
+                c.fillText(o.toUpperCase(), p.x-12, p.y+3);
+            });
+
+            // connections from current ripples
+            ripples.forEach(r => {
+                if (!r.outlets || r.outlets.length < 2) return;
+                for (let i=0; i<r.outlets.length-1; i++) {
+                    const a = pos[r.outlets[i].toLowerCase()] || pos['nyt'];
+                    const b = pos[r.outlets[i+1].toLowerCase()] || pos['fox'];
+                    if (!a || !b) continue;
+                    c.strokeStyle = 'rgba(249,115,22,0.6)';
+                    c.lineWidth = 1 + r.sim * 2;
+                    c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke();
+                }
+            });
+        }
+
+        function focusItem(id) {
+            selected = id;
+            // highlight orbs
+            Array.from(orbLayer.children).forEach(el => el.style.boxShadow = '');
+            const target = [...nodes, ...ripples].find(n => n.id === id);
+            if (target && target._el) {
+                target._el.style.boxShadow = '0 0 26px #fed7aa, 0 0 48px rgba(249,115,22,0.9)';
+            }
+            // pulse related edges in main
+            edges.forEach(ed => {
+                if (ed.a === id || ed.b === id) {
+                    ed._pulse = true;
+                    setTimeout(()=>{ if(ed) ed._pulse=false; }, 650);
+                }
+            });
+            renderHotList();
+        }
+
+        function onMainClick(e) {
+            const rect = mainCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            let hit = null;
+            [...nodes, ...ripples].forEach(item => {
+                const ix = item.x || 200, iy = item.y || 140;
+                if (Math.hypot(ix - mx, iy - my) < 18) hit = item;
+            });
+            if (hit) focusItem(hit.id);
+        }
+        function onMainHover(e) {
+            // could add tooltip but skip for brevity
+        }
+
+        function renderHotList() {
+            const el = document.getElementById('hot-list');
+            el.innerHTML = '';
+            const all = [...ripples, ...nodes].sort((a,b)=>(b.score||b.sim||0)-(a.score||a.sim||0));
+            all.slice(0,6).forEach(item => {
+                const d = document.createElement('div');
+                d.className = 'px-2 py-1 rounded-xl border text-xs cursor-pointer flex justify-between ' + (selected===item.id ? 'border-orange-500 bg-orange-950/30' : 'border-orange-900/50 hover:bg-zinc-950');
+                d.innerHTML = `<div>${item.label || item.phrase}</div><div class="font-mono text-orange-400">${Math.round((item.score||item.sim||0)*100)}%</div>`;
+                d.onclick = () => focusItem(item.id);
+                el.appendChild(d);
+            });
+        }
+
+        function askJarvis() {
+            const q = document.getElementById('ask-input').value.trim().toLowerCase();
+            const out = document.getElementById('jarvis-out');
+            if (!q) { out.textContent = 'Enter a topic (border, coordinated, trump, hiccups...)'; return; }
+
+            let found = false;
+            ripples.forEach(r => {
+                if ((r.phrase || '').toLowerCase().includes(q) || q.includes((r.phrase||'').split(' ')[0])) {
+                    focusItem(r.id);
+                    // spawn extra visual response orb
+                    spawnResponseOrb(r, q);
+                    found = true;
+                }
+            });
+            nodes.forEach(n => {
+                if ((n.label||'').toLowerCase().includes(q)) { focusItem(n.id); found = true; }
+            });
+
+            out.innerHTML = found 
+                ? `JARVIS: High echo cluster on <span class="text-orange-300">"${q}"</span>. Neural connections strengthened. <span class="text-orange-500/50 text-[10px]">(sim)</span>`
+                : `No strong match. Try phrases from the hot list.`;
+
+            document.getElementById('ask-input').value = '';
+            addEmbers(7);
+        }
+
+        function spawnResponseOrb(base, query) {
+            const layer = orbLayer;
+            const orb = document.createElement('div');
+            orb.className = 'holo-orb top-hot';
+            const sz = 15;
+            orb.style.width = sz+'px'; orb.style.height = sz+'px';
+            orb.style.left = (base.x || 280) + (Math.random()*80-40) + 'px';
+            orb.style.top = (base.y || 180) + (Math.random()*60-30) + 'px';
+            orb.style.opacity = '0.9';
+            orb.title = 'JARVIS: ' + query;
+            orb.onclick = () => { focusItem(base.id); orb.remove(); };
+            layer.appendChild(orb);
+            setTimeout(()=>{ if(orb.parentNode) orb.parentNode.removeChild(orb); }, 8500);
+        }
+
+        function injectLiveRipple() {
+            const phrases = ["new oversight memo", "election integrity finding", "funding coordination", "press framing shift"];
+            const p = phrases[Math.floor(Math.random()*phrases.length)];
+            const newR = {id:'live'+Date.now(), phrase: p, sim:0.55+Math.random()*0.4, outlets:['wh','reuters'], score:0.68+Math.random()*0.3};
+            ripples.push(newR);
+            // add visual node too
+            nodes.push({id:newR.id, label:p.slice(0,18), x:160+Math.random()*520, y:90+Math.random()*260, score:newR.score, type:'ripple'});
+
+            spawnOrbs();
+            drawEchoGraph();
+            renderHotList();
+            addEmbers(11);
+            focusItem(newR.id);
+
+            // also add a ticker entry
+            addTickerItem('NEW: ' + p + ' (0.' + Math.floor(newR.sim*100) + ' echo)');
+        }
+
+        function startTicker() {
+            const box = document.getElementById('ticker');
+            if (tickInterval) clearInterval(tickInterval);
+            addTickerItem('System online. Neural maps synced to news_ripples.');
+            tickInterval = setInterval(() => {
+                if (Math.random() < .55) {
+                    const sample = ripples[Math.floor(Math.random()*ripples.length)];
+                    addTickerItem('LIVE: ' + (sample.phrase || 'ripple') + ' • ' + Math.round((sample.score||sample.sim)*100) + '%');
+                }
+            }, 5200);
+        }
+
+        let tickerLines = [];
+        function addTickerItem(txt) {
+            const box = document.getElementById('ticker');
+            tickerLines.unshift(txt);
+            if (tickerLines.length > 5) tickerLines.pop();
+            box.innerHTML = tickerLines.map(t => `<div class="truncate py-px opacity-80">• ${t}</div>`).join('');
+        }
+
+        function addEmbers(n=8) {
+            const layer = orbLayer;
+            for (let i=0; i<n; i++) {
+                const e = document.createElement('div');
+                e.className = 'ember';
+                const s = 2.5 + Math.random()*5;
+                e.style.width = s+'px'; e.style.height = s+'px';
+                e.style.left = Math.random()*920 + 'px';
+                e.style.top = (30 + Math.random()*380) + 'px';
+                e.style.opacity = 0.65 + Math.random()*0.3;
+                layer.appendChild(e);
+                setTimeout(()=>{ if(e.parentNode) e.parentNode.removeChild(e); }, 650 + Math.random()*380);
+            }
+        }
+
+        function resetAll() {
+            ripples = [
+                {id:'r1', phrase:'humanitarian implementation hiccups', sim:0.82, outlets:['nyt','fox','crs','gao'], score:0.91},
+                {id:'r2', phrase:'coordinated law enforcement actions', sim:0.78, outlets:['justice','ap'], score:0.84},
+                {id:'r3', phrase:'pharma-adjacent health infrastructure', sim:0.91, outlets:['nyt','gao'], score:0.88},
+                {id:'r4', phrase:'border funding bill', sim:0.71, outlets:['wh','nyt'], score:0.79}
+            ];
+            nodes = [
+                {id:'o1', label:'NYT', x:140, y:110, score:0.82, type:'outlet'},
+                {id:'o2', label:'Fox', x:480, y:90, score:0.89, type:'outlet'},
+                {id:'o3', label:'Justice PR', x:90, y:260, score:0.73, type:'outlet'},
+                {id:'o4', label:'CRS', x:290, y:300, score:0.68, type:'outlet'},
+                {id:'o5', label:'WH Press', x:60, y:150, score:0.82, type:'outlet'},
+                {id:'p1', label:'Trump', x:380, y:220, score:0.85, type:'pol'},
+                {id:'p2', label:'Biden', x:230, y:170, score:0.71, type:'pol'}
+            ];
+            edges = [{a:'o1', b:'o2', w:0.82}, {a:'o3', b:'o5', w:0.71}, {a:'o1', b:'o4', w:0.65}, {a:'p1', b:'o2', w:0.88}];
+            selected = null;
+            spawnOrbs();
+            drawEchoGraph();
+            renderHotList();
+            document.getElementById('jarvis-out').innerHTML = '';
+            document.getElementById('ask-input').value = '';
+            document.getElementById('ticker').innerHTML = '';
+        }
+
+        function initEmbersGlobal() {
+            // expose for other buttons if wanted
+            window.__jarvisAddEmbers = addEmbers;
+        }
+
+        window.onload = () => { init(); initEmbersGlobal(); };
+    </script>
+</body>
+</html>

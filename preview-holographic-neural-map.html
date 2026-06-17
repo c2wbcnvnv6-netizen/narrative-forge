@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS • Holographic Neural Map • Interactive Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
+        
+        .fiery-bg { background: radial-gradient(circle at 50% 20%, #431407 0%, #1c1917 45%, #0a0503 100%); }
+        .holo-canvas { background: #11100f; border: 1px solid #451a03; border-radius: 12px; cursor: crosshair; box-shadow: 0 0 30px -10px rgba(249,115,22,0.3); }
+        
+        .holo-orb {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, rgba(251,146,60,0.95) 0%, rgba(249,115,22,0.75) 38%, rgba(180,83,38,0.35) 62%, transparent 82%);
+            border: 1px solid rgba(254,215,170,0.65);
+            box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25), inset 0 8px 6px rgba(251,146,60,0.3);
+            pointer-events: auto; z-index: 45; transition: transform 0.12s ease, box-shadow 0.18s; cursor: pointer;
+            animation: holoPulse 2.8s ease-in-out infinite;
+        }
+        .holo-orb:hover { transform: scale(1.18); box-shadow: 0 0 22px rgba(249,115,22,0.95), 0 0 48px rgba(249,115,22,0.55), 0 0 8px #fed7aa; }
+        .holo-orb.top-hot { animation: holoPulse 1.32s ease-in-out infinite, topHotPulse 1.9s ease-in-out infinite; box-shadow: 0 0 34px rgba(249,115,22,0.99), 0 0 72px rgba(249,115,22,0.78), 0 0 14px #fed7aa; }
+        
+        .neural-line { stroke: #451a03; stroke-width: 1.5; opacity: 0.7; transition: all 0.2s; }
+        .neural-line.pulse { animation: neuralPulse 1.2s ease-in-out infinite; stroke: #f97316; stroke-width: 2.5; }
+        
+        .ember { position: absolute; border-radius: 50%; background: radial-gradient(circle, #fb923c 0%, #f97316 40%, transparent 80%); box-shadow: 0 0 6px #f97316; pointer-events: none; z-index: 1; animation: emberFloat linear forwards; }
+        
+        @keyframes holoPulse { 0%,100% { box-shadow: 0 0 14px rgba(249,115,22,0.85), 0 0 32px rgba(249,115,22,0.45), inset 0 -1px 4px rgba(255,255,255,0.25); } 50% { box-shadow: 0 0 18px rgba(249,115,22,0.95), 0 0 40px rgba(249,115,22,0.6), inset 0 -1px 4px rgba(255,255,255,0.25); } }
+        @keyframes topHotPulse { 0%,100% { transform: scale(1); } 48% { transform: scale(1.11); } }
+        @keyframes neuralPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+        @keyframes emberFloat { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(-120px) scale(0.2); opacity: 0; } }
+        
+        .jarvis-glass { background: linear-gradient(145deg, rgba(28,25,23,0.95) 0%, rgba(10,5,3,0.98) 72%); border: 1px solid rgba(249,115,22,0.5); backdrop-filter: blur(14px) saturate(140%); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.6), 0 0 0 1px rgba(69,26,3,0.7); }
+        
+        .fiery-gradient-text { background: linear-gradient(90deg, #ff6b35, #f97316, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="bg-[#0a0503] text-amber-100 min-h-screen fiery-bg">
+    <div class="max-w-[1280px] mx-auto px-6 py-8">
+        <!-- Header with logo -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-4">
+                <img src="data/jarvis-neural-logo.jpg" alt="JARVIS Neural Logo" class="w-12 h-12 rounded-xl object-cover border border-orange-900/60" onerror="this.style.display='none'">
+                <div>
+                    <div class="font-display text-3xl tracking-[-2px] font-semibold fiery-gradient-text">JARVIS • NEURAL MAP</div>
+                    <div class="text-[10px] text-orange-500/80 -mt-1 font-mono tracking-[2px]">HOLOGRAPHIC INTERFACE DEMO • PRELIM</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <div class="px-3 py-1 bg-zinc-950 border border-orange-900/60 rounded-2xl flex items-center gap-2">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span>LIVE SIM • <span id="node-count">24</span> NODES</span>
+                </div>
+                <button onclick="simulateNewRipple()" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 active:bg-orange-700 text-xs font-bold rounded-2xl transition flex items-center gap-2">
+                    <span>⟳ INJECT LIVE RIPPLE</span>
+                </button>
+                <button onclick="resetDemo()" class="px-3 py-2 text-xs border border-orange-800 hover:bg-zinc-950 rounded-2xl">RESET</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+            <!-- Main Canvas Map -->
+            <div class="lg:col-span-3 relative">
+                <div class="flex items-center justify-between mb-2 px-1">
+                    <div>
+                        <span class="text-xl font-display tracking-tight">Holographic Neural Constellation</span>
+                        <span class="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-red-900/60 border border-red-800 text-red-300">HOT TOPICS FROM NEWS_RIPPLES</span>
+                    </div>
+                    <div class="text-[10px] text-orange-400/70 font-mono">Drag orbs • Click to focus • HotScore = framing×0.35 + echo×0.25 + fresh×0.2 + repeat×0.2</div>
+                </div>
+                
+                <div class="relative holo-orb-container" style="position: relative;">
+                    <canvas id="neural-canvas" class="holo-canvas w-full" width="820" height="520" style="width:100%; height:520px;"></canvas>
+                    <!-- Orbs are absolutely positioned divs over canvas for easy interaction -->
+                    <div id="orbs-layer" class="absolute inset-0 pointer-events-none" style="width:820px; height:520px;"></div>
+                </div>
+                
+                <div class="mt-2 text-[10px] text-orange-400/60 flex gap-4 px-1">
+                    <div>Nodes = Hot phrases / outlets / pols (size = hotScore)</div>
+                    <div>Edges = Echo / coordination strength (pulse on high sim)</div>
+                    <div class="flex-1"></div>
+                    <div class="cursor-pointer underline" onclick="focusHighEcho()">FOCUS HIGH-ECHO CLUSTER</div>
+                </div>
+            </div>
+
+            <!-- Side Panel: Hot Topics + ASK JARVIS -->
+            <div class="lg:col-span-2 space-y-3">
+                <div class="jarvis-glass border border-orange-900/60 rounded-3xl p-4">
+                    <div class="uppercase tracking-widest text-xs text-orange-400 mb-2">TOP HOT NEURONS (LIVE FROM SYNTHESIS)</div>
+                    <div id="hot-list" class="space-y-1.5 text-sm max-h-[210px] overflow-auto pr-1"></div>
+                </div>
+
+                <div class="jarvis-glass border border-orange-900/60 rounded-3xl p-4">
+                    <div class="uppercase tracking-widest text-xs text-orange-400 mb-1.5">ASK JARVIS</div>
+                    <div class="flex gap-2">
+                        <input id="jarvis-input" type="text" placeholder="e.g. show border funding coordination or trump framing" 
+                               class="flex-1 bg-zinc-950 border border-orange-900 text-sm rounded-2xl px-3 py-2 focus:outline-none focus:border-orange-600" 
+                               onkeyup="if (event.key === 'Enter') askJarvis()">
+                        <button onclick="askJarvis()" class="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-700 text-white text-xs font-bold rounded-2xl">QUERY</button>
+                    </div>
+                    <div id="jarvis-response" class="mt-2 text-xs text-orange-200/80 min-h-[42px]"></div>
+                    <div class="text-[10px] text-orange-500/50 mt-1">Simulates insight + auto-highlights matching neurons + spawns contextual orbs</div>
+                </div>
+
+                <div class="text-[10px] bg-zinc-950 border border-orange-900/50 rounded-2xl p-3 text-orange-300/70">
+                    <div class="font-mono mb-1">DATA DRIVEN • EMBEDDED NEWS_RIPPLES + SYNTHESIS</div>
+                    <div>Matches the production Narrative Forge canvas logic. Hot topics pulled from framing, echo chamber scores, repeated phrases (e.g. "humanitarian implementation hiccups" 0.82 cross-outlet).</div>
+                    <div class="mt-1">Edit this file locally on desktop • Save updates • Tell me changes to sync back to main site.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embedded sample data (from news-synthesis + sample)
+        const SAMPLE_RIPPLES = [
+            { id: 'rip-1', phrase: "humanitarian implementation hiccups", similarity: 0.82, outlets: ["legacy-media-nyt","fox-news","crs-reports","gao-reports"], hotScore: 0.91, type: 'phrase' },
+            { id: 'rip-2', phrase: "coordinated law enforcement actions", similarity: 0.78, outlets: ["justice-pr","ap-news"], hotScore: 0.84, type: 'phrase' },
+            { id: 'rip-3', phrase: "border funding bill", similarity: 0.71, outlets: ["whitehouse-press","legacy-media-nyt"], hotScore: 0.79, type: 'phrase' },
+            { id: 'rip-4', phrase: "pharma-adjacent health infrastructure", similarity: 0.91, outlets: ["legacy-media-nyt","gao-reports"], hotScore: 0.88, type: 'phrase' }
+        ];
+        const SAMPLE_NODES = [
+            { id: 'out-nyt', label: 'NYT / Legacy', type: 'outlet', x: 180, y: 140, influence: 0.9, hotScore: 0.82 },
+            { id: 'out-fox', label: 'Fox News', type: 'outlet', x: 520, y: 110, influence: 0.75, hotScore: 0.89 },
+            { id: 'out-justice', label: 'DOJ / Justice PR', type: 'outlet', x: 120, y: 280, influence: 0.85, hotScore: 0.73 },
+            { id: 'out-crs', label: 'CRS Reports', type: 'outlet', x: 310, y: 320, influence: 0.6, hotScore: 0.68 },
+            { id: 'out-wh', label: 'WH Press', type: 'outlet', x: 70, y: 180, influence: 0.85, hotScore: 0.82 },
+            { id: 'pol-trump', label: 'Trump', type: 'pol', x: 420, y: 260, influence: 0.92, hotScore: 0.85 },
+            { id: 'pol-biden', label: 'Biden', type: 'pol', x: 260, y: 210, influence: 0.78, hotScore: 0.71 }
+        ];
+        let nodes = [...SAMPLE_NODES];
+        let edges = [
+            { from: 'out-nyt', to: 'out-fox', strength: 0.82, label: 'hiccups' },
+            { from: 'out-justice', to: 'out-wh', strength: 0.71, label: 'coordinated' },
+            { from: 'out-nyt', to: 'out-crs', strength: 0.65, label: 'funding ripple' },
+            { from: 'pol-trump', to: 'out-fox', strength: 0.88, label: 'framing' }
+        ];
+        let orbs = [];
+        let canvas, ctx, orbsLayer;
+        let selectedId = null;
+
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+        function computeHot(item) {
+            // Same formula as production
+            const framing = item.hotScore || (item.similarity || 0.6);
+            let echoBoost = 0.35;
+            edges.forEach(ed => {
+                if (ed.from === item.id || ed.to === item.id) echoBoost = Math.max(echoBoost, ed.strength * 0.9);
+            });
+            const fresh = 0.6; // static for demo
+            const repeat = (item.phrase ? item.phrase.split(' ').length / 6 : 0.4);
+            return clamp(framing * 0.35 + echoBoost * 0.25 + fresh * 0.2 + repeat * 0.2, 0.28, 0.98);
+        }
+
+        function initCanvas() {
+            canvas = document.getElementById('neural-canvas');
+            ctx = canvas.getContext('2d', { alpha: true });
+            orbsLayer = document.getElementById('orbs-layer');
+            canvas.width = 820;
+            canvas.height = 520;
+            
+            // Mouse interaction on canvas for selection
+            canvas.addEventListener('click', handleCanvasClick);
+            canvas.addEventListener('mousemove', handleCanvasHover);
+            
+            // Keyboard for demo
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault();
+                    document.getElementById('jarvis-input').focus();
+                }
+            });
+            
+            spawnOrbs();
+            draw();
+            renderHotList();
+            
+            // Auto pulse a connection every 8s for liveness
+            setInterval(() => {
+                if (edges.length) {
+                    const ed = edges[Math.floor(Math.random()*edges.length)];
+                    pulseEdge(ed);
+                }
+            }, 8000);
+        }
+
+        function spawnOrbs() {
+            orbsLayer.innerHTML = '';
+            orbs = [];
+            
+            const all = [...nodes, ...SAMPLE_RIPPLES.map(r => ({...r, x: 120 + Math.random()*580, y: 80 + Math.random()*360 }))];
+            
+            all.forEach((item, i) => {
+                const score = item.hotScore || computeHot(item);
+                const size = 11 + Math.round(score * 17);
+                
+                const orb = document.createElement('div');
+                orb.className = `holo-orb ${score > 0.82 ? 'top-hot' : ''}`;
+                orb.style.width = size + 'px';
+                orb.style.height = size + 'px';
+                orb.style.left = (item.x || (120 + (i % 5) * 140)) + 'px';
+                orb.style.top = (item.y || (80 + Math.floor(i/5) * 90)) + 'px';
+                orb.style.opacity = (0.72 + score * 0.22).toFixed(2);
+                orb.title = `${item.label || item.phrase} • HOT ${Math.round(score*100)}%`;
+                
+                orb.onclick = (ev) => {
+                    ev.stopPropagation();
+                    selectNode(item.id || item.phrase);
+                    if (window.__addEmbersDemo) window.__addEmbersDemo(6);
+                };
+                
+                orbsLayer.appendChild(orb);
+                orbs.push({ el: orb, data: item, x: parseFloat(orb.style.left), y: parseFloat(orb.style.top), size, score });
+            });
+            
+            document.getElementById('node-count').textContent = orbs.length;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Subtle grid / neural field
+            ctx.strokeStyle = 'rgba(69,26,3,0.25)';
+            ctx.lineWidth = 1;
+            for (let x=40; x<canvas.width; x+=80) {
+                ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, canvas.height-20); ctx.stroke();
+            }
+            for (let y=40; y<canvas.height; y+=80) {
+                ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(canvas.width-20, y); ctx.stroke();
+            }
+            
+            // Draw edges
+            edges.forEach(ed => {
+                const from = orbs.find(o => o.data.id === ed.from || o.data.phrase === ed.from || o.data.label === ed.from);
+                const to = orbs.find(o => o.data.id === ed.to || o.data.phrase === ed.to || o.data.label === ed.to);
+                if (!from || !to) return;
+                
+                ctx.strokeStyle = ed.strength > 0.75 ? 'rgba(251,146,60,0.85)' : '#451a03';
+                ctx.lineWidth = 1.2 + ed.strength * 1.8;
+                ctx.beginPath();
+                ctx.moveTo(from.x + from.size/2, from.y + from.size/2);
+                ctx.lineTo(to.x + to.size/2, to.y + to.size/2);
+                ctx.stroke();
+                
+                // Strength label
+                const mx = (from.x + to.x) / 2 + 6;
+                const my = (from.y + to.y) / 2 - 4;
+                ctx.fillStyle = '#78350f';
+                ctx.font = '9px monospace';
+                ctx.fillText((ed.strength * 100 | 0) + '%', mx, my);
+            });
+            
+            // Occasionally draw flowing particles on strong edges (neural flow)
+            if (Math.random() < 0.6) {
+                edges.forEach(ed => {
+                    if (ed.strength < 0.7) return;
+                    const from = orbs.find(o => o.data.id === ed.from || o.data.phrase === ed.from);
+                    const to = orbs.find(o => o.data.id === ed.to || o.data.phrase === ed.to);
+                    if (!from || !to) return;
+                    const t = (Date.now() % 1400) / 1400;
+                    const px = from.x + (to.x - from.x) * t + from.size/2;
+                    const py = from.y + (to.y - from.y) * t + from.size/2;
+                    ctx.fillStyle = 'rgba(251,146,60,0.9)';
+                    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI*2); ctx.fill();
+                });
+            }
+            
+            requestAnimationFrame(draw);
+        }
+
+        function pulseEdge(ed) {
+            // Temporary visual pulse on a specific edge by re-drawing stronger for a moment
+            const origStrength = ed.strength;
+            ed.strength = Math.min(0.99, ed.strength + 0.25);
+            setTimeout(() => { ed.strength = origStrength; }, 620);
+        }
+
+        function selectNode(id) {
+            selectedId = id;
+            // Highlight orbs
+            orbs.forEach(o => {
+                const isMatch = (o.data.id === id || o.data.phrase === id || o.data.label === id);
+                o.el.style.boxShadow = isMatch ? '0 0 26px #fed7aa, 0 0 52px rgba(249,115,22,0.9)' : '';
+                o.el.style.zIndex = isMatch ? '60' : '45';
+            });
+            
+            // Pulse related edges
+            edges.forEach(ed => {
+                if (ed.from === id || ed.to === id || (SAMPLE_RIPPLES.find(r => r.phrase === id) && (ed.from.includes('out') || ed.to.includes('out')))) {
+                    pulseEdge(ed);
+                }
+            });
+            
+            // Show quick info
+            const item = [...nodes, ...SAMPLE_RIPPLES].find(n => n.id === id || n.phrase === id || n.label === id);
+            if (item) {
+                const resp = document.getElementById('jarvis-response');
+                resp.innerHTML = `<span class="text-orange-400">SELECTED:</span> ${item.label || item.phrase} <span class="text-[10px] text-orange-500/60">— click ASK or type query</span>`;
+            }
+        }
+
+        function handleCanvasClick(e) {
+            const rect = canvas.getBoundingClientRect();
+            const cx = e.clientX - rect.left;
+            const cy = e.clientY - rect.top;
+            
+            let closest = null, minDist = 28;
+            orbs.forEach(o => {
+                const dx = (o.x + o.size/2) - cx;
+                const dy = (o.y + o.size/2) - cy;
+                const d = Math.hypot(dx, dy);
+                if (d < minDist) { minDist = d; closest = o; }
+            });
+            if (closest) selectNode(closest.data.id || closest.data.phrase || closest.data.label);
+        }
+        
+        function handleCanvasHover(e) {
+            const rect = canvas.getBoundingClientRect();
+            const cx = e.clientX - rect.left;
+            const cy = e.clientY - rect.top;
+            canvas.style.cursor = 'default';
+            orbs.forEach(o => {
+                const dx = (o.x + o.size/2) - cx;
+                const dy = (o.y + o.size/2) - cy;
+                if (Math.hypot(dx, dy) < 22) canvas.style.cursor = 'pointer';
+            });
+        }
+
+        function renderHotList() {
+            const container = document.getElementById('hot-list');
+            container.innerHTML = '';
+            const sorted = [...SAMPLE_RIPPLES, ...nodes].sort((a,b) => (b.hotScore||0) - (a.hotScore||0)).slice(0,6);
+            
+            sorted.forEach(item => {
+                const score = Math.round((item.hotScore || computeHot(item)) * 100);
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between px-2.5 py-1 rounded-xl border cursor-pointer text-xs ${selectedId === (item.id || item.phrase) ? 'border-orange-500 bg-orange-950/40' : 'border-orange-900/60 hover:bg-zinc-950'}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono text-[10px] text-orange-400">${score}%</span>
+                        <span class="truncate max-w-[210px]">${item.label || item.phrase}</span>
+                    </div>
+                    <span class="text-[10px] px-1.5 py-px bg-zinc-900 rounded text-orange-300">${item.type || 'ripple'}</span>
+                `;
+                div.onclick = () => selectNode(item.id || item.phrase || item.label);
+                container.appendChild(div);
+            });
+        }
+
+        function askJarvis() {
+            const input = document.getElementById('jarvis-input').value.trim().toLowerCase();
+            const resp = document.getElementById('jarvis-response');
+            if (!input) { resp.textContent = 'Type a topic, phrase, or pol name...'; return; }
+            
+            // Simple "AI" sim: match against data and highlight
+            let matched = false;
+            [...SAMPLE_RIPPLES, ...nodes].forEach(item => {
+                const text = (item.phrase || item.label || '').toLowerCase();
+                if (text.includes(input) || input.includes(text.split(' ')[0])) {
+                    selectNode(item.id || item.phrase || item.label);
+                    matched = true;
+                    // Spawn extra contextual orb near center
+                    spawnContextOrb(item, input);
+                }
+            });
+            
+            if (matched) {
+                resp.innerHTML = `Insight: High coordination on <span class="text-orange-300">"${input}"</span>. Echo cluster activated. <span class="text-[10px] text-orange-500/50">(simulated JARVIS response)</span>`;
+                if (window.__addEmbersDemo) window.__addEmbersDemo(9);
+            } else {
+                resp.innerHTML = `No direct match. Try "hiccups", "border", "trump", or "coordinated". <span class="text-[10px] text-orange-500/50">(demo)</span>`;
+            }
+            
+            // Clear input after short delay
+            setTimeout(() => { document.getElementById('jarvis-input').value = ''; }, 1600);
+        }
+
+        function spawnContextOrb(baseItem, query) {
+            // Add a temporary "response" orb
+            const layer = document.getElementById('orbs-layer');
+            const orb = document.createElement('div');
+            orb.className = 'holo-orb top-hot';
+            const size = 18;
+            const baseX = (baseItem.x || 300) + (Math.random()-0.5)*120;
+            const baseY = (baseItem.y || 200) + (Math.random()-0.5)*80;
+            orb.style.width = size+'px'; orb.style.height = size+'px';
+            orb.style.left = baseX + 'px'; orb.style.top = baseY + 'px';
+            orb.style.opacity = '0.95';
+            orb.title = `JARVIS RESPONSE: ${query}`;
+            
+            orb.onclick = () => {
+                selectNode(baseItem.id || baseItem.phrase);
+                orb.remove();
+            };
+            layer.appendChild(orb);
+            
+            // Auto fade after 9s
+            setTimeout(() => { if (orb.parentNode) orb.parentNode.removeChild(orb); }, 9000);
+        }
+
+        function simulateNewRipple() {
+            // Live injection like the main site's poll +5
+            const newPhrase = "new " + ["security memorandum","election impact","oversight finding","funding ripple"][Math.floor(Math.random()*4)];
+            const newItem = {
+                id: 'live-' + Date.now(),
+                phrase: newPhrase,
+                similarity: 0.6 + Math.random()*0.35,
+                outlets: ["whitehouse-press", "reuters"],
+                hotScore: 0.7 + Math.random()*0.28,
+                type: 'phrase',
+                x: 180 + Math.random()*480,
+                y: 90 + Math.random()*340
+            };
+            SAMPLE_RIPPLES.push(newItem);
+            
+            // Add node representation too
+            nodes.push({ id: newItem.id, label: newPhrase.slice(0,22), type: 'ripple', x: newItem.x, y: newItem.y, influence: 0.65, hotScore: newItem.hotScore });
+            
+            // Refresh visuals
+            spawnOrbs();
+            renderHotList();
+            
+            // Ember burst
+            if (window.__addEmbersDemo) window.__addEmbersDemo(12);
+            
+            // Auto select the new one
+            setTimeout(() => selectNode(newItem.id), 80);
+        }
+
+        function focusHighEcho() {
+            // Focus the strongest cluster (hiccups example)
+            selectNode("humanitarian implementation hiccups");
+            edges.forEach(ed => { if (ed.strength > 0.65) pulseEdge(ed); });
+            if (window.__addEmbersDemo) window.__addEmbersDemo(7);
+        }
+
+        function resetDemo() {
+            SAMPLE_RIPPLES.length = 4; // keep original 4
+            nodes = [...SAMPLE_NODES];
+            edges = [
+                { from: 'out-nyt', to: 'out-fox', strength: 0.82, label: 'hiccups' },
+                { from: 'out-justice', to: 'out-wh', strength: 0.71, label: 'coordinated' },
+                { from: 'out-nyt', to: 'out-crs', strength: 0.65, label: 'funding ripple' },
+                { from: 'pol-trump', to: 'out-fox', strength: 0.88, label: 'framing' }
+            ];
+            selectedId = null;
+            spawnOrbs();
+            renderHotList();
+            document.getElementById('jarvis-response').innerHTML = '';
+            document.getElementById('jarvis-input').value = '';
+        }
+
+        function initEmbersDemo() {
+            // Simple ember burst helper for this demo (mirrors main site)
+            window.__addEmbersDemo = function(count = 8) {
+                const layer = document.getElementById('orbs-layer');
+                for (let i = 0; i < count; i++) {
+                    const e = document.createElement('div');
+                    e.className = 'ember';
+                    const s = 2 + Math.random() * 4.5;
+                    e.style.width = s + 'px'; e.style.height = s + 'px';
+                    e.style.left = (Math.random() * 820) + 'px';
+                    e.style.top = (40 + Math.random() * 440) + 'px';
+                    e.style.opacity = (0.6 + Math.random() * 0.35);
+                    layer.appendChild(e);
+                    setTimeout(() => { if (e.parentNode) e.parentNode.removeChild(e); }, 720 + Math.random()*420);
+                }
+            };
+        }
+
+        function init() {
+            initCanvas();
+            initEmbersDemo();
+            
+            // Boot with one high hot selected
+            setTimeout(() => {
+                selectNode("humanitarian implementation hiccups");
+                if (window.__addEmbersDemo) window.__addEmbersDemo(5);
+            }, 420);
+            
+            // Gentle hint
+            console.log('%c[JARVIS DEMO] Interactive neural map ready. Edit this file on desktop. Save and notify for main-site sync.', 'color:#fb923c');
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>
