@@ -12,7 +12,7 @@ on:
       sources:
         description: 'Comma-separated sources (broad default covers everything - now includes documents sources for court rulings/press/CRS/GAO/FOIA filling raw/documents/ + rss_news for high-velocity news liveness under raw/news/ and raw/media/rss-*)'
         required: false
-        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news'
+        default: 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news,federal_register_api,datagov_catalog'
       max_new:
         description: 'Max new items to ingest this run'
         required: false
@@ -66,9 +66,12 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           BUCKET_NAME: babylon-raw-data
           GITHUB_REPOSITORY: ${{ github.repository }}
+          # Enable Phase1 rich AI (smart_extract) + Phase2 embed wire on GH inflows/cron (Worker auto-sinks to ckg-holo-analytics too)
+          BABYLON_AI_WORKER_URL: https://babylon-data-ai.c2wbcnvnv6.workers.dev/extract
+          # Optional: FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }} (for hybrid high-quality extract)
         run: |
           python scripts/monitor_and_ingest.py \
-            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news' }}" \
+            --sources "${{ github.event.inputs.sources || 'gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news,federal_register_api,datagov_catalog' }}" \
             --max-new "${{ github.event.inputs.max_new || 10 }}" \
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
             ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }} \

@@ -52,6 +52,9 @@ jobs:
           BUCKET_NAME: babylon-raw-data
           GITHUB_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
+          # Enable Phase1 rich AI (smart_extract) + Phase2 embed wire on GH inflows/cron (Worker auto-sinks to ckg-holo-analytics too). Matches monitor-ingest.
+          BABYLON_AI_WORKER_URL: https://babylon-data-ai.c2wbcnvnv6.workers.dev/extract
+          # Optional: FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }} (for hybrid high-quality extract)
         run: |
           python scripts/monitor_and_ingest.py \
             --sources "rss_news" \

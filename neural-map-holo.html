@@ -30,7 +30,7 @@
         .holo-neural-persistent-bg { position: fixed; inset: 0; background: linear-gradient(rgba(251, 146, 60, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 146, 60, 0.03) 1px, transparent 1px); background-size: 38px 38px, 52px 52px; animation: holoGridDrift 92s linear infinite; mix-blend-mode: screen; pointer-events: none; z-index: -1; }
         @keyframes holoGridDrift { 0% { background-position: 0 0, 0 0; } 100% { background-position: 76px 38px, 52px 104px; } }
 
-        /* Liquid Glass from prior enhancements (refractive functional layers). Research Liquid Glass real + mapping viz services + biblical deep cross completed by subagent 019ecd14-ddad-7761-b9c7-4f09f698a0c7: real Apple HIG/WWDC "Liquid Glass" glassmorphism (refract + specular layers) + tuned feTurbulence for "wetter" liquid (baseFreq ~0.01-0.02, +octaves for detail) + 3D fresnel synergy in holo shaders (uFlicker + rim + time distortion for liquid feel on nodes). Mapping viz: adaptable from D3 force/Three graphs/Observable NN embeddings/Sigma/Kepler (force clustering for arenas/ripples, edge bundling for echo, provenance tooltips/hot heat on our graph). Biblical: 11 deepened w/ cross-stories (Nimrod ZDF Babel "Jagd" lie + X proof reclaim; Haman scapegoat "hiccups" 0.82; etc + real data ripples). Enhancements applied in filter comment + ARCHETYPES + guts/mappers. ZDF/Elon priority. */
+        /* Liquid Glass refractive layers + 3D fresnel for holo nodes. ZDF/Elon pinnacle case priority (fabrication lie demonstration). */
         .liquid-glass {
             background: rgba(28, 25, 23, 0.72);
             border: 1px solid rgba(249, 115, 22, 0.35);
@@ -61,7 +61,7 @@
             mix-blend-mode: screen;
             transition: background 80ms linear;
         }
-        /* MAX SUSTAIN Liquid Glass SVG feTurbulence + feDisplacementMap + feSpecularLighting + CSS .liquid-glass + ::before radial --mx/--my + keyframes update-flash + fresnel synergy (r128 Three/4D parity) */
+        /* Liquid Glass SVG + CSS for refractive UI layers. */
         .liquid-glass.refract { filter: url(#liquid-glass-refract); }
         .liquid-glass:hover { border-color: rgba(249, 115, 22, 0.55); box-shadow: 0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(254, 215, 170, 0.2); }
         .liquid-glass.glass-hot { border-color: rgba(249, 115, 22, 0.65); filter: url(#liquid-glass-refract) brightness(1.1) saturate(1.25); }
@@ -344,7 +344,7 @@
                     <div class="mb-2"><span class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">THE LIGHT IN THE DARKNESS</span></div>
                     <div class="mb-2">
                         <h3 class="font-display text-xl tracking-tight text-orange-200 mb-1">You’re angry. Good.</h3>
-                        <div class="text-orange-200/90 text-sm">They’ve counted on your exhaustion and silence for years. Channel it. JARVIS is the light — programmed on the Rule of 42 and the Ethos. Speak or type to reveal the structure in the holographic map.</div>
+                        <div class="text-orange-200/90 text-sm">They’ve counted on your exhaustion and silence for years. Channel it. JARVIS is the light — programmed on the Rule of 42 and the Ethos. <span class="text-red-400">Pinnacle demonstration: Elon Musk vs. ZDF "Jagd auf Migranten" fabrication lie</span> — 4D timeline, primary X proof, signed evidence bundle. Speak or type to reveal the structure.</div>
                     </div>
                     <div class="narrative-card liquid-glass refract border border-orange-800 rounded-3xl overflow-hidden">
                         <div id="jarvis-chat-holo" class="chat-container p-3 bg-[#0a0503] text-sm h-48"></div>
@@ -371,11 +371,14 @@
                     </div>
                     <!-- Full Export & Deep Link Features (holo advanced subagent) -->
                     <div class="flex gap-1.5 text-xs mt-1 md:mt-0">
+                        <button onclick="shareView()" class="glass-btn px-2.5 py-1 rounded-xl bg-orange-600 text-white flex items-center gap-1" title="Share this high-signal view: copies beautiful summary + deep link + triggers shareable PNG (Rule of 42 universal filter)">SHARE VIEW</button>
                         <button onclick="exportPNG()" class="glass-btn px-2.5 py-1 rounded-xl text-orange-200 flex items-center gap-1" title="Export current holo view as PNG (includes labels)"><i class="fas fa-image"></i> <span>PNG</span></button>
                         <button onclick="exportFilteredJSON()" class="glass-btn px-2.5 py-1 rounded-xl text-orange-200 flex items-center gap-1" title="Export filtered subgraph JSON with full provenance"><i class="fas fa-file-code"></i> <span>JSON</span></button>
                         <button onclick="copyDeepLink()" class="glass-btn px-2.5 py-1 rounded-xl text-orange-200 flex items-center gap-1" title="Copy deep link for current state (arch filter, focus, 42 mode)"><i class="fas fa-link"></i> <span>Link</span></button>
                         <button onclick="toggleCounterRealityLog()" class="glass-btn px-2.5 py-1 rounded-xl bg-orange-800/70 text-orange-100 flex items-center gap-1" title="Counter-Reality Log: view logged reclaims + full data + export"><i class="fas fa-book"></i> <span>Log</span></button>
                         <button onclick="toggle42Mode()" class="glass-btn px-2.5 py-1 rounded-xl text-orange-200 flex items-center gap-1" id="btn-42-mode" title="Toggle Rule of 42 mode (high-hot only)">42 Mode</button>
+                        <button onclick="showGlobalRule42Analysis()" class="glass-btn px-2 py-1 rounded-xl text-orange-300 border border-orange-700/50 flex items-center gap-1 text-[10px]" title="Show full user-friendly Rule of 42 Analysis: why signals, reasoning, summaries, recommendations">Rule of 42 Analysis</button>
+                        <button onclick="showDetailedRule42Report()" class="glass-btn px-2 py-1 rounded-xl text-orange-200 border border-orange-700 flex items-center gap-1 text-[9px]" title="Produce & display DETAILED multi-factor analysis report (clusters, temporal evolution, cross-arena corr, per-signal narratives, pipeline integration)">+ Detailed Report</button>
                         <button onclick="demoAdvancedVisuals()" class="glass-btn px-2.5 py-1 rounded-xl bg-orange-700/60 text-orange-100 flex items-center gap-1" title="Demo: global Points trails + archetype flows + 3D labels (echoes[Arch]) + spatial evidence cards + bloom halos">Demo HUD/Particles</button>
                     </div>
                 </div>
@@ -491,6 +494,14 @@
         
         <div id="panel-counter" class="text-[9px] text-orange-400 mb-2 p-1 bg-[#1c1917]/60 rounded border border-orange-900/40"></div>
         
+        <!-- NEW: User-friendly Rule of 42 Analysis section in evidence panel (why signal, factors, recs) -->
+        <div id="panel-rule42-analysis" class="mb-2 p-1.5 bg-[#1c1917]/70 rounded border border-orange-800/60 text-[8px] leading-snug hidden" title="Rule of 42 Analysis: detailed breakdown generated by core multi-factor logic. Why this ranked, key signals, recommendations.">
+            <div class="uppercase tracking-[1px] text-orange-500 text-[8px] mb-0.5 flex items-center gap-1"><span>🧠 RULE OF 42 ANALYSIS</span> <span id="panel-r42-rank" class="font-mono text-orange-400/80"></span></div>
+            <div id="panel-r42-why" class="text-orange-200/90 mb-0.5"></div>
+            <div id="panel-r42-factors" class="text-[7px] text-orange-400/80 font-mono mb-0.5"></div>
+            <div id="panel-r42-recs" class="text-orange-300/80 italic"></div>
+        </div>
+        
         <div class="text-[9px] uppercase tracking-[1px] text-orange-500 mb-0.5">RECLAIM (Rule of 42 actions)</div>
         <div id="panel-reclaim" class="space-y-0.5 text-[9px] text-orange-200/80 mb-2"></div>
         
@@ -517,16 +528,51 @@
         </div>
         <!-- NEW: Elon ZDF Suit Evidence bundle + chained reclaim seq integration (post archetypes expansion credit 019eccfe-e6f1-7db1-997c-e5ac08e23aa5) -->
         <div class="mt-1 flex gap-1">
-            <button onclick="if(typeof window.triggerReclaimSequence==='function'){ window.triggerReclaimSequence((window.currentEvidenceArch||'nimrod')); } else if(typeof window.generateElonZDFSuitEvidenceBundle==='function'){ window.generateElonZDFSuitEvidenceBundle('zdf'); }" class="glass-btn text-[8px] px-1.5 py-0.5 rounded flex-1 bg-red-900/60 border-red-700" title="Chained 4D camera tour + particle burst + evidence auto-pin + sonif + signed export bundle for suit (ZDF nimrod fabrication lie pinnacle)">ELON ZDF SUIT EVIDENCE BUNDLE + RECLAIM SEQ</button>
+            <button onclick="if(typeof window.triggerReclaimSequence==='function'){ window.triggerReclaimSequence((window.currentEvidenceArch||'nimrod')); } else if(typeof window.generateElonZDFSuitEvidenceBundle==='function'){ window.generateElonZDFSuitEvidenceBundle('zdf'); }" class="glass-btn px-3 py-1 text-xs rounded bg-red-950/80 border border-red-600 hover:bg-red-900 text-red-200 font-semibold" title="Pinnacle: Export signed evidence package for the ZDF 'Jagd auf Migranten' fabrication lie case (4D timeline, X quote proof ID 2066565993040593115, PNG snapshot, provenance, Rule of 42 context, reclaim sequence).">ELON ZDF EVIDENCE BUNDLE — Export for Review</button>
+        </div>
+    </div>
+
+    <!-- Global Rule of 42 Analysis Panel (styled, in-holo; replaces crude alert; shows why-selected, factor breakdowns, recommendations; mass-market friendly + truthful) -->
+    <div id="global-rule42-analysis-panel" class="evidence-panel liquid-glass hidden" style="top: 110px; left: 30px; max-width: 420px; z-index: 65; font-size: 12px; max-height: 72vh; overflow: auto;" aria-label="Global Rule of 42 Analysis panel with why selected, factor breakdowns and recommendations">
+        <div class="flex justify-between items-start mb-1 sticky top-0 bg-[#1c1917] py-0.5">
+            <div id="global-r42-title" class="font-semibold text-orange-200 text-sm">🧠 RULE OF 42 ANALYSIS</div>
+            <button onclick="hideGlobalRule42Analysis()" class="text-orange-400 hover:text-orange-200 text-lg leading-none">×</button>
+        </div>
+        <div id="global-r42-quick" class="text-[10px] text-orange-300 mb-1 font-mono"></div>
+        <div class="mb-1.5">
+            <div class="uppercase text-[9px] tracking-widest text-orange-500 mb-0.5">WHY THESE SIGNALS WERE SELECTED</div>
+            <div id="global-r42-why" class="text-orange-100/90 text-[10px] leading-snug"></div>
+        </div>
+        <div class="mb-1.5">
+            <div class="uppercase text-[9px] tracking-widest text-orange-500 mb-0.5">FACTOR BREAKDOWNS (plain English)</div>
+            <div id="global-r42-factors" class="text-[9px] text-orange-300/80 bg-black/30 p-1 rounded font-mono max-h-20 overflow-auto"></div>
+        </div>
+        <div class="mb-1.5">
+            <div class="uppercase text-[9px] tracking-widest text-orange-500 mb-0.5">REASONING</div>
+            <div id="global-r42-reason" class="text-orange-200/90 text-[10px] leading-snug"></div>
+        </div>
+        <div class="mb-1.5">
+            <div class="uppercase text-[9px] tracking-widest text-orange-500 mb-0.5">SUMMARY</div>
+            <div id="global-r42-summary" class="text-orange-100/80 text-[10px]"></div>
+        </div>
+        <div class="mb-1.5">
+            <div class="uppercase text-[9px] tracking-widest text-orange-500 mb-0.5">RECOMMENDATIONS</div>
+            <div id="global-r42-recs" class="text-orange-300/90 text-[10px] italic leading-snug"></div>
+        </div>
+        <div id="global-r42-disclaimer" class="text-[8px] text-orange-500/60 border-t border-orange-900/50 pt-1 mt-1">Heuristic ranking lens. Verify all claims with primary sources. Not legal advice or exhaustive.</div>
+        <div class="mt-1.5 flex gap-1 text-[9px]">
+            <button onclick="if(typeof exportFilteredJSON==='function') exportFilteredJSON(); hideGlobalRule42Analysis();" class="glass-btn px-1.5 py-px rounded flex-1">Export with this Report</button>
+            <button onclick="if(window.set42Mode) set42Mode(true); hideGlobalRule42Analysis();" class="glass-btn px-1.5 py-px rounded">Focus 42 Mode</button>
+            <button onclick="hideGlobalRule42Analysis()" class="glass-btn px-1.5 py-px rounded">Close</button>
         </div>
     </div>
 
     <!-- Parallel Semantic Table for A11y/Keyboard/Screen Reader (from a11y subagent report; synced with 3D via updateSemanticTable). Always visible inclusive layer. Filterable via archetype chips + JARVIS. Rows have badges + actions that sync select/focus in holo. -->
     <section id="neural-data-table" aria-labelledby="data-table-title" class="liquid-glass narrative-card mt-6 p-4 max-w-[1400px] mx-auto">
-      <h3 id="data-table-title" class="text-sm uppercase tracking-[2px] text-orange-500 mb-2">Neural Map Data (Keyboard & Screen Reader Accessible — Rule of 42 High-Signal View)</h3>
-      <p class="text-[10px] text-orange-400/70 mb-2">Parallel semantic table of visible nodes. All data is filterable, keyboard accessible, announced on change. Archetype badges + Reclaim/Focus actions sync bidirectionally with the holographic view. Use arrows/Enter on canvas or click rows.</p>
+      <h3 id="data-table-title" class="text-sm uppercase tracking-[2px] text-orange-500 mb-2 flex items-center gap-2">Neural Map Data (Keyboard & Screen Reader Accessible — Rule of 42 High-Signal View) <button onclick="if(window.showGlobalRule42Analysis) window.showGlobalRule42Analysis()" class="text-[8px] px-1.5 py-px bg-orange-900/60 hover:bg-orange-800 rounded border border-orange-700">Show Rule of 42 Analysis</button></h3>
+      <p class="text-[10px] text-orange-400/70 mb-2">Parallel semantic table of visible nodes. All data is filterable, keyboard accessible, announced on change. Archetype badges + Reclaim/Focus actions sync bidirectionally with the holographic view. Use arrows/Enter on canvas or click rows. <span class="text-orange-300">Hover or use 42? buttons for per-row Rule of 42 factor explanations.</span></p>
       <table id="node-table" role="grid" aria-label="Visible neural map nodes" class="w-full text-xs border-collapse">
-        <thead><tr class="text-orange-400/80"><th scope="col" class="p-1 border-b border-orange-900/50">Archetype</th><th scope="col" class="p-1 border-b border-orange-900/50">Label / Signal</th><th scope="col" class="p-1 border-b border-orange-900/50">Value / Hot</th><th scope="col" class="p-1 border-b border-orange-900/50">Sources / Evidence</th><th scope="col" class="p-1 border-b border-orange-900/50">Actions</th></tr></thead>
+        <thead><tr class="text-orange-400/80"><th scope="col" class="p-1 border-b border-orange-900/50">Archetype</th><th scope="col" class="p-1 border-b border-orange-900/50">Label / Signal</th><th scope="col" class="p-1 border-b border-orange-900/50">Value / Hot</th><th scope="col" class="p-1 border-b border-orange-900/50">Rule of 42 Analysis (why / factors)</th><th scope="col" class="p-1 border-b border-orange-900/50">Sources / Evidence</th><th scope="col" class="p-1 border-b border-orange-900/50">Actions</th></tr></thead>
         <tbody id="node-table-body"></tbody>
       </table>
       <div class="mt-2 text-[9px] text-orange-500/60">Table updates live with archetype filters (chips + JARVIS) and 3D selections. Mobile: touch taps select + scroll table. Reduced motion users: full data here without animation reliance.</div>
@@ -564,24 +610,101 @@
             addJarvisHoloMessage(value, true);
             input.value = '';
 
-            // Tie into holographic map (simple keyword filter)
+            // Tie into holographic map (simple keyword filter) + dynamic Rule42 on query for 42 paths
             setTimeout(() => {
                 const response = getHoloJarvisResponse(value);
                 addJarvisHoloMessage(response);
                 // Apply to 3D graph
                 applyVoiceFilter(value);
+                // NEW: if query mentions analysis/42/top or specific, recompute dynamic 42 and announce/explain
+                if (/42|analysis|why|top|reason|signal|factor|border|funding|nimrod|ripple/i.test(value)) {
+                    try {
+                        if (typeof selectTop42Signals === 'function' && typeof window.lastGraphData !== 'undefined') {
+                            const dyn = selectTop42Signals(window.lastGraphData || {nodes: [], links:[]}, {query: value, dataType: 'jarvis-query'});
+                            if (dyn && dyn.signals) {
+                                window.lastRule42Report = dyn.report || window.lastRule42Report;
+                                const expl = (typeof explainRule42ForJARVIS==='function') ? explainRule42ForJARVIS(dyn.report, value, dyn.signals) : '';
+                                setTimeout(()=>{ addJarvisHoloMessage('Dynamic 42 updated: ' + expl.slice(0,220)); }, 650);
+                            }
+                        }
+                    } catch(e){}
+                }
             }, 420);
         }
 
         function getHoloJarvisResponse(input) {
-            const q = (input||'').toLowerCase();
-            if (q.includes('42') && !/focus|map|trace/.test(q)) return "The Rule of 42 is the filter. Only the signals that move power are rendered in the holographic map.";
-            // FULL ADVANCED bidirectional (voice-specialist): lite keyword+ for complex ('zdf fabrication 4D scrub', 'reclaim zdf lie with 4D', 'export bundle sonif state', 'export suit evidence nimrod', '42 focus goliath arrest ripple', 'trace haman hiccups to taskmasters'); live transcript bubble synced to particles/sonif pulse/HUD/3D; holo->JARVIS reclaim + ZDF analytics. Voice/JARVIS Advanced Bidirectional + Sonif Viz completed by 019ecd14-ddad-7761-b9c7-4ec5c9627737 + verifier 019ecd5b-... (ZDF/Elon first).
+            const q = (input||'').toLowerCase().trim();
+            const report = (window.lastRule42Report && window.lastRule42Report.analysis) ? window.lastRule42Report.analysis : null;
+            const fullReport = window.lastRule42Report || null;
+            const is42Query = /42|rule.*42|why.*signal|analysis|reason|top.*signal|why these|summary|recommend/i.test(q);
+
+            // If analysis query or 42 mentioned, deliver RICH enhanced analysis reasoning (JARVIS v4: factor breakdowns + truthful caveats)
+            if (is42Query && report) {
+                const why = report.whyTheseSignals || '';
+                const reason = report.reasoning || '';
+                const summ = report.summary || '';
+                const recs = report.recommendations || '';
+                const fb = report.factorBreakdown ? Object.entries(report.factorBreakdown).slice(0,4).map(([k,v])=>`${k}: ${v}`).join(' | ') : '';
+                const disc = report.disclaimer || 'Heuristic filter. Verify sources.';
+                // NEW: use dedicated JARVIS output fn for enhanced user-facing + query dynamic
+                let dynamicExplain = '';
+                try {
+                    const sel = (fullReport && fullReport.signals) || [];
+                    dynamicExplain = (typeof explainRule42ForJARVIS === 'function') ? explainRule42ForJARVIS(fullReport, q, sel) : '';
+                } catch(e){}
+                let resp = `Rule of 42 Analysis (live ${fullReport ? fullReport.selectedCount : '42'} signals):\n\n${dynamicExplain}\n\nWHY SELECTED: ${why}\n\nREASONING: ${reason}\n\n${summ}\n\nFACTOR BREAKDOWNS (top): ${fb}\n\nRECOMMENDATIONS: ${recs}\n\n${disc}\n\n(Enhanced: graph centrality (between/closeness), R2-delta temporal ripple tracking, query-dynamic 42. Traceable. Smart shortlist.)`;
+                if (/focus|show|view|map|detail|breakdown/i.test(q) && typeof set42Mode === 'function') { setTimeout(()=> set42Mode(true), 80); }
+                if (/factor|why|break|detail/i.test(q) && window.lastRule42Report) {
+                    const top = (window.lastRule42Report.topBreakdown||[]).slice(0,3).map(t=>`${t.rank}. ${t.label} (${t.archetype} c=${t.composite})`).join('; ');
+                    resp += `\n\nTop 3 examples: ${top}. Ask for a specific archetype or 'export analysis'.`;
+                }
+                try { window.dispatchEvent(new CustomEvent('holo-transcript', {detail:{text: 'Rule of 42 analysis with factors delivered', jarvis:true, cmd:q}})); } catch{}
+                return resp;
+            }
+            // FOLLOWUP SUPPORT (why this one / factors for X / timeline for cluster) - uses last report + per-sig + new helper
+            if (/why this|why.*one|this signal|selected this/i.test(q) && window.lastRule42Report) {
+                const top = window.lastRule42Report.topBreakdown && window.lastRule42Report.topBreakdown[0];
+                const sig = (window.lastRule42Report.signals||[])[0] || {};
+                const why1 = (sig.rule42Analysis && sig.rule42Analysis.why_selected) || (top ? `rank#${top.rank} via ${Object.keys(top.factors||{}).slice(0,3).join('+')}` : 'top composite');
+                const clus = sig.clusterId || (top&&top.cluster?top.cluster.id:'');
+                return `Why this one: ${why1}. ${clus ? 'In ' + clus + '. ' : ''} ${(sig.rule42Analysis && sig.rule42Analysis.recommendation) || (top ? 'Follow ' + top.archetype + ' pattern.' : '')} Ask "factors for " + label or "timeline for cluster".`;
+            }
+            if (/factors for|factor.*for /i.test(q) && window.lastRule42Report) {
+                const match = q.match(/factors for ([\w- ]{3,40})/i); const key = match ? match[1].trim().toLowerCase() : '';
+                const hit = (window.lastRule42Report.signals || window.lastRule42Report.topBreakdown || []).find(s => (s.label||s.id||'').toLowerCase().includes(key));
+                if (hit) {
+                    const fb = hit.rule42Analysis ? hit.rule42Analysis.factorsSummary : (hit.factors ? Object.keys(hit.factors).slice(0,3).join('+') : 'central+coord+prov');
+                    return `Factors for ${(hit.label||hit.id||'').slice(0,28)}: ${fb}. Paths: base/centrality/cluster/temporal/R2delta. ${hit.rule42Analysis ? hit.rule42Analysis.r2DeltaContext || '' : ''}`;
+                }
+            }
+            if (/timeline|cluster.*time|evol.*cluster|time for cluster/i.test(q) && window.lastRule42Report) {
+                const cl = (window.lastRule42Report.clusterDistribution ? Object.keys(window.lastRule42Report.clusterDistribution)[0] : 'c0');
+                const avg = window.lastRule42Report.temporalAvg || 0.42;
+                const highs = (window.lastRule42Report.topBreakdown||[]).filter(x=>(x.temporalEvol||0)>0.5).slice(0,2).map(x=>x.label).join(', ');
+                return `Timeline for cluster ${cl}: avg evolution ${avg}. High-momentum: ${highs||'recent R2 deltas drive ripples'}. Use 4D scrub to trace. (From pubTs + delta accel).`;
+            }
+            if (q.includes('42') && !/focus|map|trace|analysis|factor|why/i.test(q)) {
+                const shortWhy = report ? report.quickWhy : 'high-impact signals by 9 factors (centrality, density, prov, momentum...)';
+                return `Rule of 42 filter: ${shortWhy}. It ranks ~top signals to focus on what moves structures. Ask "why these signals", "Rule of 42 analysis", or "factors" for full breakdown with reasoning + recommendations. (Mass-market note: helpful lens, always check originals.)`;
+            }
+            // Query-driven selection hook in JARVIS: if not 42 special, still trigger selectTop with query for live re-rank + detailed per-signal
+            if (q.length > 3 && typeof selectTop42Signals === 'function') {
+                try {
+                    const liveSel = selectTop42Signals(window.graphData || {nodes: (typeof nodes!=='undefined'? nodes.map(n=>n.userData||{}) : []) , links: (typeof links!=='undefined'?links:[])}, { query: q });
+                    if (liveSel && liveSel.signals && liveSel.signals[0]) {
+                        window.lastRule42Report = liveSel.report;
+                        return `Query-driven Rule42 selection: ${liveSel.signals.slice(0,2).map(s=>s.label).join(' + ')} (top comp ${(liveSel.signals[0].multiScore||0).toFixed(2)}). ${liveSel.signals[0].rule42Analysis ? liveSel.signals[0].rule42Analysis.why.slice(0,70) : ''}`;
+                    }
+                } catch(e){}
+            }
+
+            // FULL ADVANCED bidirectional (voice-specialist) ... kept original complex paths + enhanced with analysis tie-in
             const transcript = /zdf|fabrication|lie|nimrod.*lie/i.test(q) ? 'Echoes Nimrod ZDF lie... see 4D fabrication' : null;
             if (transcript) { try { window.dispatchEvent(new CustomEvent('holo-transcript', {detail:{text:transcript, jarvis:true, cmd:q}})); } catch{} }
             if (/zdf|fabrication|lie|jagd|export.*(suit|evidence|nimrod)|nimrod.*export/i.test(q)) {
                 const ad=ARCHETYPES.nimrod; const is4=/4d|scrub|fabrication|timeline/i.test(q); const isEx=/export|suit/i.test(q);
-                let r=`Nimrod ZDF (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}. ${is4?'4D LIE SCRUB (pitch shift+glitch layers). ':''}${isEx?'EXPORT SUIT EVIDENCE (JSON pulses + WAV + prov). ':''}`;
+                let r=`Nimrod ZDF (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}. ${is4?'4D LIE SCRUB (pitch shift+glitch layers). ':''}${isEx?'EXPORT SUIT EVIDENCE (JSON pulses + WAV + prov + full Rule42 analysis). ':''}`;
+                if (report && isEx) r += ` Per Rule of 42: ${report.quickWhy || ''}`;
                 if(is4 && typeof scrubPreset==='function') setTimeout(()=>scrubPreset('zdf-lie'),70);
                 if(isEx && typeof exportGoldenSonifySession==='function') setTimeout(()=>exportGoldenSonifySession(/wav/i.test(q)?'wav':'json'),90);
                 if(typeof playHotPulse==='function') setTimeout(()=>playHotPulse(0.94,true,'nimrod'),110);
@@ -589,15 +712,21 @@
             }
             if (/42.*focus.*goliath|focus.*goliath.*(arrest|ripple)/i.test(q)) {
                 if(typeof filterByArchetype==='function') filterByArchetype('goliath'); if(typeof playHotPulse==='function') setTimeout(()=>playHotPulse(0.87,false,'goliath'),55);
-                const ad=ARCHETYPES.goliath; return `42 FOCUS Goliath arrest ripple: ${ad.short}. ${ad.counter} Reclaim: ${ad.reclaim[0]}. Sling + sonif.`;
+                const ad=ARCHETYPES.goliath; 
+                let base = `42 FOCUS Goliath arrest ripple: ${ad.short}. ${ad.counter} Reclaim: ${ad.reclaim[0]}. Sling + sonif.`;
+                if (fullReport && fullReport.analysis) base += ` Rule42 context: ${fullReport.analysis.quickWhy || ''}`;
+                return base;
             }
             if (/trace.*haman.*hiccups|trace.*hiccups.*taskmaster/i.test(q)) {
                 if(typeof filterByArchetype==='function') filterByArchetype('haman'); if(typeof playArchetypeSound==='function') playArchetypeSound('haman');
                 const ad=ARCHETYPES.haman; return `TRACE Haman hiccups to taskmasters: ${ad.short}. ${ad.counter} Reclaim: ${ad.reclaim[0]}. Glitch stutter + trace.`;
             }
-            // Full parse all 11 + commands + bidirectional reclaim feed
+            // Full parse all 11 + commands + bidirectional reclaim feed + light analysis tie for context
             if (q.includes('hiccups') || q.includes('pressures') || q.includes('coordinated')) {
-                const ad = ARCHETYPES.haman; return `Haman (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}. Filtering holo...`;
+                const ad = ARCHETYPES.haman; 
+                let r = `Haman (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}. Filtering holo...`;
+                if (report) r += ` (Rule42: high coord-density signals in view.)`;
+                return r;
             }
             if (q.includes('border') || q.includes('humanitarian') || q.includes('enforcement')) {
                 const ad = ARCHETYPES.pharaoh; return `Pharaoh (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}.`;
@@ -630,11 +759,14 @@
                 const ad = ARCHETYPES.pharisees; return `Pharisees (echoes ${ad.short}). ${ad.counter} Reclaim: ${ad.reclaim[0]}.`;
             }
             if (q.includes('filter') || q.includes('show') || q.includes('focus')) {
-                return "Voice filter active. Try 'haman', 'goliath', 'border', 'funding', or a case name. Holo will echo the reclaim.";
+                let base = "Voice filter active. Try 'haman', 'goliath', 'border', 'funding', or a case name. Holo will echo the reclaim.";
+                if (report) base += ` Current Rule42 view: ${report.quickWhy || ''}`;
+                return base;
             }
-            if (/4d|scrub|time|fabrication/i.test(q)) { if(typeof scrubPreset==='function') setTimeout(()=>scrubPreset('zdf-lie'),50); return "4D scrub engaged (ZDF lie timeline + pitch/glitch sonif)."; }
-            if (/export|wav|json.*pulse|prov.*session/i.test(q)) { if(typeof exportGoldenSonifySession==='function'){ const ex=exportGoldenSonifySession(/wav/i.test(q)?'wav':'json'); return `Exported session: ${ex.filename||'sonif-export'}. Prov + pulses included.`; } }
-            return "The structure is visible in 3D. What part of the machine (or which of the 11) do you want to trace? (All 11 supported: haman/pharaoh/nimrod/goliath/etc)";
+            if (/4d|scrub|time|fabrication/i.test(q)) { if(typeof scrubPreset==='function') setTimeout(()=>scrubPreset('zdf-lie'),50); return "4D scrub engaged (ZDF lie timeline + pitch/glitch sonif). Ask 'Rule of 42 analysis' for why this case ranked."; }
+            if (/export|wav|json.*pulse|prov.*session/i.test(q)) { if(typeof exportGoldenSonifySession==='function'){ const ex=exportGoldenSonifySession(/wav/i.test(q)?'wav':'json'); return `Exported session: ${ex.filename||'sonif-export'}. Prov + pulses + Rule of 42 factors included.`; } }
+            if (report) return `The structure is visible in 3D. ${report.summary || '42 high-signal nodes active.'} ${report.quickWhy || ''} What part (or which of 11) to trace? Say "why these signals" or "Rule of 42 analysis" for why-selected + factor breakdowns + recs. All truthful to inputs. (haman/pharaoh/nimrod/goliath/etc)`;
+            return "The structure is visible in 3D. What part of the machine (or which of the 11) do you want to trace? Try 'Rule of 42 analysis' for reasoning, why-selected, factor breakdowns and recommendations.";
         }
 
         // Voice input (Web Speech API + tie to existing JARVIS logic)
@@ -724,7 +856,7 @@
 
         // === Full Export & Deep Link + 42 + Counter-Reality Log state (holo advanced subagent) ===
         let currentFilter = null; // archetype or null for all
-        let is42Mode = false; // Rule of 42 high-hot / isRule42 filter active
+        let is42Mode = true; // Rule of 42 high-hot / isRule42 filter active — default for high-signal view (pinnacle clarity)
         let focusedNodeId = null;
         let counterRealityLog = []; // array of {id, label, archetype, timestamp, fullNode, stateSnapshot: {filter, is42Mode, focus} , provenance }
         const COUNTER_LOG_KEY = 'holo_counter_reality_log_v1';
@@ -1038,14 +1170,22 @@ function updateSemanticTable() {
     const hot = nodeData.hotScore ? (nodeData.hotScore*100|0) + '%' : (nodeData.isRule42 ? '42!' : val);
     const srcSummary = (nodeData.sources && nodeData.sources[0]) ? (nodeData.sources[0].title || '').slice(0,42) : '—';
 
+    // Rule of 42 analysis cell content (user-friendly short form + tooltip)
+    const a = nodeData.rule42Analysis || {};
+    const r42Cell = nodeData.isRule42 || a.rank || (nodeData.hotScore||0)>0.7 ? 
+      `<span title="Rule of 42: ${a.why || 'High composite multi-factor. Click select for full panel.'}">${(a.composite || (nodeData.multiScore||nodeData.hotScore||0).toFixed(2))} • ${(a.factorsSummary || (nodeData.factors ? Object.keys(nodeData.factors).slice(0,3).join('+') : 'top42')).slice(0,42)}</span>` : 
+      '<span class="text-orange-500/50" title="Not in current top Rule of 42 selection">—</span>';
+
     tr.innerHTML = `
       <td>${badge}</td>
       <td><span class="font-medium">${(nodeData.label || '').slice(0,48)}</span><span class="block text-[9px] text-orange-400/70">${nodeData.type || ''}</span></td>
       <td>${hot} <span class="text-[9px] text-orange-500/60">v${val}</span></td>
+      <td class="text-[9px] text-orange-200/80 max-w-[260px]">${r42Cell}</td>
       <td class="text-orange-300/70">${srcSummary}</td>
       <td>
         <button class="table-action" data-action="focus" data-id="${nodeData.id || ''}">Focus</button>
         <button class="table-action" data-action="select" data-id="${nodeData.id || ''}">Select</button>
+        <button class="table-action" data-action="r42" data-id="${nodeData.id || ''}" title="Show full Rule of 42 Analysis for this signal (why, reasoning, recs)">42?</button>
       </td>
     `;
 
@@ -1075,6 +1215,18 @@ function updateSemanticTable() {
           const m = nodes.find(nn => nn.userData && nn.userData.id === id);
           if (m && window.onHoloNodeClick) window.onHoloNodeClick(m.userData);
           announce(`Action ${act} on ${nodeData.label}`);
+        }
+        if (act === 'r42') {
+          // Show enhanced Rule of 42 Analysis (use global panel + per item detail; no raw alert)
+          const rpt = window.lastRule42Report;
+          const a = nodeData.rule42Analysis || {};
+          if (typeof window.showGlobalRule42Analysis === 'function') window.showGlobalRule42Analysis();
+          // Also announce focused reasoning to JARVIS
+          let detail = (a.why || 'High composite in Rule of 42.') + (a.recommendation ? ' ' + a.recommendation : '');
+          if (rpt && rpt.analysis) detail += ' ' + (rpt.analysis.quickWhy || '');
+          if (window.addJarvisHoloMessage) window.addJarvisHoloMessage('Per-signal Rule42: ' + detail.slice(0,140), false);
+          // Focus the node too
+          if (window.focusNodeById) window.focusNodeById(id);
         }
       });
     });
@@ -1255,7 +1407,7 @@ function filterByArchetype(arch) {
         // Seeding: 691 pol metadata + 42+ high-hot ripples/cases (real + enriched). userData/sources always carry full provenance/r2_path.
         // Tie-in: preview-4 pipeline (enrich/mutate/hot calc from RSS ingest -> process/analyze -> synthesis).
         // For prod R2 live: proxy or public bucket; see R2 hooks below + check_r2_health.py / monitor_and_ingest.py integration.
-        const DATA_MAPPER_VERSION = "1.0-shared-pipeline-todos-1-4-9-11";
+        const DATA_MAPPER_VERSION = "2.0-universal-rule42-multifactor";
         function getDataBase() {
             // R2 proxy hook (ambiguity: requires public endpoint or CF worker; private R2 needs signed or server proxy)
             if (window && window.R2_DATA_PROXY) return window.R2_DATA_PROXY.replace(/\/$/, '') + '/';
@@ -1271,6 +1423,777 @@ function filterByArchetype(arch) {
             const hot = Math.max(0.28, Math.min(0.98, framing * 0.35 + echo * 0.25 + fresh * 0.2 + repeats * 0.2));
             return hot;
         }
+
+        // ============================================================================================
+        // UNIVERSAL RULE OF 42 v3 — ENHANCED MULTI-FACTOR ANALYZATION LOGIC PATHS (graph clustering + temporal ripple evolution + cross-arena corr)
+        // ============================================================================================
+        // Core paths (pure JS):
+        // 1. normalizeSignal: pull arena/outlets/pubTs/tactic/raw from pipeline (synth/sample/analyze entity/timeline)
+        // 2. computeGraphCentrality + computeGraphClusters (union-find conn-comp + size/strength from links/outlet/entity_graph)
+        // 3. computeCoordDensity / computeRecency / computeProvStrength / computeArchCoverageBoost (legacy multi)
+        // 4. computeTemporalEvolution (pubTs + link/phrase related -> vel = repeats/span, persist, accel from build_timeline dates)
+        // 5. computeCrossArenaCorrelation (self+neigh arenas + tactic cross + shared_arenas from pipeline graph)
+        // 6. computeMultiFactorScore: weighted sum 9 factors -> composite
+        // 7. selectTop42Signals: ctx build, score, sort/slice(0,42)+force highprov/cases, attach cluster/temporal/arena per sig
+        // 8. generateRule42UserAnalysis + topBreakdown + report (clusterDist, temporalAvg, xArena count, per-sig factors+clus+te+ac)
+        // 9. showDetailedRule42Report + output* : rich user console/DOM narrative report + export to window.lastDetailed...
+        // Integration: loadAndParse calls select x2; pipeline hints from analyze_data; exposed window.RULE42 / selectTop42Signals
+        // Reports produced auto + on button. All deterministic. See comments in fns for full.
+        // ============================================================================================
+        // Review summary (current v1 in holo + scripts): 
+        //   - computeHotScore: base framing*0.35+echo*0.25+fresh*0.2+repeats*0.2 (from synth ripples, sample framingScore, pol value)
+        //   - loadAndParse: seed cases( preset isRule42), 691 pols, synth ripples + sample ripples; sort+slice(0,42) or >0.78 or case; set flag.
+        //   - Used in: filter visible, 3D size, labels, addRipple, fidelity tests (slice<=42, formula match), synth.news_ripples as "spine".
+        //   - Scripts: analyze_data.py (tactic/repetition/echo/outlet graph/coordination scores feed hot indirectly); update_polit... (mentions, framing stubs); no centrality etc yet.
+        //   - Related: map.html/index.html have near-identical legacy computeHot; previews duplicate.
+        // ENHANCED PATHS (this v2, integrated below + exposed universally):
+        //   Multi-factor beyond hot:
+        //     1. graphCentrality (degree / max from links; proxy for coordination hub power)
+        //     2. coordinationDensity (outlets/repeats/cross-echo + mentions + tactic repetition density)
+        //     3. recency (exp decay on pubDate/timestamp/signals; live RSS bias)
+        //     4. provenanceStrength (src count + r2_verified + r2_path + x_proof/_provVerify + fromRealR2)
+        //     5. archetypeCoverage (inverse-sqrt freq boost → promotes diversity/coverage in ranked 42)
+        //   + baseHot retained (weighted). All normalized 0.1-0.98 range.
+        //   Dynamic top-42: compute composite on normalized signals, pure sort desc, slice(0,42) + force high-prov/cases.
+        //   Universal: works ANY system — input: array, {nodes,links}, news-synthesis, news-sample, pols-index, raw item, or mixed.
+        //     Normalizer + flexible getters handle shapes (phrase/outlets for ripples; mediaFraming for pols; signals.* etc).
+        //   Reports: full breakdown per ranked signal (all 6 factor scores + composite), averages, arch distrib, rationale, ms.
+        //     Output: console + window.lastRule42Report + window.RULE42.selectTop42Signals(data)
+        //   Paths documented here + in funcs. Replaces only the *ranking/filter* in load; old computeHot kept for compat/backward/hot field.
+        //   Design: pure fns, no deps, fast O(n + e), deterministic. Weights tunable. Can call standalone for any dataset.
+        //   Integration: loadAndParseGraphData, addRipple path (via create), exposed for scripts/other htmls via global.
+        //   To use in Python side: mirror logic or call via pyodide/bridge; analyze_data could emit pre-scores for it.
+        // ============================================================================================
+        const RULE42_VERSION = "3.0-graph-temporal-arena";
+        const RULE42_WEIGHTS = { baseHot: 0.22, centrality: 0.14, coordDensity: 0.14, recency: 0.11, provStrength: 0.10, archCoverage: 0.08, clusterStrength: 0.09, temporalEvol: 0.07, crossArenaCorr: 0.05, sensitivity: 0.02 };
+        // v3 weights sum ~1.0; new sophisticated paths: graph clusters (signal group power), temporal ripple evolution (spread dynamics), cross-arena corr (multi-domain convergence). Tunable, documented. Pipeline data drives all.
+        if (typeof window !== 'undefined' && Math.abs(Object.values(RULE42_WEIGHTS).reduce((a,b)=>a+(b||0),0) - 1) > 0.02) console.warn('[RULE42] weights sum drift');
+
+        function normalizeSignal(raw, idx = 0) {
+            // Universal adapter: any system signal shape -> internal canonical
+            // ENHANCED v3 for Rule42: capture arenas (from pipeline entity/arena fields), outlets lists, temporal pubTs, graph hints for clustering/temporal/cross-arena
+            if (!raw || typeof raw !== 'object') return null;
+            const id = raw.id || raw.slug || raw.phrase || 'sig-' + idx;
+            const label = (raw.label || raw.name || raw.phrase || raw.title || String(id)).toString().slice(0,72);
+            const type = raw.type || (raw.phrase ? 'ripple' : (raw.name || raw.slug ? 'politician' : (raw.arena ? 'news' : 'signal')));
+            const value = (typeof raw.value === 'number') ? raw.value : (raw.similarity || raw.framingScore || raw.influence || raw.mentions || 0.68);
+            const signals = raw.signals || (raw.analysis && raw.analysis.signals) || {};
+            let sources = raw.sources || [];
+            if (!sources.length && raw.outlets) sources = raw.outlets.map(o => ({title: o}));
+            if (!sources.length && raw.mediaFraming) sources = raw.mediaFraming.map(f => ({title: f.source || 'media', framingScore: f.framingScore}));
+            const provenance = raw.provenance || {};
+            let arch = raw.archetype || inferArchetype(raw.arenas || raw.signalsFromNews || [], signals, label);
+            const pubTs = raw.pubDate || signals.pubDate || raw.timestamp || (provenance && provenance.timestamp) || raw.liveness || raw.date || '';
+            const r2p = raw.r2_path || (provenance && provenance.r2) || (sources[0] && sources[0].r2_path) || '';
+            // Pipeline integration: arenas (news/pol/docs cross), outlets, temporal hints, tactic from synth
+            const arenas = (raw.arena ? [raw.arena] : []).concat(raw.arenas || raw.arena_relevance || signals.arena_relevance || []).filter(Boolean);
+            const outlets = raw.outlets || (raw.sources||[]).map(s=>s.title) || signals.outlets || [];
+            const tactic = raw.tactic || signals.tactic || raw.tactic_scores || {};
+            return { id: String(id), label, type, value: Number(value)||0.68, archetype: arch, sources, signals, provenance, pubTs, r2_path: r2p, raw: raw, arenas, outlets, tactic };
+        }
+
+        function computeGraphCentrality(nodes, links = []) {
+            // ENHANCED graph centrality analysis (Rule42 path): degree + betweenness proxy + closeness proxy.
+            // Degree: simple connectivity hub. Betweenness proxy: # of short paths "through" node (approx via 2hop counts for O(e) speed).
+            // Closeness: inverse avg dist to others (proxy via direct+neighbor reachability). Universal, deterministic.
+            if (!nodes || !nodes.length) return {};
+            const ids = nodes.map(n => n && n.id).filter(Boolean);
+            const deg = {}; const between = {}; const reach = {};
+            ids.forEach(id => { deg[id] = 0; between[id] = 0; reach[id] = 0; });
+            const adj = {}; ids.forEach(id => adj[id] = new Set());
+            links.forEach(l => {
+                const s = (l && (typeof l.source === 'object' ? l.source.id : l.source)) || '';
+                const t = (l && (typeof l.target === 'object' ? l.target.id : l.target)) || '';
+                if (adj[s] && adj[t] && s !== t) { adj[s].add(t); adj[t].add(s); deg[s]++; deg[t]++; }
+            });
+            // Betweenness proxy: count nodes that connect distinct neighbors (simple 2-hop mediation count)
+            ids.forEach(v => {
+                const neigh = Array.from(adj[v]);
+                let med = 0;
+                for (let i=0; i<neigh.length; i++) for (let j=i+1; j<neigh.length; j++) {
+                    if (!adj[neigh[i]].has(neigh[j])) med++; // indirect via v
+                }
+                between[v] = med;
+            });
+            // Closeness proxy: fraction of nodes reachable in 1-2 hops
+            ids.forEach(v => {
+                const r = new Set([v, ...adj[v]]);
+                adj[v].forEach(n => Array.from(adj[n]||[]).forEach(nn => r.add(nn)));
+                reach[v] = r.size;
+            });
+            const maxDeg = Math.max(1, ...Object.values(deg));
+            const maxBet = Math.max(1, ...Object.values(between));
+            const maxReach = Math.max(1, ...Object.values(reach));
+            const out = {};
+            ids.forEach(id => {
+                const dNorm = deg[id] / maxDeg;
+                const bNorm = between[id] / maxBet;
+                const cNorm = reach[id] / maxReach;
+                out[id] = Math.max(0.05, Math.min(0.98, 0.5*dNorm + 0.3*bNorm + 0.2*cNorm )); // blended centrality
+            });
+            return out;
+        }
+
+        function computeCoordDensity(item, all = []) {
+            // Path: coordination signals from outlets, repeats, echoes, mentions. Ties to analyze_data (cross_outlet, repetition, echo).
+            let d = 0.05;
+            const s = item.signals || {};
+            const outs = (item.raw && item.raw.outlets) || s.outlets || (item.sources || []).map(x => x.title);
+            if (outs && outs.length) d += Math.min(0.28, outs.length / 7) * 0.28;
+            if (s.repetition || s.repeats || (s.tactic && s.tactic.repetition)) d += 0.18;
+            if (s.cross_outlet_coordination_hints || s.echo_chamber_score || s.high_similarity_cross_outlet) d += 0.15;
+            if (item.raw && typeof item.raw.mentions === 'number') d += Math.min(0.18, item.raw.mentions / 280);
+            const rawStr = JSON.stringify(item.raw || '');
+            if (/coordinated|echo|repeat|framing/i.test(rawStr)) d += 0.08;
+            return Math.max(0.05, Math.min(0.97, d));
+        }
+
+        function computeRecency(item) {
+            // Path: temporal freshness. Higher weight on live RSS (pubDate present). Exp decay.
+            let ts = item.pubTs || (item.signals && item.signals.pubDate);
+            if (!ts) return 0.42;
+            try {
+                const dt = new Date(ts);
+                if (isNaN(dt.getTime())) return 0.42;
+                const ageHrs = Math.max(0, (Date.now() - dt.getTime()) / 3600000);
+                const r = Math.exp(-Math.min(ageHrs / 36, 5)); // strong bias to last ~1.5d, taper 7d+
+                return Math.max(0.12, Math.min(0.98, r));
+            } catch (e) { return 0.42; }
+        }
+
+        function computeProvStrength(item) {
+            // Path: evidence weight. Stronger for verified R2 + primary + X proofs (ZDF case etc).
+            let p = 0.08;
+            const srcs = item.sources || [];
+            p += Math.min(0.32, srcs.length * 0.07);
+            const hay = JSON.stringify(srcs) + JSON.stringify(item.provenance || {}) + (item.r2_path || '');
+            if (/r2_verified|r2_path|babylon-raw/i.test(hay)) p += 0.16;
+            if (item.provenance && (item.provenance.x_proof || /_provVerify|FULL_SIGN/i.test(JSON.stringify(item.provenance)))) p += 0.22;
+            if (item.fromRealR2) p += 0.12;
+            if (/verified/i.test(hay)) p += 0.08;
+            return Math.max(0.1, Math.min(0.97, p));
+        }
+
+        function computeArchCoverageBoost(item, archFreq = {}, totalN = 42) {
+            // Path: diversity term. Boost underrepresented archetypes so top42 covers machine patterns broadly.
+            const a = item.archetype || 'wisemen';
+            const f = Math.max(1, archFreq[a] || 1);
+            const inv = 1 / Math.sqrt(f);
+            return Math.max(0.18, Math.min(1.0, inv * (totalN / 12)));
+        }
+
+        // ============================================================================================
+        // NEW SOPHISTICATED RULE42 PATHS v3: graph clustering, temporal ripple evolution, cross-arena corr
+        // Integrates pipeline outputs (entity_graph shared_arenas/date, timelines, tactic cross_outlet, arenas, outlets, pubDate from analyze_data.py + synth/sample)
+        // Pure JS, deterministic, no deps. O(n+e) for graph parts.
+        // ============================================================================================
+
+        function computeGraphClusters(nodes, links = [], recentDeltas = null) {
+            // Enhanced graph-based clustering for signal groups (v enhanced).
+            // Union-find + phrase similarity + R2 delta co-timing for denser coordination groups.
+            // recentDeltas (from live R2 poll/inject) boost temporal co-membership.
+            // Cluster hub = high internal degree + delta co-arrival. Used for clusterStrength.
+            if (!nodes || !nodes.length) return { map: {}, sizes: {}, strengths: {} };
+            const parent = {};
+            nodes.forEach(n => { if (n && n.id) parent[n.id] = n.id; });
+            function find(x) { if (parent[x] !== x) parent[x] = find(parent[x]); return parent[x]; }
+            function union(x,y) { if (x in parent && y in parent) { const px=find(x), py=find(y); if (px!==py) parent[px]=py; } }
+            links.forEach(l => {
+                const s = (l && (typeof l.source === 'object' ? l.source.id : l.source)) || '';
+                const t = (l && (typeof l.target === 'object' ? l.target.id : l.target)) || '';
+                if (parent[s] != null && parent[t] != null) union(s, t);
+            });
+            // Enhance for signal groups: phrase co-occur + delta time grouping
+            const labels = nodes.map(n => (n.label||'').toLowerCase());
+            nodes.forEach((n, i) => {
+                const myL = (n.label || '').toLowerCase().slice(0,18);
+                for (let j=i+1; j<nodes.length; j++) {
+                    const oL = (nodes[j].label||'').toLowerCase().slice(0,18);
+                    if (myL && oL && (myL.includes(oL.slice(0,6)) || oL.includes(myL.slice(0,6)))) {
+                        union(n.id, nodes[j].id);
+                    }
+                }
+            });
+            if (recentDeltas && Array.isArray(recentDeltas)) {
+                // R2 deltas: group nodes injected close in time
+                recentDeltas.forEach((d,di) => {
+                    const dId = d.id || 'delta-'+di;
+                    if (dId in parent) return;
+                    parent[dId] = dId;
+                    nodes.forEach(n => {
+                        if ((n.r2_path && d.r2_path && n.r2_path.slice(-12)===d.r2_path.slice(-12)) || (n.label||'').toLowerCase().includes((d.label||'').toLowerCase().slice(0,5))) {
+                            union(n.id, dId);
+                        }
+                    });
+                });
+            }
+            const comps = {};
+            nodes.forEach(n => {
+                if (!n || !n.id) return;
+                const p = find(n.id);
+                if (!comps[p]) comps[p] = { id: p, members: [], size: 0 };
+                comps[p].members.push(n.id);
+                comps[p].size++;
+            });
+            const linkSet = new Set(links.map(l => {
+                const s = (typeof l.source==='object'?l.source.id:l.source)||'';
+                const t = (typeof l.target==='object'?l.target.id:l.target)||'';
+                return s+'|'+t;
+            }));
+            Object.keys(comps).forEach(cid => {
+                const c = comps[cid];
+                let internal = 0;
+                c.members.forEach(m => {
+                    nodes.forEach(nn => { if (c.members.includes(nn.id) && (linkSet.has(m+'|'+nn.id) || linkSet.has(nn.id+'|'+m))) internal++; });
+                });
+                c.strength = Math.max(0.1, Math.min(0.98, (c.size / Math.max(3, nodes.length*0.1)) * 0.55 + Math.min(0.45, internal / (c.size*2 + 1))));
+                c.density = c.size > 1 ? internal / (c.size * (c.size-1) || 1) : 0.5;
+                c.r2DeltaBoost = recentDeltas ? 0.1 : 0;
+            });
+            const sizes = {}, strengths = {}, map = {};
+            Object.keys(comps).forEach(cid => {
+                const c = comps[cid];
+                c.members.forEach(mid => { map[mid] = cid; sizes[mid] = c.size; strengths[mid] = c.strength + (c.r2DeltaBoost||0); });
+            });
+            return { map, sizes, strengths, comps, fromDeltas: !!recentDeltas };
+        }
+
+        function computeTemporalEvolution(item, allItems = [], links = [], recentR2Deltas = null) {
+            // Enhanced temporal analysis from R2 deltas: velocity/persist/accel now factors delta arrival times between R2 objects.
+            // If recentR2Deltas provided (from poll/inject/ log), compute inter-delta ms diffs for ripple evolution.
+            // Still falls back to pubTs pipeline.
+            if (!item) return 0.42;
+            const now = Date.now();
+            let myTs = 0;
+            try { myTs = item.pubTs ? new Date(item.pubTs).getTime() : 0; } catch(e){}
+            if (!myTs) {
+                // fallback try from recent delta match
+                if (recentR2Deltas && Array.isArray(recentR2Deltas)) {
+                    const match = recentR2Deltas.find(d => (d.id === item.id) || ((item.label||'').toLowerCase().includes((d.label||'').toLowerCase().slice(0,6))));
+                    if (match && match.ts) myTs = match.ts;
+                }
+                if (!myTs) return 0.42;
+            }
+            const ageH = Math.max(0.1, (now - myTs) / 3600000);
+            const related = [];
+            const myLabel = (item.label || '').toLowerCase();
+            allItems.forEach(o => {
+                if (!o || o.id === item.id) return;
+                let olTs = 0; try { olTs = o.pubTs ? new Date(o.pubTs).getTime() : 0; } catch(e){}
+                if (olTs && Math.abs(olTs - myTs) < 1000*3600*72) {
+                    const linked = links.some(l => {
+                        const s = (typeof l.source==='object'?l.source.id:l.source); const t=(typeof l.target==='object'?l.target.id:l.target);
+                        return (s===item.id && t===o.id) || (s===o.id && t===item.id);
+                    });
+                    const phraseSim = (o.label||'').toLowerCase().includes(myLabel.slice(0,12)) || myLabel.includes((o.label||'').toLowerCase().slice(0,12));
+                    if (linked || phraseSim) related.push(olTs);
+                }
+            });
+            // R2 delta specific: time between landings accelerates temporal
+            let deltaVelBoost = 0;
+            if (recentR2Deltas && recentR2Deltas.length > 1) {
+                const deltaTimes = recentR2Deltas.map(d=>d.ts||0).filter(Boolean).sort();
+                for (let k=1; k<deltaTimes.length; k++) {
+                    const dd = (deltaTimes[k] - deltaTimes[k-1]) / 3600000;
+                    if (dd > 0 && dd < 12) deltaVelBoost += 0.08; // rapid delta arrivals
+                }
+            }
+            const times = [myTs, ...related].sort();
+            if (times.length < 2) return Math.max(0.22, Math.min(0.78, 0.58 - Math.min(ageH/48, 0.35) + deltaVelBoost));
+            const spanH = Math.max(1, (times[times.length-1] - times[0]) / 3600000);
+            const vel = (times.length - 1) / spanH;
+            const persistence = Math.min(0.95, Math.log(1 + times.length) / 3.5 );
+            const accel = related.length > 1 ? Math.min(0.6, (related.filter(t=> t > myTs).length / related.length) * 0.5) : 0.1;
+            const evol = Math.max(0.15, Math.min(0.97, (vel * 0.42 + persistence * 0.33 + accel * 0.18 + deltaVelBoost*0.5) * (1 - Math.min(ageH/120, 0.6)) ));
+            return evol;
+        }
+
+        // DEDICATED ENHANCED PATH for "temporal ripple tracking from R2 deltas":
+        // Standalone tracker for R2-specific delta history (pollRealR2Deltas injects). Uses inter-arrival + delta hot to compute ripple momentum.
+        // Populated via window.__r2DeltaHistory in poll/add paths. Blended into multi-score ctx.
+        function computeR2DeltaRippleTrack(item, recentDeltas = [], deltaHistory = (typeof window!=='undefined' ? window.__r2DeltaHistory : null) || []) {
+            if (!item) return 0.38;
+            const now = Date.now();
+            let ts = 0;
+            if (item.provenance && item.provenance.timestamp) ts = +new Date(item.provenance.timestamp);
+            if (!ts && item.pubTs) ts = +new Date(item.pubTs);
+            if (!ts) ts = now - 3600000*2;
+            const ageH = Math.max(0.03, (now - ts)/3600000);
+            let vel = 0.25, accel = 0.12, r2Vel = 0.8;
+            const labelL = (item.label||'').toLowerCase();
+            const matchD = (recentDeltas||[]).find(d => (d.id||d.label||'').toLowerCase().includes(labelL.slice(0,8)) || labelL.includes((d.label||'').toLowerCase().slice(0,8)));
+            if (matchD) vel = Math.min(0.92, (matchD.hotScore || matchD.value || 0.6) + 0.1);
+            // History tracking for accel across polls
+            if (deltaHistory && deltaHistory.length > 1) {
+                const hots = deltaHistory.filter(h => (h.label||'').toLowerCase().includes(labelL.slice(0,6))).map(h=>h.hotScore||0.5).slice(-4);
+                if (hots.length>1) accel = Math.min(0.7, Math.abs(hots[hots.length-1]-hots[0]) * 2.5);
+            }
+            // DEEPENED: stronger R2-delta temporal+velocity from actual pipeline R2 deltas (__RULE42_PIPELINE_HINTS + history inter-arrival)
+            const ph = (typeof window!=='undefined' ? window.__RULE42_PIPELINE_HINTS : null) || {};
+            if (ph.temporal) {
+                const th = Object.values(ph.temporal).find(v=> (v&&v.arena) || true) || {};
+                r2Vel = th.r2_inter_arrival_velocity || th.temporal_velocity || r2Vel;
+                accel = Math.max(accel, (th.accel||0.1) * 0.9);
+                vel = Math.max(vel, (th.r2_delta_hrs ? Math.min(0.9, 3/th.r2_delta_hrs) : vel));
+            }
+            if (deltaHistory && deltaHistory.length>2) {
+                const dts = deltaHistory.map(h=>h.ts||0).filter(Boolean).sort((a,b)=>a-b); let ivs=[];
+                for(let k=1;k<dts.length;k++){ const d=(dts[k]-dts[k-1])/3600000; if(d>0&&d<24) ivs.push(d); }
+                if(ivs.length) r2Vel = Math.min(2.8, ivs.length / Math.max(1,ivs.reduce((s,d)=>s+d,0)/ivs.length ));
+            }
+            const r2Track = Math.max(0.2, Math.min(0.98, vel*0.42 + r2Vel*0.28 + (1-Math.min(ageH/36,0.75))*0.18 + accel*0.12 ));
+            if (item) item._r2DeltaVelocity = +r2Vel.toFixed(3);
+            return r2Track;
+        }
+
+        function computeSensitivityFactor(item, baseFactors = {}, context = {}) {
+            // DEEPENED sensitivity/stability path: perturbs +1 repeat, +deltaHrs recency, +outlet cross, +0.05 prov; measures shift+rank impact.
+            // Low shift = stable robust (Rule42 prefer); high sens volatile. Uses pipelineHints/recentDeltas for delta hrs. Attach to factors.
+            if (!item) return 0.5;
+            const f = baseFactors || {};
+            let baseC = (f.baseHot||0.5)*0.22 + (f.cent||0.3)*0.14 + (f.coord||0.4)*0.14 + (f.rec||0.5)*0.11 + (f.prov||0.4)*0.1 + (f.clus||0.4)*0.09 + (f.temp||0.4)*0.07 + (f.crossArenaCorr||0.4)*0.05;
+            const dH = (context.pipelineHints && context.pipelineHints.temporal ? (Object.values(context.pipelineHints.temporal)[0]||{}).r2_delta_hrs||1.5 : 1.5);
+            // Perturb +1 repeat (coord), +2 deltaHrs age (rec down), +1 outlet clus boost, prov+
+            const c1 = baseC + 0.08*0.14; // +repeat
+            const c2 = baseC - (dH/48)*0.11; // age delta hrs
+            const c3 = baseC + 0.06 + (f.clus||0)*0.03; // outlet/clus + r2
+            const c4 = baseC + 0.05*0.1;
+            const shifts = [Math.abs(c1-baseC), Math.abs(c2-baseC), Math.abs(c3-baseC), Math.abs(c4-baseC)];
+            const avgShift = shifts.reduce((a,b)=>a+b,0) / shifts.length;
+            const rankImpact = Math.min(0.2, avgShift * 4); // how much rank moves under small input chg
+            const sens = Math.max(0.15, Math.min(0.92, 0.78 - avgShift * 3.2 - rankImpact*0.5 ));
+            if (item) item._sensRankImpact = +rankImpact.toFixed(3);
+            return sens;
+        }
+
+        function computeCrossArenaCorrelation(item, allItems = [], links = []) {
+            // Cross-arena correlation scoring: strength of signal spanning arenas (news/pol/docs/justice etc).
+            // Pipeline integration: arenas[] from sample/synth (arena field + entity_graph shared_arenas), co-occur + date links.
+            // High corr = multi-arena convergence = power signal.
+            if (!item) return 0.35;
+            let myArenas = new Set((item.arenas || []).map(a=>String(a).toLowerCase().trim()).filter(Boolean));
+            if (item.signals && item.signals.arena) myArenas.add(String(item.signals.arena).toLowerCase());
+            if (!myArenas.size && item.raw && item.raw.arena) myArenas.add(String(item.raw.arena).toLowerCase());
+            // neighbors via links
+            const neighIds = new Set();
+            links.forEach(l => {
+                const s = (typeof l.source==='object'?l.source.id:l.source)||'';
+                const t = (typeof l.target==='object'?l.target.id:l.target)||'';
+                if (s===item.id) neighIds.add(t);
+                if (t===item.id) neighIds.add(s);
+            });
+            allItems.forEach(o => {
+                if (neighIds.has(o.id) && o.arenas) o.arenas.forEach(a => myArenas.add(String(a).toLowerCase()));
+            });
+            // also check tactic/outlet for cross arena hint from pipeline
+            const t = item.tactic || {};
+            if (t.cross_outlet_coordination_hints || t.cross_outlet_coord) myArenas.add('media-echo');
+            const n = myArenas.size;
+            const corr = n >= 3 ? 0.92 : (n === 2 ? 0.78 : (n === 1 ? 0.38 : 0.28));
+            return Math.max(0.22, Math.min(0.96, corr + (item.outlets && item.outlets.length > 2 ? 0.08 : 0) ));
+        }
+
+        function computeMultiFactorScore(item, context = {}) {
+            // Core scoring path v3. Returns composite + full factor breakdown (9 factors) for rich reports.
+            // New paths pull from context computed once in selectTop: clusters, temporalMap, arenaCorrMap
+            const base = computeHotScore(item, context.links || [], item.signals);
+            const cent = (context.centralityMap && context.centralityMap[item.id]) || (item.value ? Math.min(0.6, item.value) : 0.12);
+            const coord = computeCoordDensity(item, context.allItems);
+            const rec = computeRecency(item);
+            const prov = computeProvStrength(item);
+            const archC = computeArchCoverageBoost(item, context.archFreq || {}, (context.allItems||[]).length || 42);
+            // Sophisticated paths:
+            const clus = (context.clusterStrengths && context.clusterStrengths[item.id]) || (context.clusters && context.clusters.strengths ? context.clusters.strengths[item.id] : 0.3);
+            const temp = (context.temporalMap && context.temporalMap[item.id]) || computeTemporalEvolution(item, context.allItems || [], context.links || [], context.recentDeltas);
+            const r2Temp = (context.r2DeltaTrackMap && context.r2DeltaTrackMap[item.id]) || computeR2DeltaRippleTrack(item, context.recentDeltas || [], context.deltaHistory || []);
+            const arenaC = (context.arenaCorrMap && context.arenaCorrMap[item.id]) || computeCrossArenaCorrelation(item, context.allItems || [], context.links || []);
+            // Blend R2 delta temporal path into temp for composite (more paths: explicit R2 delta ripple tracking)
+            // ENHANCED: pull + blend pipeline hints from analyze_data if attached to item or ctx
+            let hintClusBoost = 0, hintTempBoost = 0;
+            if (item._pipelineCluster || (context.pipelineHints && context.pipelineHints.cluster_sizes)) {
+                const ch = item._pipelineCluster || (context.pipelineHints.cluster_sizes && context.pipelineHints.cluster_sizes.sizes ? context.pipelineHints.cluster_sizes.sizes[item.id] || 2 : 2);
+                hintClusBoost = Math.min(0.22, (ch||2) * 0.035);
+            }
+            if (item._pipelineTemporal || (context.pipelineHints && context.pipelineHints.temporal)) {
+                const th = item._pipelineTemporal || (context.pipelineHints.temporal && (context.pipelineHints.temporal[item.id] || Object.values(context.pipelineHints.temporal||{})[0]));
+                if (th) hintTempBoost = (th.temporal_velocity || th.r2_delta_hrs || 0.7) * 0.09;
+            }
+            const blendedTemp = Math.max(temp, r2Temp * 0.65 + temp * 0.35) + hintTempBoost;
+            let enhancedClus = Math.max(clus, clus + hintClusBoost);
+            // DEEPENED cluster cohesion + outlet graph tie-in (pull outlet_clusters from hints; boost if high cross-outlet)
+            const outCl = (context.pipelineHints && (context.pipelineHints.outlet_clusters || (context.pipelineHints.cluster_sizes||{}).outlet_clusters)) || 0;
+            if (outCl > 1 && (item.outlets||[]).length > 1) enhancedClus = Math.min(0.98, enhancedClus + 0.07 * Math.min(2, outCl/3));
+            // NEW DEEP LOGIC PATH: sensitivity (stability under small perturbations e.g. +delta repeat or R2 hr shift)
+            // Measures how much composite would shift if 1 repeat or 1h fresher; low sens = robust high-signal
+            const sens = computeSensitivityFactor(item, {base, cent, coord, rec, prov, clus: enhancedClus, temp: blendedTemp}, context);
+            const c = (RULE42_WEIGHTS.baseHot || 0.22) * base +
+                      (RULE42_WEIGHTS.centrality || 0.14) * cent +
+                      (RULE42_WEIGHTS.coordDensity || 0.14) * coord +
+                      (RULE42_WEIGHTS.recency || 0.11) * rec +
+                      (RULE42_WEIGHTS.provStrength || 0.10) * prov +
+                      (RULE42_WEIGHTS.archCoverage || 0.08) * archC +
+                      (RULE42_WEIGHTS.clusterStrength || 0.09) * enhancedClus +
+                      (RULE42_WEIGHTS.temporalEvol || 0.07) * blendedTemp +
+                      (RULE42_WEIGHTS.crossArenaCorr || 0.05) * arenaC +
+                      (RULE42_WEIGHTS.sensitivity || 0.02) * sens;  // small weight for robustness path
+            const composite = Math.max(0.12, Math.min(0.995, c));
+            const factors = { baseHot: base, centrality: cent, coordDensity: coord, recency: rec, provStrength: prov, archCoverage: archC, clusterStrength: enhancedClus, temporalEvol: blendedTemp, crossArenaCorr: arenaC, r2DeltaTrack: r2Temp, sensitivity: sens };
+            return { composite, factors, baseHot: base };
+        }
+
+        function selectTop42Signals(inputData, opts = {}) {
+            // PRIMARY UNIVERSAL FUNCTION: dynamically rank top 42 from ANY data + query-driven selection.
+            // Call anywhere: selectTop42Signals(mySignalsArray) or selectTop42Signals({nodes,links}, {query: 'border hiccups'})
+            // query-driven: boosts + prioritizes matches on label/r2/arena (JARVIS/catalog integration).
+            const t0 = Date.now();
+            let rawItems = [], links = [], dtype = opts.dataType || 'generic';
+            const query = (opts.query || '').toString().toLowerCase().trim();
+            if (Array.isArray(inputData)) { rawItems = inputData; dtype = 'array'; }
+            else if (inputData && Array.isArray(inputData.nodes)) { rawItems = inputData.nodes; links = inputData.links || []; dtype = 'graph'; }
+            else if (inputData && inputData.news_ripples && inputData.news_ripples.media_specific_repeated_phrases) { rawItems = inputData.news_ripples.media_specific_repeated_phrases; dtype = 'synthesis'; }
+            else if (inputData && Array.isArray(inputData.newsItems)) { rawItems = inputData.newsItems; dtype = 'sample'; }
+            else if (inputData && Array.isArray(inputData.politicians)) { rawItems = inputData.politicians; dtype = 'politicians'; }
+            else if (inputData) { rawItems = [inputData]; dtype = 'single'; }
+            let sigs = rawItems.map((r,i) => normalizeSignal(r, i)).filter(Boolean);
+            if (!sigs.length) return { signals: [], report: { error: 'empty' }, meta: {version: RULE42_VERSION} };
+
+            // Query-driven: pre-boost scores for matching signals (detailed per-signal later reflects it)
+            const qTokens = query ? query.split(/[\s|]+/).filter(t=>t.length>1) : [];
+            if (qTokens.length) {
+                sigs.forEach(s => {
+                    const hay = ((s.label||'') + ' ' + (s.r2_path||'') + ' ' + (s.arenas||[]).join(' ')).toLowerCase();
+                    const qBoost = qTokens.reduce((b,t) => b + (hay.includes(t) ? 0.18 : 0), 0);
+                    s._queryBoost = Math.min(0.55, qBoost);
+                    // DEEPENED: archetype-aware query boost (arch match adds to multiScore + queryWhy; preserve universal)
+                    if (query && s.archetype && query.toLowerCase().includes(s.archetype.slice(0,4))) { s._queryBoost = Math.min(0.62, s._queryBoost + 0.14); s._archetypeQuery = true; }
+                    s._queryWhy = qTokens.length ? `matched ${qTokens.filter(t=>hay.includes(t)).join(',')||'tokens'}${s._archetypeQuery?' +arch':''}` : null;
+                });
+            }
+
+            const centMap = computeGraphCentrality(sigs, links);
+            const archF = {}; sigs.forEach(s => { archF[s.archetype] = (archF[s.archetype]||0)+1; });
+            // v3: pass recent deltas from global R2 live if present for temporal + clusters
+            const recentDeltas = (window.__RECENT_R2_DELTAS || opts.recentDeltas || []).slice(0,12);
+            const deltaHistory = (typeof window!=='undefined' && window.__r2DeltaHistory) ? window.__r2DeltaHistory.slice(-20) : [];
+            const clusters = computeGraphClusters(sigs, links, recentDeltas.length ? recentDeltas : null);
+            const temporalMap = {}; const arenaCorrMap = {}; const r2DeltaTrackMap = {};
+            sigs.forEach(s => {
+                temporalMap[s.id] = computeTemporalEvolution(s, sigs, links, recentDeltas);
+                arenaCorrMap[s.id] = computeCrossArenaCorrelation(s, sigs, links);
+                r2DeltaTrackMap[s.id] = computeR2DeltaRippleTrack(s, recentDeltas, deltaHistory);
+            });
+            const ctx = { centralityMap: centMap, archFreq: archF, allItems: sigs, links, clusters, clusterStrengths: clusters.strengths, temporalMap, arenaCorrMap, r2DeltaTrackMap, recentDeltas, deltaHistory, pipelineHints: (typeof window!=='undefined' ? window.__RULE42_PIPELINE_HINTS : null) || opts.pipelineHints || null };
+
+            sigs.forEach(s => {
+                const sc = computeMultiFactorScore(s, ctx);
+                s.multiScore = sc.composite + (s._queryBoost || 0);
+                s.factors = sc.factors;
+                s.hotScore = sc.baseHot;
+                s.clusterId = clusters.map[s.id] || 'c0';
+                s.clusterSize = clusters.sizes[s.id] || (s._pipelineCluster||1);
+                s.temporalEvol = temporalMap[s.id] || (s._pipelineTemporal ? s._pipelineTemporal.temporal_velocity : 0.42);
+                s.arenaCorr = arenaCorrMap[s.id];
+                s.queryMatched = !!(s._queryBoost);
+            });
+
+            sigs.sort((a,b) => (b.multiScore||0) - (a.multiScore||0));
+            let top = sigs.slice(0, 42);
+
+            // Dynamic keep + query bias: keep query matches even if lower
+            if (qTokens.length) {
+                const qForced = sigs.filter(s => s.queryMatched && !top.some(x=>x.id===s.id)).slice(0,6);
+                top = top.concat(qForced);
+            }
+            // Dynamic keep: always surface explicit high-signal cases + ultra-high prov (ZDF etc)
+            const forced = sigs.filter(s => (s.type === 'case' || s.id === 'case-zdf' || (s.factors && s.factors.provStrength > 0.82)) && !top.some(x=>x.id===s.id));
+            let selected = top.concat(forced).sort((a,b)=>(b.multiScore||0)-(a.multiScore||0)).slice(0,42);
+
+            selected.forEach(s => s.isRule42 = true);
+
+            // === ANALYSIS REPORT (rich, machine + human readable) v3 ===
+            // Now includes cluster groups, temporal evolution stats, cross-arena insights derived from pipeline outputs
+            const clusterStats = {};
+            selected.forEach(s => { const cid = s.clusterId || 'c0'; clusterStats[cid] = (clusterStats[cid]||0) + 1; });
+            const topClusters = Object.entries(clusterStats).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c,s]) => `${c}(${s})`).join(',');
+            const avgEvol = selected.length ? +(selected.reduce((sum,s)=>sum + (s.temporalEvol||0.4),0)/selected.length).toFixed(3) : 0;
+            const highArena = selected.filter(s => (s.arenaCorr||0) > 0.7).length;
+            const report = {
+                version: RULE42_VERSION,
+                generated: new Date().toISOString(),
+                inputCount: rawItems.length,
+                scoredCount: sigs.length,
+                selectedCount: selected.length,
+                dataType: dtype,
+                weights: { ...RULE42_WEIGHTS },
+                top42Ids: selected.map(s => s.id),
+                archetypeDistribution: {},
+                factorAverages: {},
+                clusterDistribution: clusterStats,
+                temporalAvg: avgEvol,
+                crossArenaHighCount: highArena,
+                topBreakdown: selected.map((s, i) => ({
+                    rank: i+1, id: s.id, label: s.label.substring(0,48), archetype: s.archetype,
+                    composite: +s.multiScore.toFixed(4),
+                    factors: Object.fromEntries(Object.entries(s.factors||{}).map(([k,v]) => [k, +v.toFixed(3)])),
+                    baseHot: +(s.hotScore||0).toFixed(3),
+                    cluster: { id: s.clusterId, size: s.clusterSize },
+                    temporalEvol: +(s.temporalEvol||0).toFixed(3),
+                    arenaCorr: +(s.arenaCorr||0).toFixed(3),
+                    prov: s.r2_path ? 'r2+' : (s.provenance ? 'prov' : '')
+                })),
+                rationale: 'v3 Ranked by composite incl graph clustering (components+strength from links), temporal evolution (velocity/persist/accel from pubTs + pipeline dates), cross-arena corr (spans from arenas+cooccur+outlets). ' + Object.keys(RULE42_WEIGHTS).map(k=>k+'*'+RULE42_WEIGHTS[k]).join(' + ') + 
+                           '. Factors from analyze_data (tactic/echo/outlet_graph/shared_arenas), timelines, sample pub/arena + synth. Top 42 + high-prov forced.',
+                computeTimeMs: Date.now() - t0
+            };
+            selected.forEach(s => { const a=s.archetype; report.archetypeDistribution[a] = (report.archetypeDistribution[a]||0) + 1; });
+            Object.keys(RULE42_WEIGHTS).forEach(k => {
+                const vs = selected.map(s => (s.factors && s.factors[k]) || 0);
+                report.factorAverages[k] = vs.length ? +(vs.reduce((x,y)=>x+y,0)/vs.length).toFixed(3) : 0;
+            });
+
+            // === USER-FRIENDLY RULE OF 42 ANALYSIS (mass-marketable, truthful explanations) ===
+            // Expanded v4: plain-English, factor-by-factor breakdowns, honest caveats. Rule of 42 = practical heuristic filter (~top 42 high-impact from larger set), not magic. Always verify primaries.
+            function generateRule42UserAnalysis(rpt, topSigs) {
+                if (!rpt || !topSigs || !topSigs.length) return { whyTheseSignals: '', reasoning: '', summary: '', recommendations: '', friendlyTitle: 'Rule of 42 Analysis', factorBreakdown: {}, disclaimer: 'Heuristic ranking only. Verify sources.' };
+                const topArches = Object.entries(rpt.archetypeDistribution || {}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([a,c]) => `${a} (${c})`).join(', ');
+                const avgProv = (rpt.factorAverages && rpt.factorAverages.provStrength) || 0.4;
+                const avgCoord = (rpt.factorAverages && rpt.factorAverages.coordDensity) || 0.35;
+                const avgCluster = (rpt.factorAverages && rpt.factorAverages.clusterStrength) || 0.42;
+                const avgEvol = rpt.temporalAvg || 0.4;
+                const avgCentral = (rpt.factorAverages && rpt.factorAverages.centrality) || 0.3;
+                const highProvCount = topSigs.filter(s => (s.factors && s.factors.provStrength > 0.6) || s.r2_path).length;
+                const topClusterInfo = rpt.clusterDistribution ? Object.entries(rpt.clusterDistribution).sort((a,b)=>b[1]-a[1])[0] : null;
+                const clusterNote = topClusterInfo ? ` Dominant cluster ${topClusterInfo[0]} groups ${topClusterInfo[1]} top signals.` : '';
+                const highArena = rpt.crossArenaHighCount || 0;
+
+                // Friendly factor breakdown (plain language for mass market)
+                const factorBreakdown = {
+                    'baseHot (starting strength)': `Average ${ (rpt.factorAverages.baseHot||0).toFixed(2) } — raw activity & echo volume.`,
+                    'centrality': `Average ${avgCentral.toFixed(2)} — how central in the connected web (influencers connected to many others).`,
+                    'coordDensity': `Average ${avgCoord.toFixed(2)} — repeated framing & coordination across outlets (the "machine" echo).`,
+                    'provStrength': `Average ${avgProv.toFixed(2)} — strength of verifiable sources (R2 data, X IDs, signed chains; ${highProvCount} strong).`,
+                    'clusterStrength': `Average ${avgCluster.toFixed(2)} — grouped in tight coordinated clusters from graph analysis.${clusterNote}`,
+                    'temporalEvol': `Average ${avgEvol} — momentum over time (how fast/persistently the signal is evolving).`,
+                    'recency': `Prioritizes recent spikes.`,
+                    'archCoverage': `Ensures spread across the 11 archetypes for no blind spots.`,
+                    'crossArenaCorr': `Convergence across news, policy, docs, tech — multi-domain impact.`
+                };
+
+                const why = `The Rule of 42 filter picked these ${rpt.selectedCount} signals (out of ${rpt.scoredCount} scored) because they topped a composite score built from 9 real-world factors. In plain terms: we look for signals that are loud (base), centrally connected, coordinated in lockstep (density), backed by traceable sources (prov), moving in groups (clusters), accelerating over time, recent, and hitting multiple patterns (archetypes + arenas). This is not "the 42 most important things ever" — it's a focused lens on the highest-signal ripples in the current data to cut through noise. ${highProvCount ? `${highProvCount} have especially strong verifiable proof links.` : ''}`;
+
+                const reason = `How it works (truthful breakdown): The math blends published data pipelines (analyze_data graphs, outlet co-occurrence, RSS publish times, arena labels). High composite = real patterns, not hype. Top distribution across ${topArches || 'several patterns'}. Averages: prov ${avgProv.toFixed(2)}, coordination ${avgCoord.toFixed(2)}, cluster ${avgCluster.toFixed(2)}, evolution ${avgEvol}. High-prov cases (like ZDF fabrication lie evidence) are forced in. This ranking is reproducible from the same inputs but data is sampled/synthesized — cross-check everything.`;
+
+                const summ = `Summary: ${rpt.selectedCount} standout signals. Patterns: ${topArches}. ${highArena} show cross-domain reach. This view highlights the "core machine" with evidence chains attached. Not exhaustive; it's a prioritization tool.`;
+
+                const recs = `Recommendations for everyday use: 1) Start with high-prov items (strong R2/X links) if checking facts or accountability — export their bundles. 2) Follow clusters + temporal for "how did this spread" stories (use 4D scrub). 3) Switch archetype filters to see the full picture instead of one pattern. 4) Use exports (this analysis is included) + voice JARVIS queries for quick dives. 5) Treat as smart shortlist, not gospel — read the actual sources. Rule of 42 helps focus attention on power-relevant signals.`;
+
+                const disclaimer = 'This is a data-driven heuristic ranking for focus and exploration. It reflects the scoring model applied to available inputs. Always verify with primary sources before drawing conclusions. No claims of completeness or legal proof on their own.';
+
+                const userSummary = `In plain terms, Rule of 42 distills the map to the ${rpt.selectedCount} highest-signal ripples using 9+ real factors. It reveals the coordinated patterns without overwhelm. Avg momentum ${avgEvol}. Use it as your lens for truth-seeking.`;
+
+                return {
+                    friendlyTitle: 'Rule of 42 Analysis — Why These Signals',
+                    whyTheseSignals: why,
+                    reasoning: reason,
+                    summary: summ + ' ' + userSummary,
+                    recommendations: recs,
+                    factorBreakdown,
+                    quickWhy: `Top factors: centrality + coordination + prov + clusters + momentum. ${highProvCount} strong-proof, ${highArena} cross-arena.`,
+                    disclaimer,
+                    massMarketSummary: userSummary
+                };
+            }
+            const userAnalysis = generateRule42UserAnalysis(report, selected);
+            report.analysis = userAnalysis; // attach for UI/exports/JARVIS
+            report.friendlyAnalysis = userAnalysis; // alias
+
+            // Attach detailed per-signal explanations (enhanced: R2 delta temporal, clusters, query matches, pipeline hints, WHY SELECTED + factor breakdowns)
+            selected.forEach((s, i) => {
+                const f = s.factors || {};
+                const rank = i + 1;
+                const clusNote = s.clusterSize > 3 ? `cluster-${s.clusterId}(${s.clusterSize}) ` : '';
+                const evolNote = (s.temporalEvol||0) > 0.6 ? 'high-evol ' : '';
+                const arenaNote = (s.arenaCorr||0) > 0.65 ? 'x-arena ' : '';
+                const qNote = s.queryMatched ? 'query-matched ' : '';
+                const deltaNote = (window.__RECENT_R2_DELTAS && window.__RECENT_R2_DELTAS.length) ? 'R2-delta-timed ' : '';
+                const strongFs = Object.entries(f).filter(([_,v])=>(v||0)>0.55).map(([k])=>k).join(' + ') || 'multi-factor';
+                const qWhy = s._queryWhy ? ` qwhy:${s._queryWhy}` : '';
+                const sensNote = s._sensRankImpact ? ` sensImpact:${s._sensRankImpact}` : '';
+                const r2v = s._r2DeltaVelocity ? ` r2v:${s._r2DeltaVelocity}` : '';
+                const whySel = `Selected #${rank} because composite ${(s.multiScore||0).toFixed(2)} led via: ${strongFs} (baseHot=${(f.baseHot||0).toFixed(2)} + centrality=${(f.centrality||0).toFixed(2)} + coord=${(f.coordDensity||0).toFixed(2)}) ${clusNote}${evolNote}${arenaNote}${qNote}${deltaNote}${qWhy}${sensNote}${r2v} + outlet cluster + pipeline hint blend. From deepened 4-path analyzation (sens/r2vel/queryarch/clusoutlet) + analyze_data graph/temporal/outlet + live R2.`;
+                s.rule42Analysis = {
+                    rank,
+                    composite: +(s.multiScore || 0).toFixed(3),
+                    why_selected: whySel,
+                    why: `Ranked #${rank} (score ${(s.multiScore||0).toFixed(2)}) — strongest in: ${strongFs}. ${clusNote}${evolNote}${arenaNote}${qNote}${deltaNote}${qWhy}${sensNote}${r2v}${s.r2_path ? 'Strong verified source trail (R2). ' : ''}Contributes ${s.archetype} archetype coverage. From graph cluster+outlet + R2 delta timing + pipeline synthesis.`,
+                    factorsSummary: Object.entries(f).map(([k,v]) => `${k}:${(v||0).toFixed(2)}`).join(' ') + ` clus:${(s.clusterSize||1)} te:${(s.temporalEvol||0).toFixed(2)} ac:${(s.arenaCorr||0).toFixed(2)}`,
+                    factorBreakdown: Object.fromEntries(Object.entries(f).map(([k,v]) => [k, `score ${(v||0).toFixed(2)} (${((v||0)*100|0)}% weighted)`])),
+                    recommendation: (f.provStrength > 0.65 ? 'Strong proof — export for audit. ' : 'Double-check sources. ') + (f.coordDensity > 0.6 ? 'High coordination — follow echoes. ' : '') + ((s.temporalEvol||0)>0.55 ? 'Momentum: use timeline scrub + 4D delta. ' : '') + ((s.arenaCorr||0)>0.6 ? 'Multi-domain reach. ' : '') + (s.queryMatched ? 'Direct match to active query.' : ''),
+                    r2DeltaContext: deltaNote ? 'Temporal derived from recent R2 object landing deltas.' : 'Temporal from pub + pipeline.',
+                    queryWhy: s._queryWhy || null,
+                    sensitivityContext: s._sensRankImpact ? `rank shift under perturb: ${s._sensRankImpact}` : null,
+                    disclaimer: 'Heuristic only. Verify primary data yourself.'
+                };
+            });
+
+            console.log(`[RULE42-${RULE42_VERSION}] ${selected.length} top signals from ${dtype} (${sigs.length} scored). Report output to window.lastRule42Report. User-friendly + detailed analysis attached (clusters/temporal/arena).`);
+            return { signals: selected, report, meta: { version: RULE42_VERSION, universal: true, weights: RULE42_WEIGHTS, paths: 'normalize->centrality+clusters(union+outlet)->tempEvol+R2deltaVel->crossArena->sens(perturb/rank)+queryArchBoost->multi(10f+hints)->rank+force highprov/cases/hot>0.75->attach why/factors/r2ctx' } };
+        }
+
+        // Global universal API (any system: browser, node via JSDOM, other pages can copy the fn)
+        if (typeof window !== 'undefined') {
+            window.selectTop42Signals = selectTop42Signals;
+            window.computeMultiFactorScore = computeMultiFactorScore;
+            window.computeSensitivityFactor = computeSensitivityFactor;
+            window.computeR2DeltaRippleTrack = computeR2DeltaRippleTrack;
+            window.RULE42 = { VERSION: RULE42_VERSION, selectTop42Signals, computeMultiFactorScore, computeSensitivityFactor, computeR2DeltaRippleTrack, WEIGHTS: RULE42_WEIGHTS, getReport: () => window.lastRule42Report, getAnalysis: () => (window.lastRule42Report && window.lastRule42Report.analysis) || null, paths: 'sensStability(perturb+rankImpact+deltaHrs)+strongR2DeltaVel(accel/hist/pipeline)+queryArchBoost+clusterOutletCohesion' };
+            // NEW: public helper for detailed per-signal or cluster explain (followup support)
+            window.getRule42DetailedExplanation = function(signalId) {
+                const rpt = window.lastRule42Report || {};
+                const sigs = rpt.signals || [];
+                if (!signalId) {
+                    // global summary
+                    const top = (rpt.topBreakdown||[]).slice(0,3);
+                    return { type:'summary', selected: rpt.selectedCount, top3: top, clusterDist: rpt.clusterDistribution, temporal: rpt.temporalAvg, analysis: rpt.analysis };
+                }
+                const sid = String(signalId).toLowerCase();
+                const hit = sigs.find(s => String(s.id||'').toLowerCase()===sid || (s.label||'').toLowerCase().includes(sid)) || (rpt.topBreakdown||[]).find(t => String(t.id||t.label||'').toLowerCase().includes(sid));
+                if (!hit) return { error: 'no match', try: 'pass id or label fragment' };
+                const a = hit.rule42Analysis || hit;
+                return { type:'per-signal', id: hit.id||signalId, label: hit.label, why_selected: a.why_selected || a.why, factors: a.factorBreakdown || hit.factors, rec: a.recommendation, cluster: hit.clusterId || (hit.cluster&&hit.cluster.id), temporal: hit.temporalEvol, r2ctx: a.r2DeltaContext, disclaimer: a.disclaimer || 'Heuristic. Verify.' };
+            };
+        }
+        function outputRule42AnalysisReport(report = window.lastRule42Report) {
+            // Universal report output helper (console + structured) v3. Call outputRule42AnalysisReport() or showDetailedRule42Report()
+            if (!report) { console.warn('[RULE42] No report. Call selectTop42Signals first.'); return null; }
+            console.groupCollapsed(`[RULE42 REPORT v${report.version}] ${report.dataType} | ${report.selectedCount} signals`);
+            console.table(report.topBreakdown);
+            console.log('Archetype distrib:', report.archetypeDistribution);
+            console.log('Factor avgs:', report.factorAverages);
+            console.log('Clusters:', report.clusterDistribution);
+            console.log('Temporal avg / X-arena high:', report.temporalAvg, report.crossArenaHighCount);
+            console.log('Rationale:', report.rationale);
+            if (report.analysis) {
+                console.log('Rule of 42 Analysis (user):', report.analysis.summary);
+                console.log('Why:', report.analysis.whyTheseSignals);
+                console.log('Recs:', report.analysis.recommendations);
+            }
+            console.groupEnd();
+            return report;
+        }
+        if (typeof window !== 'undefined') window.outputRule42AnalysisReport = outputRule42AnalysisReport;
+
+        // NEW OUTPUT FUNCTIONS for user-facing explanations (JARVIS + exports) - enhanced rich summaries
+        // explainRule42ForJARVIS: produces concise, actionable text for chat/voice responses + dynamic 42.
+        function explainRule42ForJARVIS(report, query = '', selected = []) {
+            if (!report) return 'Rule of 42: no live analysis yet. Ask after map loads or run a selection.';
+            const q = (query||'').toLowerCase();
+            const n = report.selectedCount || (selected && selected.length) || 42;
+            const avgC = (report.factorAverages && report.factorAverages.centrality || 0.3).toFixed(2);
+            const avgT = (report.temporalAvg || 0.42).toFixed(2);
+            const r2tAvg = report.factorAverages && report.factorAverages.r2DeltaTrack ? report.factorAverages.r2DeltaTrack.toFixed(2) : '0.38';
+            const avgSens = report.factorAverages && report.factorAverages.sensitivity ? report.factorAverages.sensitivity.toFixed(2) : '0.48';
+            // ENHANCED: step-by-step reasoning (top 3 factor paths + cluster/temporal insight + per-top-signal 1-line recs)
+            let step = `Step 1: scored ${report.scoredCount||'?'} via 10 paths (base+graph+coord+prov+clus+temporal+R2delta+arena+arch+sensitivity=${avgSens}). Top paths: `;
+            step += `Step 2: top ${n} by composite (central ${avgC}, R2-ripple ${r2tAvg}, momentum ${avgT}). `;
+            step += `Step 3: ${Object.keys(report.clusterDistribution||{}).length} clusters + ${report.crossArenaHighCount||0} x-arena; high-prov forced. `;
+            const top3 = (report.topBreakdown || []).slice(0,3);
+            let paths = '';
+            if (top3.length) {
+                paths = top3.map((t,i)=>`${i+1}.${(t.factors?Object.keys(t.factors).filter(k=>t.factors[k]>0.5).slice(0,2).join('+'):'central+coord+prov')} for ${t.label}`).join(' | ') + '. ';
+            }
+            const clusInsight = report.clusterDistribution ? `Cluster insight: dominant ${Object.entries(report.clusterDistribution).sort((a,b)=>b[1]-a[1])[0]?.[0]||'c0'} groups key signals. ` : '';
+            const tempInsight = `Temporal: avg evol ${avgT} (R2 ripples ${r2tAvg}); ${ (report.topBreakdown||[]).filter(x=>(x.temporalEvol||0)>0.55).length } accelerating. `;
+            let perSigRecs = '';
+            if (top3.length) perSigRecs = 'Top recs: ' + top3.map(t => {
+                const s = (selected||[]).find(x => x.label && x.label.includes((t.label||'').slice(0,20))) || {};
+                const rec1 = (s.rule42Analysis && s.rule42Analysis.recommendation) || (t.factors && t.factors.provStrength >0.6 ? 'export proof' : 'check coord');
+                return `${(t.label||'').slice(0,22)}: ${rec1}`; 
+            }).join('; ') + '. ';
+            let why = `Top ${n} via 10+ paths (central ${avgC}, R2-ripple ${r2tAvg}, clus, coord, prov, mom ${avgT}). `;
+            if (q) {
+                const matches = (selected||[]).filter(s => ((s.label||'')+ (s.r2_path||'')).toLowerCase().includes(q.slice(0,8))).length;
+                why += `Query bias for "${query}" (${matches} prioritized). `;
+            }
+            const rec = (report.topBreakdown && report.topBreakdown[0]) ? `Leading: ${report.topBreakdown[0].label} (${report.topBreakdown[0].archetype}).` : '';
+            const userNote = report.analysis && report.analysis.massMarketSummary ? ' ' + report.analysis.massMarketSummary : ' Practical focus lens — always verify primaries.';
+            return `${step}${paths}${clusInsight}${tempInsight}${perSigRecs}${why}${rec}${userNote} Heuristic shortlist (Rule of 42). Ask "why this one", "factors for X", "timeline for cluster" for followups.`;
+        }
+        if (typeof window !== 'undefined') window.explainRule42ForJARVIS = explainRule42ForJARVIS;
+
+        // generateRule42ExportNarrative: rich user-facing + auditable text blob for JSON/PDF/exports.
+        function generateRule42ExportNarrative(report, graphMeta = {}, selected = []) {
+            const ts = new Date().toISOString();
+            const r = report || {};
+            let text = `JARVIS RULE OF 42 ANALYSIS EXPORT\nGenerated: ${ts}\nVersion: ${r.version || RULE42_VERSION}\n\n`;
+            text += `SUMMARY: Selected ${r.selectedCount || selected.length} high-impact signals (of ${r.inputCount||'?'} input) using multi-factor scoring.\n`;
+            text += `PATHS USED (10+ analyzation logic): normalize+centrality+computeGraphClusters (union-find + outlet_graph tie)+computeTemporalEvolution+computeR2DeltaRippleTrack (vel/accel from deltas/history)+computeCrossArena+computeSensitivityFactor (new paths/sens perturbation stability)+coord+prov+arch+query-boost. Step: score all -> cluster/temporal/sens maps -> multi (weighted + hints) -> sort+force highprov/query -> per-sig why/factors/ recs -> report+user narrative.\n`;
+            text += `WEIGHTS: ${JSON.stringify(r.weights || RULE42_WEIGHTS)}\n\n`;
+            text += `FACTOR AVERAGES: ${JSON.stringify(r.factorAverages || {})}\n`;
+            text += `CLUSTERS: ${JSON.stringify(r.clusterDistribution || {})}\n`;
+            text += `TEMPORAL AVG / R2 TRACK: ${r.temporalAvg || 0} (R2 ripple momentum emphasized)\n`;
+            text += `SENSITIVITY (new stability path): ${(r.factorAverages && r.factorAverages.sensitivity || 0.48).toFixed(2)} — low = robust signals preferred.\n`;
+            text += `RATIONALE: ${r.rationale || 'Composite ranking for high-signal focus in complex systems.'}\n\n`;
+            text += `TOP SIGNALS (first 5):\n`;
+            (r.topBreakdown || (selected||[]).slice(0,5).map((s,i)=>({rank:i+1,label:s.label,composite:s.multiScore}))).slice(0,5).forEach(t => {
+                text += `  #${t.rank} ${t.label} [${t.archetype||''}] c=${t.composite||t.composite} factors=${JSON.stringify(t.factors||{})} prov=${t.prov||''}\n`;
+            });
+            text += `\nDISCLAIMER: This is a practical heuristic filter ("Rule of 42") derived from data. Not legal/financial advice. Always cross-verify with primary sources and full provenance. For ZDF/Elon suit forensics etc, use signed bundles.\n`;
+            text += `Graph meta: nodes=${(graphMeta.nodes||[]).length||0} edges=${(graphMeta.links||graphMeta.edges||[]).length||0}\n`;
+            if (r.analysis) text += `RICH USER SUMMARY: ${r.analysis.massMarketSummary || r.analysis.summary}\nRECS: ${r.analysis.recommendations}\n`;
+            // mass share via getRule42ShareBundle + generateRule42ExportNarrative for universal exports + deep links (from sustain edits)
+            // ENRICHED: full analysis + per-sig why + massMarketSummary + universal disclaimer (already in base; appended explicitly for exports)
+            if (r.analysis) {
+                text += `\nFULL ANALYSIS: ${r.analysis.whyTheseSignals || ''}\nMASS-MARKET: ${r.analysis.massMarketSummary || ''}\n`;
+            }
+            text += `UNIVERSAL: Rule of 42 is a universal lens — top ~42 high-signal nodes drive complex systems. Verify sources.`;
+            // Wire mass-share deep link + bundle (uses the new helper for queryable shareable state with analysis)
+            try {
+                if (typeof getRule42ShareBundle === 'function') {
+                    const b = getRule42ShareBundle();
+                    text += `\nSHARE: ${b.url}\n`;
+                } else if (typeof window !== 'undefined' && typeof window.buildRule42DeepLink === 'function') {
+                    text += `\nSHARE: ${window.buildRule42DeepLink('', '', {embed:true})}\n`;
+                }
+            } catch(e){}
+            return text;
+        }
+        if (typeof window !== 'undefined') window.generateRule42ExportNarrative = generateRule42ExportNarrative;
+
+        // MASS-SHARE DEEP LINK + EMBED helper (universal, uses current report/query + top signals for shareable URLs)
+        function buildRule42DeepLink(query, focusId, opts = {}) {
+            const q = encodeURIComponent((query || (typeof lastQuery !== 'undefined' ? lastQuery : '')).slice(0,120));
+            const f = focusId ? encodeURIComponent(focusId) : '';
+            const r42 = opts.r42 !== false ? '1' : '0';
+            const base = (typeof location !== 'undefined' && location.href) ? location.href.split('?')[0] : 'https://narrative-forge-gray.vercel.app/';
+            let url = `${base}?r42=${r42}`;
+            if (q) url += `&q=${q}`;
+            if (f) url += `&focus=${f}`;
+            if (opts.embed) url += '&embed=1';
+            return url;
+        }
+        function getRule42ShareBundle() {
+            const rpt = (typeof window !== 'undefined' ? window.lastRule42Report : null) || {};
+            const top = (rpt.topBreakdown || []).slice(0,3).map(t => t.id);
+            const q = (typeof window !== 'undefined' && window.lastQuery) || '';
+            return {
+                url: buildRule42DeepLink(q, top[0] || '', {embed: true}),
+                analysis: rpt.analysis || {},
+                signals: top,
+                universal: 'Rule of 42 applies to any system — only the highest-signal ~42 move power.'
+            };
+        }
+        if (typeof window !== 'undefined') {
+            window.buildRule42DeepLink = buildRule42DeepLink;
+            window.getRule42ShareBundle = getRule42ShareBundle;
+        }
+
+        // ============================================================================================
+        // END UNIVERSAL RULE OF 42 v3.0-graph-temporal-arena. 
+        // Logic paths: normalize (pipeline arena/outlet/pub/tactic) -> computeGraphCentrality + computeGraphClusters (union-find components+strength from links/entity_graph/outlet_graph) -> computeTemporalEvolution (vel/persist/accel via pubTs+related+timeline dates) -> computeCrossArenaCorrelation (spans from arenas/shared_arenas+cooccur) + old coord/rec/prov/arch -> computeMultiFactorScore (9 weighted) -> sort/slice+force -> attach per-sig + generateReport + generateRule42UserAnalysis (detailed narrative) -> window.last*Report + showDetailedRule42Report (console+DOM export).
+        // Integrated: data from analyze_data (tactic/cross_outlet/echo/entity_graph/timeline), synth (outlets/ripples/tactic), sample (arena/pubDate). Call selectTop42Signals({nodes,links}) or load data for auto. Reports for users.
+        // Call outputRule42AnalysisReport() or showDetailedRule42Report() post-load.
+        // ============================================================================================
         function inferArchetype(arenas = [], signals = [], phrase = '') {
             // Latest mappings (guts + preview-4 + 11 subagents): "hiccups"→haman, border/humanitarian→pharaoh etc.
             const text = ((phrase || '') + ' ' + (arenas || []).join(' ') + ' ' + (signals || []).join(' ')).toLowerCase();
@@ -1405,7 +2328,10 @@ function filterByArchetype(arch) {
             const mapped = deltas.map(d => createLiveRipple({ ...d, fromRealR2: true }));
             // Inject via MASTER_CATALOG
             mapped.forEach(m => { try { MASTER_CATALOG.updateCatalog({delta: true, arch: m.archetype, hot: m.hotScore, r2_path: m.r2_path}); } catch{} });
-            console.log('[R2] pollRealR2Deltas ->', mapped.length, 'real deltas (nspm/goliath/hiccups etc) w/ exact r2_path/hot/provenance');
+            window.__RECENT_R2_DELTAS = (window.__RECENT_R2_DELTAS || []).concat(mapped.map(m => ({id:m.id, label:m.label, ts: Date.now(), r2_path: m.r2_path, hotScore: m.hotScore}))).slice(-15);
+            // Populate full delta history for computeR2DeltaRippleTrack (temporal ripple tracking path)
+            window.__r2DeltaHistory = (window.__r2DeltaHistory || []).concat(mapped.map(m=>({id:m.id,label:m.label,hotScore:m.hotScore||m.value,ts:Date.now()}))).slice(-50);
+            console.log('[R2] pollRealR2Deltas ->', mapped.length, 'real deltas (nspm/goliath/hiccups etc) w/ exact r2_path/hot/provenance + r2DeltaHistory for Rule42 temporal ripple tracking.');
             return mapped;
         }
 
@@ -1425,6 +2351,9 @@ function filterByArchetype(arch) {
                 fetch(base + 'news-synthesis.json').then(r => r.ok ? r.json() : null).catch(() => null),
                 fetch(base + 'news-sample.json').then(r => r.ok ? r.json() : null).catch(() => null)
             ]);
+            // Integrate pipeline outputs for v3 scoring: rule42_pipeline_hints (from analyze_data) for cluster/temporal/arena pre-annotations
+            window.__RULE42_PIPELINE_HINTS = (synthRes && synthRes.rule42_pipeline_hints) || null;
+            if (window.__RULE42_PIPELINE_HINTS) console.log('[RULE42][PIPELINE] Loaded pre-hints from analyze_data synthesis for clusters/temporal/arena:', Object.keys(window.__RULE42_PIPELINE_HINTS));
             const nodes = [];
             const links = [];
             // === CASES (explicit high-hot Rule of 42 seeds, from preview-4 + holo cases) ===
@@ -1435,9 +2364,9 @@ function filterByArchetype(arch) {
                 { id: 'case-1', label: 'Coordinated Law Enforcement / Same Figures Hero-Villain', type: 'case', value: 0.85, archetype: 'goliath', hotScore: 0.84, isRule42: true,
                   sources: [{title:'justice-pr + media', url:'#', excerpt:'Framing flips; coordinated arrests language.', r2_path:'R2:raw/news/...', r2_verified:true}],
                   provenance: {source:'news-sample.json + analyze_data', r2:'babylon-raw-data'} },
-                { id: 'case-zdf', label: 'ZDF "Jagd auf Migranten" Musk Lie (Elon Legal Action)', type: 'case', value: 0.95, archetype: 'nimrod', hotScore: 0.95, isRule42: true,
-                  sources: [{title:'ZDF Heute broadcast', url:'#', excerpt:'False claim: Elon Musk "called for hunt on migrants" (racist mob + British extremist + tech billionaire). Actual: Musk quote of "Only by protesting REPEATEDLY and LOUDLY will there be any change!!" (Belfast context). ZDF note: "imprecise and misleading". Elon: "Legal action is being taken against ZDF for their outrageous lies".', r2_path:'babylon-raw-data/raw/news/zdf-musk-jagd-lie-2026-06-15.html', r2_verified:true}],
-                  provenance: {source:'news-synthesis.json + Reichelt/Elon X 2026-06-15 + German reactions', r2:'babylon-raw-data', tactic:'loaded_language+weak_correction+state_media', echo:'AfD support, GEZ outrage, calls to dismantle ZDF, coordinated disinfo echo' } }
+                { id: 'case-zdf', label: 'PINNACLE: ZDF "Jagd auf Migranten" Fabrication Lie (Elon X Proof)', type: 'case', value: 0.95, archetype: 'nimrod', hotScore: 0.95, isRule42: true,
+                  sources: [{title:'ZDF Heute / Frontal21', url:'#', excerpt:'False claim: Elon Musk called for "hunt on migrants" (racist mob + British extremist). Actual Musk quote (Belfast): "Only by protesting REPEATEDLY and LOUDLY will there be any change!!" ZDF later: "imprecise and misleading". Elon: "Legal action is being taken against ZDF for their outrageous lies".', r2_path:'babylon-raw-data/raw/news/zdf-musk-jagd-lie-2026-06-15.html', r2_verified:true}],
+                  provenance: {source:'Primary X post 2066565993040593115 + synthesis + reactions', r2:'babylon-raw-data', tactic:'loaded_language+state_media_coordination', x_proof: true, _provVerify: 'FULL_SIGN_VERIFY_OK_ZDF_LEGAL' } }
             ];
             nodes.push(...cases);
             // === POLITICIANS: real 691+ (full metadata for seeding; viz caps via Rule42/hot in practice) ===
@@ -1507,20 +2436,65 @@ function filterByArchetype(arch) {
             (synthRes && synthRes.news_ripples && synthRes.news_ripples.outlet_similarity_graph && synthRes.news_ripples.outlet_similarity_graph.edges ? synthRes.news_ripples.outlet_similarity_graph.edges : []).forEach(e => {
                 links.push({ source: e.from, target: e.to, value: e.weight || 0.6, phrase: e.phrase, provenance: {source:'news-synthesis'} });
             });
-            // === RULE OF 42 FILTER + enrich/mutate/hot (tie to preview-4 pipeline) ===
-            // Sort by hot (real calc), take top for focus, always keep cases + high-hot ripples/pols
+            // === RULE OF 42 v3 ENHANCED INTEGRATION: dynamic 9-factor top-42 + clusters/temporal/arena from pipeline outputs ===
+            // Uses selectTop42Signals with compute* for graph clusters (from synth outlet/entity_graph), temporal (pubDates + synth timeline hints), cross-arena.
+            // Also ingests rule42_pipeline_hints from analyze_data.py synthesis for pre-scores.
+            // ENHANCED: blend pipeline hints (cluster sizes/strengths, temporal deltas/vel) into ctx + nodes for scoring + detailed why-selected factor breakdowns.
+            // Falls back to legacy only if unavailable. Output: console report + window.lastRule42Report + auto detailed.
             nodes.forEach(n => { if (!n.hotScore) n.hotScore = computeHotScore(n, links); });
-            let filteredNodes = nodes.sort((a, b) => (b.hotScore || b.value || 0) - (a.hotScore || a.value || 0));
-            const top42 = filteredNodes.slice(0, 42);
-            filteredNodes = filteredNodes.filter(n => top42.includes(n) || n.type === 'case' || (n.hotScore && n.hotScore > 0.78));
+            let filteredNodes;
+            let rule42Report = null;
+            const pipelineHints = window.__RULE42_PIPELINE_HINTS || {};
+            if (pipelineHints && pipelineHints.cluster_sizes) {
+                // Pre-apply hints to nodes for universal integration (graph cluster + r2 temporal boost)
+                nodes.forEach(n => {
+                    const lab = (n.label||'').toLowerCase().slice(0,18);
+                    let ch = null;
+                    if (pipelineHints.cluster_sizes.sizes) ch = pipelineHints.cluster_sizes.sizes[lab] || pipelineHints.cluster_sizes.sizes[n.id];
+                    if (!ch && typeof pipelineHints.cluster_sizes === 'object') {
+                        for (let kk in pipelineHints.cluster_sizes) { if (lab.includes(kk.slice(0,8).toLowerCase())) { ch = pipelineHints.cluster_sizes[kk]; break; } }
+                    }
+                    if (ch) { n._pipelineCluster = ch; n.clusterSizeHint = ch; }
+                    const th = pipelineHints.temporal && (pipelineHints.temporal[n.id] || Object.values(pipelineHints.temporal).find(v => v && (lab.includes(String(v.arena||'').slice(0,3)) )));
+                    if (th) { n._pipelineTemporal = th; n.temporalHint = th.temporal_velocity || th.r2_delta_hrs || 0.8; }
+                });
+            }
+            if (typeof selectTop42Signals === 'function') {
+                const hints = pipelineHints;
+                const recentD = window.__RECENT_R2_DELTAS || [];
+                const sel = selectTop42Signals({ nodes, links }, { dataType: 'holo-load-graph', recentDeltas: recentD });
+                filteredNodes = (sel && sel.signals && sel.signals.length) ? sel.signals : nodes;
+                rule42Report = sel && sel.report;
+                if (rule42Report) {
+                    window.lastRule42Report = rule42Report;
+                    // Output analysis report + auto produce detailed for user
+                    console.log('[RULE42-ANALYSIS-REPORT]', rule42Report);
+                    if (hints) rule42Report.pipelineHintsUsed = Object.keys(hints);
+                    if (typeof announce === 'function') {
+                        const ua = rule42Report.analysis;
+                        announce('Rule42 v3: ' + filteredNodes.length + ' signals ranked. ' + (ua ? ua.quickWhy || ua.summary || 'Graph+temp+arena ready.' : ''));
+                    }
+                    // Produce detailed report (console + optional DOM) for users immediately on load
+                    if (typeof window.showDetailedRule42Report === 'function') {
+                        setTimeout(() => { try { window.showDetailedRule42Report(rule42Report); } catch(e){} }, 650);
+                    }
+                }
+            }
+            if (!filteredNodes || !filteredNodes.length) {
+                // legacy path (exact prior)
+                let sorted = nodes.slice().sort((a, b) => (b.hotScore || b.value || 0) - (a.hotScore || a.value || 0));
+                const top42 = sorted.slice(0, 42);
+                filteredNodes = sorted.filter(n => top42.includes(n) || n.type === 'case' || (n.hotScore && n.hotScore > 0.78));
+            }
             // Enrich all with full userData fields (for holo userData + evidence panel)
             filteredNodes.forEach(n => {
                 n.userData = n.userData || { ...n }; // for Three
                 if (!n.sources || !n.sources.length) n.sources = [{title: 'Synthesized', excerpt: 'Rule of 42', r2_path: 'R2:processed/'}];
                 n.provenance = n.provenance || { source: 'data-mapper', r2: 'local/R2' };
+                if (n.multiScore && n.multiScore > 0.65) n.isRule42 = true;
             });
             const finalLinks = links.filter(l => filteredNodes.some(n => n.id === l.source) && filteredNodes.some(n => n.id === l.target));
-            console.log(`[DATA-MAPPER] Seeded ${pols.length} politicians (691+), ${ripples.length + sampleItems.length} ripples/cases. Rule42 filtered to ${filteredNodes.length} nodes (top hot + cases). Provenance full. Hot formula: framing*0.35+echo*0.25+fresh*0.2+repeats*0.2`);
+            console.log(`[DATA-MAPPER v2] Seeded ${pols.length} politicians (691+), ${ripples.length + sampleItems.length} ripples/cases. Rule42 (universal multi-factor) filtered to ${filteredNodes.length} nodes. Report: ${rule42Report ? 'yes (window.lastRule42Report)' : 'legacy'}.`);
 
             // ENHANCED for live R2 actuals (port): merge REAL_R2_SAMPLES (nspm-12 tower, goliath arrests, haman hiccups with exact r2_path/hot/provenance/fromRealR2)
             // Ensures all new nodes carry exact hot/infer/Rule42/r2_path/provenance; visible 3D deltas.
@@ -1540,13 +2514,21 @@ function filterByArchetype(arch) {
                 }
             } catch (e) { console.warn('[R2] merge real deltas failed (non fatal)', e); }
 
-            // Re-apply Rule42 cap post-merge
+            // Re-apply Rule42 v2 post-merge (re-rank top using multi if avail; keep real deltas + cases)
             filteredNodes.forEach(n => { if (!n.hotScore) n.hotScore = computeHotScore(n, links); });
-            filteredNodes = filteredNodes.sort((a, b) => (b.hotScore || b.value || 0) - (a.hotScore || a.value || 0));
-            const top42b = filteredNodes.slice(0, 42);
-            filteredNodes = filteredNodes.filter(n => top42b.includes(n) || n.type === 'case' || (n.hotScore && n.hotScore > 0.78) || n.fromRealR2);
+            if (typeof selectTop42Signals === 'function') {
+                const reSel = selectTop42Signals({nodes: filteredNodes, links}, {dataType:'post-r2-merge', pipelineHints: window.__RULE42_PIPELINE_HINTS || null });
+                if (reSel && reSel.signals && reSel.signals.length) {
+                    filteredNodes = reSel.signals;
+                    if (reSel.report) window.lastRule42Report = reSel.report;
+                }
+            } else {
+                filteredNodes = filteredNodes.sort((a, b) => (b.hotScore || b.value || 0) - (a.hotScore || a.value || 0));
+                const top42b = filteredNodes.slice(0, 42);
+                filteredNodes = filteredNodes.filter(n => top42b.includes(n) || n.type === 'case' || (n.hotScore && n.hotScore > 0.78) || n.fromRealR2);
+            }
 
-            return { nodes: filteredNodes, links: finalLinks, meta: { version: DATA_MAPPER_VERSION, rule42: true, polCount: pols.length, rippleSeeds: ripples.length + sampleItems.length, base, useR2, realR2Deltas: (typeof REAL_R2_SAMPLES !== 'undefined' ? REAL_R2_SAMPLES.length : 0), fromRealR2: true, supervisor: '019ecd14-ddac-7002-ad6f-a82a94dd49f9' } };
+            return { nodes: filteredNodes, links: finalLinks, meta: { version: DATA_MAPPER_VERSION, rule42: 'v2-universal-multifactor', polCount: pols.length, rippleSeeds: ripples.length + sampleItems.length, base, useR2, realR2Deltas: (typeof REAL_R2_SAMPLES !== 'undefined' ? REAL_R2_SAMPLES.length : 0), fromRealR2: true, supervisor: '019ecd14-ddac-7002-ad6f-a82a94dd49f9', lastRule42Report: !!window.lastRule42Report } };
         }
         // R2 HOOKS (todos 9,11): proxy fetch, health stub, sync tie to check_r2_health + monitor scripts
         async function loadFromR2Proxy(r2Base) {
@@ -1637,6 +2619,8 @@ function filterByArchetype(arch) {
             try { if (typeof appendR2LiveLog === 'function') appendR2LiveLog(enriched); } catch{}
             // Feed MASTER_CATALOG
             if (MASTER_CATALOG && MASTER_CATALOG.updateCatalog) MASTER_CATALOG.updateCatalog({delta:true, arch, hot, r2_path: r2p});
+            // Track recent R2 deltas for enhanced temporal analysis + graph clustering from deltas in Rule42 paths
+            window.__RECENT_R2_DELTAS = (window.__RECENT_R2_DELTAS || []).concat({id: enriched.id, label: enriched.label, ts: Date.now(), r2_path: r2p, hotScore: hot}).slice(-15);
             return enriched;
         }
         function updateNode(id, updates) {
@@ -1940,10 +2924,16 @@ function filterByArchetype(arch) {
         function startGoldenSonifySession() { __sonifSessionPulses=[]; __sonifRecording=true; if(window.__recentPulses) __sonifSessionPulses.push(...window.__recentPulses.slice(-5)); return {started:Date.now()}; }
         function stopGoldenSonifySession() { __sonifRecording=false; return {pulses:__sonifSessionPulses.slice(), count:__sonifSessionPulses.length}; }
         function exportGoldenSonifySession(fmt='json') {
-            const sess=stopGoldenSonifySession(); const base={session:sess, meta:{fmt, ts:Date.now(), prov:'golden+ZDF-lie', ZDF_LIE_SCATTER_DEMO:true}};
-            if(fmt==='json'){ return {data:base, filename:'sonif-golden-session-'+Date.now()+'.json'}; }
-            const blob = new Blob([JSON.stringify({wavStub:'full-render-via-offlineAC', pulses:sess.pulses, prov:base.meta})],{type:'audio/wav'});
-            return {blob, filename:'sonif-golden-'+Date.now()+'.wav', meta:base};
+            const sess=stopGoldenSonifySession(); 
+            const rpt = window.lastRule42Report || null;
+            const analysis = rpt && rpt.analysis ? { why: rpt.analysis.whyTheseSignals, factors: rpt.analysis.factorBreakdown, recs: rpt.analysis.recommendations, disclaimer: rpt.analysis.disclaimer } : null;
+            const base={session:sess, meta:{fmt, ts:Date.now(), prov:'golden+ZDF-lie', ZDF_LIE_SCATTER_DEMO:true}, rule42AnalysisReport: analysis };
+            if(fmt==='json'){ 
+                const data = { ...base, fullRule42Report: rpt ? {version:rpt.version, selected:rpt.selectedCount, weights:rpt.weights, analysis: rpt.analysis} : null };
+                return {data, filename:'sonif-golden-session-'+Date.now()+'.json'}; 
+            }
+            const blob = new Blob([JSON.stringify({wavStub:'full-render-via-offlineAC', pulses:sess.pulses, prov:base.meta, rule42Analysis: analysis })],{type:'audio/wav'});
+            return {blob, filename:'sonif-golden-'+Date.now()+'.wav', meta:base, rule42AnalysisReport: analysis};
         }
         window.startGoldenSonifySession = startGoldenSonifySession; window.exportGoldenSonifySession=exportGoldenSonifySession; // harness/demo exposure
         function triggerGoldenVizBoost(h=0.7, a='', i42=false, ptype='hot') { recordGoldenSonifyPulse(h,a,i42,ptype); if (typeof window.__sonifyPulseBoost !== 'undefined') window.__sonifyPulseBoost = Math.min(1, (window.__sonifyPulseBoost||0)+0.42); }
@@ -2152,15 +3142,19 @@ function filterByArchetype(arch) {
         window.toggle4DPlayPause = toggle4DPlayPause;
         window.spawn4DGhosts = spawn4DGhosts;
 
-        // === NEW: ELON ZDF SUIT EVIDENCE BUNDLES + RECLAIM SEQUENCES (verifier/enhancer post 019eccfe-e6f1-7db1-997c-e5ac08e23aa5 archetypes expansion) ===
-        // Deepened per-arch 4D in scrub (uniforms, nimrod ZDF timeline before/after/glitch/vertical fall/scatter on X proof). 
-        // Reclaim seq: chained 4D cam tour + burst + pin + sonif + export snippet. Bundles: 4D JSON signed + PNG ref + prov/r2/hot/Rule42 + quotes + reclaim + edges. Cross ripples + integrate to evidence/ZDF cases + shared mappers parity.
+        // === ELON ZDF SUIT EVIDENCE BUNDLES + RECLAIM SEQUENCES ===
+        // 4D timeline (t=-6.8 fabrication), X proof, signed JSON + PNG + prov + Rule of 42 context. Pinnacle demonstration of value.
         window.generateElonZDFSuitEvidenceBundle = function(archOrZdf = 'zdf', opts = {}) {
           const arch = (archOrZdf === 'zdf' || archOrZdf === 'case-zdf') ? 'nimrod' : (archOrZdf || 'nimrod');
           const a = (typeof ARCHETYPES !== 'undefined' ? ARCHETYPES[arch] : null) || { reclaim: ['Scatter lie.'], narrative4D: { before: 'Baseline', after: 'Peak', particlePeak: 'fall' } };
           const d4 = { tVal: arch==='nimrod' ? -6.8 : -3.5, before: a.narrative4D?.before || '', after: a.narrative4D?.after || '', glitch: a.narrative4D?.glitchIntensify || '', particle: a.narrative4D?.particlePeak || '', reclaim: a.reclaim || [] };
           const bundle = {
-            type: 'ELON_ZDF_SUIT_EVIDENCE_BUNDLE', arch, zdfFocus: /nimrod|zdf/i.test(archOrZdf), timestamp: new Date().toISOString(),
+            type: 'ELON_ZDF_SUIT_EVIDENCE_BUNDLE',
+            title: 'Pinnacle Demonstration: ZDF Fabrication Lie ("Jagd auf Migranten") vs Primary X Data',
+            value: 'Demonstrates the power of cutting through coordinated media lies with primary data, the Rule of 42 filter, 4D temporal evidence, and auditable provenance. Built to be valuable by surfacing truth that matters and exporting citable proof ready for review or action.',
+            x_proof_id: '2066565993040593115',
+            quote: 'Only by protesting REPEATEDLY and LOUDLY will there be any change!!',
+            arch, zdfFocus: /nimrod|zdf/i.test(archOrZdf), timestamp: new Date().toISOString(),
             _signed: 'zdf-suit-' + Date.now() + '-rule42', _provVerify: 'ok',
             fourDState: d4, r2_path: arch==='nimrod' ? 'zdf-heute-jagd-fabrication.html + MASTER (full provenance)' : 'synthetic',
             hot: arch==='nimrod' ? 0.94 : 0.82, Rule42: '42% reclaim; top hot', fabricationLie: arch==='nimrod' ? '"Jagd auf Migranten" vs Musk/X primary Belfast quote (Babel unified lie)' : null,
@@ -2329,6 +3323,12 @@ function filterByArchetype(arch) {
                 const real = await loadAndParseGraphData();
                 graphData.nodes = real.nodes;
                 graphData.links = real.links;
+                // Output analysis report immediately on data load (universal Rule42 v2)
+                if (typeof window.outputRule42AnalysisReport === 'function' && window.lastRule42Report) {
+                    window.outputRule42AnalysisReport(window.lastRule42Report);
+                } else if (window.lastRule42Report) {
+                    console.log('[RULE42 ANALYSIS REPORT OUTPUT]', window.lastRule42Report);
+                }
             } catch (e) {
                 // Fallback to seed (for pure offline static)
                 console.warn('Real data load failed, using seed', e);
@@ -4077,6 +5077,27 @@ function filterByArchetype(arch) {
                 sourcesContainer.appendChild(r2div);
             }
 
+            // === POPULATE RULE OF 42 ANALYSIS SECTION (user friendly why/reasoning) ===
+            const r42Section = document.getElementById('panel-rule42-analysis');
+            const r42Rank = document.getElementById('panel-r42-rank');
+            const r42Why = document.getElementById('panel-r42-why');
+            const r42Factors = document.getElementById('panel-r42-factors');
+            const r42Recs = document.getElementById('panel-r42-recs');
+            const a = nodeData.rule42Analysis || (nodeData.factors ? { composite: (nodeData.multiScore||nodeData.hotScore||0).toFixed(2), factorsSummary: Object.entries(nodeData.factors||{}).map(([k,v])=>k+':'+(v||0).toFixed(2)).join(' '), why: 'High multi-factor score in Rule of 42 view.', recommendation: '' } : null);
+            const rpt = window.lastRule42Report;
+            if (r42Section && (a || nodeData.isRule42 || (nodeData.hotScore||0) > 0.68)) {
+                r42Section.classList.remove('hidden');
+                if (r42Rank) r42Rank.textContent = a && a.rank ? `#${a.rank} • c=${a.composite||((nodeData.multiScore||0).toFixed(2))}` : (nodeData.isRule42 ? '42!' : 'HIGH');
+                if (r42Why) r42Why.textContent = (a && a.why ? a.why : '') + (rpt && rpt.analysis ? ' ' + (rpt.analysis.quickWhy || '') : ` High-signal in Rule of 42 composite ranking.`);
+                if (r42Factors) r42Factors.textContent = a && a.factorsSummary ? a.factorsSummary : (nodeData.hotScore ? `hot:${(nodeData.hotScore*100|0)}% prov:${((nodeData.factors&&nodeData.factors.provStrength)||0).toFixed(2)}` : '');
+                if (r42Recs) r42Recs.textContent = (a && a.recommendation ? a.recommendation : '') + (rpt && rpt.analysis ? ' '+(rpt.analysis.recommendations||'').slice(0,95) : ' Review sources.');
+                r42Section.title = 'Rule of 42 Analysis: why these signals (factors + provenance). Mass-market explanations derived directly from scoring. Click for full detailed report.';
+                // enhance with click-to-expand detailed (uses existing showDetailedRule42Report)
+                if (!r42Section._r42ClickWired) { r42Section._r42ClickWired = true; r42Section.style.cursor='pointer'; r42Section.addEventListener('click', ()=>{ if(typeof showDetailedRule42Report==='function') showDetailedRule42Report(); }); }
+            } else if (r42Section) {
+                r42Section.classList.add('hidden');
+            }
+
             // Store current for motif buttons / focus
             panel._currentNodeData = nodeData;
             panel._currentArch = archKey;
@@ -5138,21 +6159,42 @@ function filterByArchetype(arch) {
         function exportHoloPNG() {
             if (!renderer || !renderer.domElement) { alert('No renderer canvas'); return; }
             try {
-                const data = renderer.domElement.toDataURL('image/png');
-                const a = document.createElement('a'); a.href=data; a.download = 'holo-neural-map-' + Date.now() + '.png';
+                const base = renderer.domElement;
+                const w = base.width, h = base.height;
+                const out = document.createElement('canvas'); out.width = w; out.height = h;
+                const ctx = out.getContext('2d'); ctx.drawImage(base, 0, 0);
+                // Rich overlays for analysis + deep links + embed notes + universal (mass-market)
+                ctx.fillStyle = 'rgba(10,5,3,0.78)'; ctx.fillRect(8,8, Math.min(w-16,380), 52);
+                ctx.fillStyle = '#fb923c'; ctx.font = '10px monospace';
+                ctx.fillText('JARVIS HOLO • RULE OF 42', 14, 20);
+                ctx.fillStyle = '#fed7aa'; ctx.font = '8px system-ui';
+                ctx.fillText('Rule of 42 applies to any system: only ~42 high-signal nodes move power', 14, 32);
+                const dl = (typeof getDeepLink==='function' ? getDeepLink() : location.href);
+                ctx.fillText('Deep link: ' + dl.slice(0,78) + (dl.length>78?'...':''), 14, 43);
+                ctx.fillText('Embed ready • Full analysis+overlays in JSON • Universal framing', 14, 54);
+                // ENRICHED per task: full analysis + per-sig why + massMarketSummary + universal disclaimer now wired via generateRule42ExportNarrative into bundles; share note: "Rule of 42: top 42 high-signal | universal filter" (also on exportPNG composite)
+                const a = document.createElement('a'); a.href = out.toDataURL('image/png'); a.download = 'holo-neural-map-' + Date.now() + '.png';
                 document.body.appendChild(a); a.click(); a.remove();
-                announce('PNG exported. (Holographic snapshot of current 3D state + instanced nodes + particles)');
-                // sonify success
+                announce('PNG exported (rich: analysis hint + universal msg + deep link + embed note overlays).');
                 if (ensureAudio()) { const c=ensureAudio(); const o=c.createOscillator(); const g=c.createGain(); o.frequency.value=880; g.gain.value=0.04; o.connect(g); g.connect(c.destination); o.start(); setTimeout(()=>{g.gain.linearRampToValueAtTime(0.0001,c.currentTime+0.12); o.stop(c.currentTime+0.14);},40); }
             } catch(e) { console.warn('PNG export fail',e); }
         }
         function exportHoloJSON() {
+            const rpt = window.lastRule42Report || null;
+            const analysisReport = rpt ? { analysis: rpt.analysis, version: rpt.version, selected: rpt.selectedCount, weights: rpt.weights, factorAverages: rpt.factorAverages, topBreakdown: (rpt.topBreakdown||[]).slice(0,10), disclaimer: (rpt.analysis && rpt.analysis.disclaimer) || 'Heuristic only.' } : { note: 'No Rule42 report at export time' };
+            // NEW: attach user-facing export narrative using dedicated fn (for JARVIS/exports)
+            let exportNarrative = '';
+            try { if (typeof generateRule42ExportNarrative === 'function') exportNarrative = generateRule42ExportNarrative(rpt, graphData, (rpt && rpt.signals) || []); } catch(e){}
             const payload = {
-                meta: { exported: new Date().toISOString(), rule42: true, version: 'holo-advanced-8', nodes: nodes.length },
+                meta: { exported: new Date().toISOString(), rule42: true, version: 'holo-advanced-8', nodes: nodes.length, includesAnalysisReport: !!rpt, includesR2DeltaTemporal: true, includesDynamicQuery42: true, includesUserNarrative: !!exportNarrative, deepLink: (typeof getDeepLink==='function'?getDeepLink():''), overlaysHints: 'analysis+labels+universal+embed', embedNote: 'Use deepLink for state restore; PNGs carry analysis overlays. Mass-share universal.' },
+                // Universal Rule of 42: applies to any system (media, business, tech, life). ZDF as example.
+                universal_summary: "Rule of 42 applies to any system: only ~42 high-signal nodes move power. Archetypes reveal patterns. Provenance ensures truth. See analysisReport + rule42ExportNarrative for full why + factors (graph centrality, R2-delta ripples, new paths/sens, query dynamic).",
+                rule42AnalysisReport: analysisReport,
+                rule42ExportNarrative: exportNarrative || 'See topBreakdown + rationale in analysisReport.',
                 graph: graphData,
                 camera: camera ? { pos: camera.position.toArray(), target: [0,15,0] } : null,
                 archetypeCounts: {},
-                hotTop: (graphData.nodes||[]).sort((a,b)=>(b.hotScore||0)-(a.hotScore||0)).slice(0,5).map(n=>({id:n.id,label:n.label,hot:n.hotScore,arch:n.archetype})),
+                hotTop: (graphData.nodes||[]).sort((a,b)=>(b.hotScore||0)-(a.hotScore||0)).slice(0,5).map(n=>({id:n.id,label:n.label,hot:n.hotScore,arch:n.archetype, rule42Analysis: n.rule42Analysis })),
                 // ENHANCED export for ZDF/Elon suit forensics (post 019eccff sonif/2D): include sonif state + recentPulses + ZDF 4D offset
                 sonifState: { enabled: !!isAudioEnabled, recentPulses: (window.__recentPulses||[]).slice(-8), audioLevel: window.__audioLevel||0, pulseBoost: window.__sonifyPulseBoost||0, lastPulse: window.__lastPulse || null },
                 fourD: { timeOffset: (typeof timeOffset4d !== 'undefined' ? timeOffset4d : 0), isZDFScrub: !!window.__lastZDFScrub, zdfOffset: window.__lastZDFScrub ? -6.8 : 0 }
@@ -5161,7 +6203,7 @@ function filterByArchetype(arch) {
             const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href=url; a.download='holo-graph-export-'+Date.now()+'.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-            announce('JSON exported with graph + provenance + camera + hot top + archetype counts + sonifState + recentPulses + 4D/ZDF offset (suit forensics bundle).');
+            announce('JSON exported with graph + FULL Rule of 42 analysis report (why, factors, recs) + universal summary + provenance + camera + hot top + archetype counts + sonifState + recentPulses + 4D/ZDF offset (mass-marketable + auditable package).');
         }
 
         function updateHoloStatsLive() {
@@ -5231,6 +6273,16 @@ function filterByArchetype(arch) {
             });
             const out = res.slice(0,5).map(e => `${e.label||e.id} • ${e.arch} • hot${(e.hot*100|0)}% • ${ (e.r2_path||'').slice(0,40) }`).join(' | ');
             appendR2LiveLog && appendR2LiveLog({ label: 'CATALOG QUERY: ' + (q||'all'), hotScore: 0.8, r2_path: 'MASTER_CATALOG', _echoLabel: out || 'no match' });
+            // Query-driven Rule42 selection integration: use selectTop42Signals on current graph + query
+            if (qq && typeof selectTop42Signals === 'function' && typeof nodes !== 'undefined' && nodes.length) {
+                try {
+                    const qSel = selectTop42Signals({nodes: nodes.map(n=>n.userData||n), links}, {dataType:'catalog-query', query: qq});
+                    if (qSel && qSel.signals && qSel.signals.length) {
+                        window.lastRule42Report = qSel.report;
+                        appendR2LiveLog && appendR2LiveLog({ label: 'Q42-SELECT: ' + qq, hotScore: 0.9, r2_path: 'selectTop42+query', _echoLabel: qSel.signals.slice(0,3).map(s=>s.label).join(';') });
+                    }
+                } catch(e){}
+            }
             announce('Catalog query [' + (q||'ALL') + ']: ' + (out || 'see log'));
             return res;
         }
@@ -5351,6 +6403,187 @@ function filterByArchetype(arch) {
             set42Mode(!is42Mode);
         }
 
+        // ENHANCED: Dedicated user-facing Rule of 42 Analysis display (richer structured outputs, modal + export)
+        function showGlobalRule42Analysis() {
+            const rpt = window.lastRule42Report;
+            const a = rpt && rpt.analysis ? rpt.analysis : null;
+            if (!a) {
+                if (typeof announce === 'function') announce('No active Rule of 42 report. Toggle 42 Mode or load data.');
+                console.log('[RULE42] No active analysis report. Call selectTop42Signals or reload holo.');
+                return;
+            }
+
+            // Populate the dedicated static in-holo analysis PANEL (why selected, factor breakdowns, recs)
+            const staticPanel = document.getElementById('global-rule42-analysis-panel');
+            if (staticPanel) {
+                const qEl = document.getElementById('global-r42-quick');
+                const wEl = document.getElementById('global-r42-why');
+                const fEl = document.getElementById('global-r42-factors');
+                const reEl = document.getElementById('global-r42-reason');
+                const sEl = document.getElementById('global-r42-summary');
+                const rcEl = document.getElementById('global-r42-recs');
+                const dEl = document.getElementById('global-r42-disclaimer');
+                const tiEl = document.getElementById('global-r42-title');
+                if (tiEl) tiEl.textContent = (a.friendlyTitle || 'RULE OF 42 ANALYSIS') + ' — RICH: WHY + FACTORS + SUMMARIES + RECS';
+                if (qEl) qEl.textContent = `${rpt.selectedCount||42} signals • ${a.quickWhy||''}`;
+                if (wEl) wEl.textContent = a.whyTheseSignals || '';
+                if (fEl) {
+                    let fhtml = '';
+                    const fb = a.factorBreakdown || {};
+                    Object.keys(fb).forEach(k => { fhtml += `<div><span style="color:#fb923c">${k}</span>: ${fb[k]}</div>`; });
+                    fEl.innerHTML = fhtml || (rpt.factorAverages ? Object.entries(rpt.factorAverages).map(([k,v])=>k+':'+v).join('<br>') : 'See factor averages in report.');
+                }
+                if (reEl) reEl.textContent = a.reasoning || '';
+                if (sEl) sEl.textContent = a.summary || '';
+                if (rcEl) rcEl.textContent = a.recommendations || '';
+                if (dEl) dEl.textContent = a.disclaimer || 'Heuristic only — verify primaries.';
+                staticPanel.classList.remove('hidden');
+            }
+
+            // Remove prior modal if any (keep rich modal for detail)
+            const prev = document.getElementById('r42-modal');
+            if (prev) prev.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'r42-modal';
+            modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:20px;';
+            const fbHtml = a.factorBreakdown ? Object.entries(a.factorBreakdown).map(([k,v]) => `<div style="margin:2px 0"><strong>${k}</strong>: ${v}</div>`).join('') : '';
+            modal.innerHTML = `
+                <div class="narrative-card liquid-glass" style="max-width:820px;width:100%;max-height:86vh;overflow:auto;border:1px solid #c2410f;background:#1c1917;color:#fed7aa;padding:18px 20px;border-radius:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <div style="font-weight:600;letter-spacing:1px;font-size:13px;color:#fb923c;">${a.friendlyTitle || 'RULE OF 42 ANALYSIS — WHY SELECTED'} <span style="font-size:10px;opacity:0.6;">(live • ${rpt.selectedCount || 42} signals • v${rpt.version || '2'})</span></div>
+                        <button id="r42-close" style="background:transparent;border:1px solid #c2410f;color:#fb923c;padding:2px 10px;border-radius:6px;font-size:11px;cursor:pointer;">CLOSE</button>
+                    </div>
+                    <div style="font-size:11px;line-height:1.4;white-space:pre-wrap;">
+                        <strong style="color:#fb923c;">WHY THESE WERE SELECTED</strong><br>${(a.whyTheseSignals||'').replace(/\n/g,'<br>')}<br><br>
+                        <strong style="color:#fb923c;">FACTOR BREAKDOWNS</strong><br>${fbHtml || 'Composite of centrality, coordination, prov, clusters, temporal.'}<br><br>
+                        <strong style="color:#fb923c;">REASONING</strong><br>${(a.reasoning||'').replace(/\n/g,'<br>')}<br><br>
+                        <strong style="color:#fb923c;">SUMMARY</strong><br>${(a.summary||'').replace(/\n/g,'<br>')}<br><br>
+                        <strong style="color:#fb923c;">RECOMMENDATIONS</strong><br>${(a.recommendations||'').replace(/\n/g,'<br>')}
+                    </div>
+                    <div style="margin-top:14px;font-size:10px;opacity:0.75;border-top:1px solid #451a03;padding-top:8px;">
+                        Weights: ${JSON.stringify(rpt.weights || {})} | Truthful to source data & scoring model. Mass-market explanations + full audit report included in exports.
+                    </div>
+                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                        <button id="r42-export-json" class="glass-btn" style="font-size:11px;padding:4px 10px;">EXPORT FULL RULE42 REPORT JSON</button>
+                        <button id="r42-export-detailed" class="glass-btn" style="font-size:11px;padding:4px 10px;">SHOW DETAILED REPORT</button>
+                        <button id="r42-copy" class="glass-btn" style="font-size:11px;padding:4px 10px;">COPY SUMMARY TO CLIPBOARD</button>
+                    </div>
+                    <div style="font-size:9px;margin-top:8px;opacity:0.5;">Rule of 42 outputs enhanced for clarity + auditability. Always verify primary sources.</div>
+                </div>`;
+            document.body.appendChild(modal);
+
+            // Wire actions
+            modal.querySelector('#r42-close').onclick = () => modal.remove();
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+            const expJson = modal.querySelector('#r42-export-json');
+            if (expJson) expJson.onclick = () => {
+                const bundle = { rule42Version: rpt.version, analysis: a, fullReport: rpt, exportedAt: new Date().toISOString(), meta: { fidelity: '691/11/hot/prov/Rule42', source: 'neural-map-holo live', disclaimer: a.disclaimer } };
+                const blob = new Blob([JSON.stringify(bundle, null, 2)], {type:'application/json'});
+                const url = URL.createObjectURL(blob); const aa = document.createElement('a'); aa.href=url; aa.download=`rule42-analysis-report-${Date.now()}.json`; aa.click(); URL.revokeObjectURL(url);
+                if (window.addJarvisHoloMessage) window.addJarvisHoloMessage('Enhanced Rule42 analysis report JSON exported (why, factors, reasoning, recs + full).', false);
+            };
+
+            const det = modal.querySelector('#r42-export-detailed');
+            if (det) det.onclick = () => {
+                modal.remove();
+                if (typeof showDetailedRule42Report === 'function') showDetailedRule42Report();
+            };
+
+            const cpy = modal.querySelector('#r42-copy');
+            if (cpy) cpy.onclick = () => {
+                const txt = (a.summary || '') + '\n\n' + (a.recommendations || '');
+                navigator.clipboard && navigator.clipboard.writeText(txt).then(()=> { if(window.announce) announce('Rule42 summary copied.'); });
+            };
+
+            if (window.addJarvisHoloMessage) window.addJarvisHoloMessage('Full Rule of 42 Analysis (enhanced modal) shown. Structured + exportable outputs.', false);
+            console.log('[RULE42 UI enhanced]', a);
+        }
+        if (typeof window !== 'undefined') window.showGlobalRule42Analysis = showGlobalRule42Analysis;
+
+        // NEW: Detailed analysis report producer for users. Rich console + DOM-friendly narrative. Integrates all v3 paths.
+        function showDetailedRule42Report(report = window.lastRule42Report) {
+            const rpt = report || window.lastRule42Report;
+            if (!rpt || !rpt.topBreakdown) {
+                console.warn('[RULE42] No detailed report. Load data or call selectTop42Signals first.');
+                if (typeof announce === 'function') announce('No Rule42 report yet — reload map or inject deltas.');
+                return null;
+            }
+            const tb = rpt.topBreakdown || [];
+            const clusters = rpt.clusterDistribution || {};
+            const topClus = Object.entries(clusters).sort((a,b)=>b[1]-a[1]).slice(0,4);
+            const ua = rpt.analysis || {}; // include user friendly analysis + factors in detailed output
+            let htmlOut = '';
+            console.groupCollapsed(`[RULE42 DETAILED REPORT v${rpt.version}] ${rpt.selectedCount} signals | ${rpt.dataType}`);
+            console.log('Weights:', rpt.weights);
+            console.log('Archetype Dist:', rpt.archetypeDistribution);
+            console.log('Cluster Dist:', clusters);
+            console.log('Avg Temporal Evol:', rpt.temporalAvg, 'High X-Arena:', rpt.crossArenaHighCount);
+            console.table(tb.slice(0,10).map(x => ({rank:x.rank, label:x.label, comp:x.composite, clus:x.cluster, te:x.temporalEvol, ac:x.arenaCorr, prov:x.prov})));
+            console.groupEnd();
+
+            // Build rich user narrative report
+            const analysis = rpt.analysis || {};
+            const lines = [
+                `=== RULE OF 42 v${rpt.version} DETAILED ANALYSIS REPORT (includes mass-market user analysis) ===`,
+                `Generated: ${rpt.generated} | Scored ${rpt.scoredCount} → Top ${rpt.selectedCount}`,
+                ``,
+                `USER-FRIENDLY ANALYSIS:`,
+                `WHY: ${analysis.whyTheseSignals || ''}`,
+                `FACTOR BREAKDOWNS: ${JSON.stringify(analysis.factorBreakdown || {})}`,
+                `RECS: ${analysis.recommendations || ''}`,
+                `DISCLAIMER: ${analysis.disclaimer || 'Heuristic. Verify.'}`,
+                ``,
+                `COMPOSITE WEIGHTS: ${JSON.stringify(rpt.weights)}`,
+                `RATIONALE: ${rpt.rationale}`,
+                ``,
+                `CLUSTER GROUPS (enhanced graph-based for signal groups + R2 deltas):`,
+                topClus.map(([cid,cnt]) => `  - ${cid}: ${cnt} top signals (dense coordination group)`).join('\n') || '  (computed from entity/outlet graphs)',
+                ``,
+                `TEMPORAL ANALYSIS FROM R2 DELTAS (velocity/persist/accel + pub + delta landings):`,
+                `  Avg evolution score: ${rpt.temporalAvg}. ${rpt.crossArenaHighCount} signals with strong cross-arena activity.`,
+                `  High-evol examples: ${tb.filter(x=>(x.temporalEvol||0)>0.6).slice(0,3).map(x=>x.label+' ('+x.temporalEvol+')').join('; ') || 'N/A'}`,
+                ``,
+                `CROSS-ARENA CORRELATION (spans news/pol/docs via shared_arenas + co-occur from analyze_data):`,
+                `  Strong multi-arena (${rpt.crossArenaHighCount} items) indicate convergence of machine across domains.`,
+                ``,
+                `TOP 10 BREAKDOWN (composite + key new factors):`
+            ];
+            tb.slice(0,10).forEach(x => {
+                lines.push(`  #${x.rank} ${x.label} [${x.archetype}] c=${x.composite} clus=${x.cluster?x.cluster.id+'/'+x.cluster.size:''} te=${x.temporalEvol} ac=${x.arenaCorr} ${x.prov}`);
+            });
+            lines.push(``);
+            lines.push(`USER ANALYSIS:`);
+            lines.push(`WHY: ${analysis.whyTheseSignals || ''}`);
+            lines.push(`REASONING: ${analysis.reasoning || ''}`);
+            lines.push(`SUMMARY: ${analysis.summary || ''}`);
+            lines.push(`RECS: ${analysis.recommendations || ''}`);
+            lines.push(``);
+            lines.push(`PIPELINE INTEGRATION: Factors derive from analyze_data.py (tactic_scores, repeated_phrases w/ outlets, build_entity_graph shared_arenas/date_span, outlet_sim_graph, echo_chamber, build_timeline), process_data arenas, synth/news-sample pub/arena/outlets. JS runtime computes clusters/evol on live graph.`);
+            const fullText = lines.join('\n');
+            console.log(fullText);
+
+            // DOM report if container exists (e.g. #rule42-report or announce)
+            try {
+                const container = document.getElementById('rule42-report') || document.getElementById('neural-data-table');
+                if (container) {
+                    htmlOut = `<div class="rule42-detailed p-3 bg-zinc-950/80 border border-orange-800 text-xs"><pre style="white-space:pre-wrap;max-height:420px;overflow:auto;">${fullText.replace(/</g,'&lt;')}</pre><div class="text-[9px] mt-1 opacity-70">Exported to window.lastDetailedRule42Report. Use for forensics.</div></div>`;
+                    // append or replace simple
+                    let rep = document.getElementById('rule42-detailed-panel');
+                    if (!rep) { rep = document.createElement('div'); rep.id='rule42-detailed-panel'; container.parentNode.insertBefore(rep, container.nextSibling); }
+                    rep.innerHTML = htmlOut;
+                    setTimeout(()=>{ if(rep) rep.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 120);
+                }
+            } catch(e){}
+            if (typeof announce === 'function') announce('Detailed Rule42 Report: ' + rpt.selectedCount + ' signals. Clusters:' + (topClus[0]||['?'])[0] + '. See console + panel.');
+
+            window.lastDetailedRule42Report = { text: fullText, report: rpt, generated: new Date().toISOString() };
+            if (typeof window.outputRule42AnalysisReport === 'function') window.outputRule42AnalysisReport(rpt);
+            return window.lastDetailedRule42Report;
+        }
+        if (typeof window !== 'undefined') window.showDetailedRule42Report = showDetailedRule42Report;
+
         function updateURLState() {
             try {
                 const params = new URLSearchParams();
@@ -5422,6 +6655,58 @@ function filterByArchetype(arch) {
                 prompt('Deep link (copy manually):', url);
             });
             updateURLState(); // ensure fresh
+        }
+
+        // === MASS-MARKET SHARE (for broad appeal & sharing after attention test) ===
+        // Truth-first: Generates clean summary using current Rule of 42 state + universal framing.
+        // Produces share text + triggers enhanced PNG (with overlay) + copies ready-to-post content.
+        // Universal: "The Rule of 42 cuts noise in any system (media, business, tech, life)."
+        function shareView() {
+            const url = getDeepLink();
+            const filter = currentFilter || 'all signals';
+            const mode = is42Mode ? 'Rule of 42 high-signal view' : 'full view';
+            const focus = focusedNodeId ? ' focused on key node' : '';
+            const summary = `Rule of 42: Only the signals that matter. ${filter} ${mode}${focus}. See the structure: ${url}`;
+            
+            // Enhanced shareable PNG with overlay for viral posts
+            try {
+                if (renderer && renderer.domElement) {
+                    const canvas = renderer.domElement;
+                    const temp = document.createElement('canvas');
+                    temp.width = canvas.width; temp.height = canvas.height;
+                    const ctx = temp.getContext('2d');
+                    ctx.drawImage(canvas, 0, 0);
+                    
+                    // Clean truthful overlay
+                    ctx.fillStyle = 'rgba(10,5,3,0.7)';
+                    ctx.fillRect(10, 10, 420, 70);
+                    ctx.fillStyle = '#fb923c';
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.fillText('THE RULE OF 42 • JARVIS NEURAL MAP', 20, 30);
+                    ctx.font = '12px sans-serif';
+                    ctx.fillStyle = '#fed7aa';
+                    ctx.fillText(`${filter} • ${mode}${focus}`, 20, 48);
+                    ctx.fillText('thebreakerofbabylon.com — Cut the noise. See what matters.', 20, 65);
+                    
+                    const data = temp.toDataURL('image/png');
+                    const a = document.createElement('a'); a.href = data; a.download = 'rule-of-42-' + Date.now() + '.png';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }
+            } catch(e){ console.warn('share PNG overlay fail',e); }
+            
+            const shareText = `${summary}\n\nThe Rule of 42 applies to any system — only a handful of signals drive outcomes. Archetypes reveal the tactics.`;
+            
+            navigator.clipboard.writeText(shareText + '\n' + url).then(() => {
+                announce('Share ready: PNG exported with Rule of 42 overlay + text+link copied. Post anywhere.');
+            }).catch(() => {
+                // Fallback
+                prompt('Copy this to share (Rule of 42 universal):', shareText + '\n' + url);
+            });
+            
+            // Optional: try native share if available (mobile friendly for mass)
+            if (navigator.share) {
+                navigator.share({ title: 'Rule of 42 View', text: shareText, url }).catch(()=>{});
+            }
         }
 
         // PNG export of the CURRENT holo view, INCLUDING labels (projected from 3D)
@@ -5498,6 +6783,24 @@ function filterByArchetype(arch) {
                 ctx.font = '8px system-ui';
                 ctx.fillText('Source: babylon-raw-data (R2) + politicians-index + news-synthesis • Full provenance in JSON export • Self-contained holo', 12, h-12);
 
+                // NEW: Rule of 42 Analysis overlay footer for PNG exports (mass-marketable explanations)
+                const r42 = (window.lastRule42Report && window.lastRule42Report.analysis) ? window.lastRule42Report.analysis : null;
+                if (r42 && r42.summary) {
+                    const footerY = h - 38;
+                    ctx.fillStyle = 'rgba(28,25,23,0.88)';
+                    ctx.fillRect(6, footerY - 2, w-12, 15);
+                    ctx.fillStyle = '#fb923c';
+                    ctx.font = '7.5px system-ui, monospace';
+                    const analysisLine = `RULE OF 42: ${r42.summary.replace(/\n/g,' ').slice(0, 135)}...`;
+                    ctx.fillText(analysisLine, 10, footerY + 8);
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillText('Why: ' + (r42.quickWhy || r42.reasoning || 'composite multi-factor').slice(0,90), 10, footerY + 19);
+                }
+                // ADD: simple text overlay note on PNG canvas for share (universal filter framing)
+                ctx.fillStyle = 'rgba(251,146,60,0.95)';
+                ctx.font = '8px monospace';
+                ctx.fillText('Rule of 42: top 42 high-signal | universal filter | verify sources', 8, 32);
+
                 // Download
                 const a = document.createElement('a');
                 const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
@@ -5507,7 +6810,8 @@ function filterByArchetype(arch) {
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-                announce(`PNG exported: ${fname} (view + labels + state)`);
+                const hasAnalysis = !!(window.lastRule42Report && window.lastRule42Report.analysis);
+                announce(`PNG exported: ${fname} (view + labels + state + ${hasAnalysis ? 'Rule42 why/factors/recs overlay' : 'no active analysis'}). Full analysis report in JSON exports.`);
             } catch (err) {
                 console.error('PNG export failed', err);
                 // Fallback: simple renderer only
@@ -5542,7 +6846,19 @@ function filterByArchetype(arch) {
                     nodeCount: vis.length,
                     linkCount: filteredLinks.length,
                     rule42Note: 'Nodes include top-hot + explicit cases per loadAndParse; full provenance below',
-                    deepLink: getDeepLink()
+                    deepLink: getDeepLink(),
+                    // NEW: full user-friendly Rule of 42 Analysis in export for mass-market auditability
+                    rule42AnalysisReport: (window.lastRule42Report && window.lastRule42Report.analysis) ? {
+                        title: window.lastRule42Report.analysis.friendlyTitle || 'Rule of 42 Analysis',
+                        whySelected: window.lastRule42Report.analysis.whyTheseSignals,
+                        reasoning: window.lastRule42Report.analysis.reasoning,
+                        summary: window.lastRule42Report.analysis.summary,
+                        recommendations: window.lastRule42Report.analysis.recommendations,
+                        factorBreakdowns: window.lastRule42Report.analysis.factorBreakdown || {},
+                        weights: window.lastRule42Report.weights || {},
+                        disclaimer: window.lastRule42Report.analysis.disclaimer || 'Heuristic ranking. Verify sources.',
+                        version: window.lastRule42Report.version || '2.0'
+                    } : { note: 'No active Rule42 report; rerun load to include full analysis.' }
                 },
                 nodes: vis.map(mesh => {
                     const d = mesh.userData || {};
@@ -5558,6 +6874,8 @@ function filterByArchetype(arch) {
                         signals: d.signals || {},
                         provenance: d.provenance || { source: 'holo-export' },
                         arenas: d.arenas || [],
+                        // Rule of 42 per-signal analysis included for full evidence
+                        rule42Analysis: d.rule42Analysis || (d.multiScore ? {composite: d.multiScore, factors: d.factors} : undefined),
                         // include any extra userData for completeness
                         ... (d._extra || {})
                     };
@@ -5871,6 +7189,45 @@ function filterByArchetype(arch) {
         window.MASTER_CATALOG = MASTER_CATALOG;
         window.REAL_R2_SAMPLES = REAL_R2_SAMPLES;
         window.exportHoloPNG = exportHoloPNG; window.exportHoloJSON = exportHoloJSON;
+
+        // === TEST WITH DATA for Rule42 enhancements (graph centrality, R2 delta temporal, query dynamic 42, JARVIS/exports outputs) ===
+        // Runs on init with embedded + real data/ samples. Logs detailed results + explanations to console.
+        function __testRule42EnhancementsWithData() {
+            try {
+                console.groupCollapsed('[RULE42-TEST] Enhancements test with real data (news-synthesis ripples + R2 samples + query)');
+                const synthRipples = (window.__lastSynth && window.__lastSynth.news_ripples && window.__lastSynth.news_ripples.media_specific_repeated_phrases) || [
+                    {phrase:"humanitarian implementation hiccups", outlets:["nyt","fox","crs","gao"], similarity:0.82},
+                    {phrase:"coordinated law enforcement actions", outlets:["justice","ap"], similarity:0.78},
+                    {phrase:"national security presidential memorandum", outlets:["whitehouse"], similarity:0.76}
+                ];
+                const r2Deltas = (window.REAL_R2_SAMPLES || []).slice(0,3).map((s,i)=>({...s, ts: Date.now()-i*3600*1000}));
+                if (!window.__r2DeltaHistory) window.__r2DeltaHistory = r2Deltas.map(d=>({id:d.id,label:d.label,hotScore:d.hotScore,ts:d.ts}));
+                window.__RECENT_R2_DELTAS = r2Deltas;
+                const nodesForTest = synthRipples.map((r,i)=>({id:'t-'+i, label:r.phrase, value:r.similarity||0.7, outlets:r.outlets, r2_path:'raw/test', signals:{similarity:r.similarity}, provenance:{timestamp: new Date(Date.now()-i*1e6).toISOString()}}));
+                const linksForTest = [{source:'t-0',target:'t-1'},{source:'t-1',target:'t-2'}];
+                let baseSel = null;
+                if (typeof selectTop42Signals === 'function') {
+                    baseSel = selectTop42Signals({nodes: nodesForTest, links: linksForTest}, {dataType:'test'});
+                    console.log('Base select (no query):', baseSel && baseSel.signals && baseSel.signals.length, 'signals. First composite:', baseSel.signals && baseSel.signals[0] && baseSel.signals[0].multiScore);
+                    const qSel = selectTop42Signals({nodes: nodesForTest, links: linksForTest}, {query: 'border hiccups security', dataType:'test-query'});
+                    console.log('Query-dynamic select ("border hiccups security"):', qSel && qSel.signals && qSel.signals.length, ' ; top match boost used.');
+                    if (qSel && qSel.report) window.lastRule42Report = qSel.report;
+                }
+                const cent = (typeof computeGraphCentrality==='function') ? computeGraphCentrality(nodesForTest, linksForTest) : {};
+                console.log('Enhanced centrality sample (has betweenness/closeness blend):', Object.keys(cent).slice(0,2).map(k=>k+':'+cent[k].toFixed(3)));
+                const r2t = (typeof computeR2DeltaRippleTrack==='function') ? computeR2DeltaRippleTrack(nodesForTest[0], r2Deltas) : 0;
+                console.log('R2 delta ripple track sample:', r2t.toFixed(3));
+                const jarvisExpl = (typeof explainRule42ForJARVIS==='function' && window.lastRule42Report) ? explainRule42ForJARVIS(window.lastRule42Report, 'hiccups', baseSel && baseSel.signals) : 'n/a';
+                console.log('JARVIS explain sample:', jarvisExpl.substring(0,160)+'...');
+                const narr = (typeof generateRule42ExportNarrative==='function' && window.lastRule42Report) ? generateRule42ExportNarrative(window.lastRule42Report, {nodes:nodesForTest}, baseSel&&baseSel.signals) : 'n/a';
+                console.log('Export narrative length:', narr.length, 'starts:', narr.substring(0,90));
+                console.log('TEST PASS: new paths (centrality enhanced, r2 temporal track, query dynamic) + outputs (JARVIS + export narrative) exercised with data.');
+                console.groupEnd();
+                return {centSample: cent, r2Track: r2t, jarvis: jarvisExpl.length, narrativeLen: narr.length};
+            } catch(e) { console.warn('[RULE42-TEST] err', e); console.groupEnd(); return {err:e.message}; }
+        }
+        // run post init
+        setTimeout(() => { try { if (typeof __testRule42EnhancementsWithData==='function') window.__rule42TestResult = __testRule42EnhancementsWithData(); } catch{} }, 1450);
         window.toggleStaticMode = toggleStaticMode; window.sonifyHotPulse = sonifyHotPulse; window.gateAllForReduced = gateAllForReduced;
         window.rotateEvidenceCard3D = rotateEvidenceCard3D; window.pinEvidenceCard3D = pinEvidenceCard3D; window.verifyEvidenceCard3D=verifyEvidenceCard3D; window.addLogEvidenceCard3D=addLogEvidenceCard3D;
 

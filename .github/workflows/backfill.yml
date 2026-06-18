@@ -82,6 +82,12 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           BUCKET_NAME: babylon-raw-data
           GITHUB_REPOSITORY: ${{ github.repository }}
+          SUBAGENT_TAG: BACKFILL-DEPLOYER-HEAVY  # subagent tag for live indicators visibility + rule42 + R2 rates
+          # Enable rich AI via monitor_and_ingest smart_extract (backfill reuses it for RSS/historical + politicians/docs)
+          # Produces rule42_pipeline_hints + detailed_per_signal_explanations for R2 + pipeline_status with rule42_metrics
+          BABYLON_AI_WORKER_URL: https://babylon-data-ai.c2wbcnvnv6.workers.dev/extract
+          # Optional: FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          # PIPELINE_STATUS_FILE auto used; rate tuned in script default
         run: |
           python scripts/simple_backfill.py \
             --max-new "${{ steps.schedule.outputs.max_new || github.event.inputs.max_new || '800' }}" \
@@ -90,7 +96,9 @@ jobs:
             --backfill-level "${{ steps.schedule.outputs.backfill_level || github.event.inputs.backfill_level || 'deep' }}" \
             --sources "${{ github.event.inputs.sources || 'politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,court_documents,press_releases,crs_gao_reports,foia_documents,rss_news' }}" \
             ${{ steps.schedule.outputs.arena && format('--arena {0}', steps.schedule.outputs.arena) || '' }} \
-            ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }}
+            ${{ github.event.inputs.arena && format('--arena {0}', github.event.inputs.arena) || '' }} \
+            --rate-limit "0.3"  # decent rate for backfill
+            --status-file pipeline_status.json
 
       - name: Upload backfill log artifact (if generated)
         if: always()
