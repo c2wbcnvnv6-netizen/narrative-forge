@@ -2129,6 +2129,7 @@
 
         function computeHotScore(item, synthesis = null) {
             // Jarvis prelim design formula (client-side, ties FORGE_DATA.newsItems + news_ripples + echoEdges)
+            // ENHANCED Rule of 42 analyzation: 4-base + prov/cluster/temporal proxies (keeps core formula for fidelity)
             const framing = (item.signals && item.signals.framingScore) || 0.6;
             const synth = synthesis || FORGE_DATA.synthesis || {};
             // echo boost from news_ripples media_specific or echoEdges strength for source
@@ -2161,7 +2162,24 @@
             }
             const repeat = Math.min(0.99, (repeats + synthMatches) / 4.5);
             let score = framing * 0.35 + echoBoost * 0.25 + fresh * 0.2 + repeat * 0.2;
-            return Math.max(0.28, Math.min(0.98, score));
+            const baseHot = Math.max(0.28, Math.min(0.98, score));
+
+            // Rule42 ENH: extra factors for analyzation (prov from r2, cluster proxy via repeats+framing, temporal recency boost)
+            const provBoost = (item.r2_path || (item.provenance && item.provenance.r2) || (item.sources && item.sources.some(s=>s.r2_path))) ? 0.09 : 0;
+            const clusterProxy = Math.min(0.12, (repeats + (framing>0.75?1:0)) * 0.04);
+            const temporalBias = (fresh > 0.6 ? 0.06 : 0);
+            let rule42Multi = Math.max(0.28, Math.min(0.995, baseHot + provBoost + clusterProxy + temporalBias));
+            item._rule42Multi = rule42Multi;
+            item._r42Factors = { base: +(baseHot.toFixed(3)), prov: provBoost, cluster: +(clusterProxy.toFixed(3)), temporal: temporalBias };
+            return baseHot;
+        }
+
+        function selectTopRule42Site(items = [], limit = 42) {
+            // Light site Rule of 42 selection (enhanced analyzation): sorts by hot or _rule42Multi, caps, forces high-prov
+            const scored = (items || []).map(it => ({ it, h: (it.hotScore || computeHotScore(it)), m: (it._rule42Multi || it.hotScore || 0.6) })).sort((a,b)=> (b.m - a.m));
+            let top = scored.slice(0, limit).map(s => { s.it.isRule42 = true; return s.it; });
+            const forced = (items || []).filter(it => (it.r2_path || it.type==='case') && !top.some(t=>t.id===it.id)).slice(0,3);
+            return top.concat(forced).slice(0, limit);
         }
 
         function getMiniSynthesisInsight(item, synthesis = null) {
@@ -2403,6 +2421,13 @@
                             ${matchingRipple && matchingRipple.outlets ? `<span class="signal-badge border-amber-700 bg-amber-950">ECHO: ${matchingRipple.outlets.join('+')}</span>` : ''}
                         </div>
                     </div>
+
+                    <!-- ENHANCED Rule of 42 Analysis output in user modal (why ranked, factors from enhanced compute) -->
+                    <div class="mb-3 p-2 bg-[#1c1917]/80 border border-orange-800/60 rounded-xl text-[10px]">
+                        <div class="uppercase tracking-[1px] text-orange-500 text-[9px] mb-0.5">🧠 RULE OF 42 ANALYSIS</div>
+                        <div class="text-orange-200/90">Ranked in top signals via base framing/echo + prov/cluster/temporal. Multi ${(item._rule42Multi ? (item._rule42Multi*100|0) : hot)}%. ${item._r42Factors ? 'Factors: base '+(item._r42Factors.base||0)+' prov '+(item._r42Factors.prov||0)+' clus '+(item._r42Factors.cluster||0) : 'High echo coord.'}</div>
+                        <div class="text-orange-400/80 italic mt-0.5">Heuristic: verify sources. Use for focus (export/4D trace).</div>
+                    </div>
                     
                     <div class="mb-4">
                         <div class="text-[10px] font-bold text-orange-400 mb-1 tracking-widest">ASK JARVIS • LIVE RIPPLE INSIGHT (filters RSS + surfaces map + spawns orbs)</div>
@@ -2460,15 +2485,20 @@
             const items = (FORGE_DATA.newsItems && FORGE_DATA.newsItems.length) ? FORGE_DATA.newsItems : (EMBEDDED_SAMPLE.newsItems || []);
             const ripples = (synth.news_ripples && (synth.news_ripples.media_specific_repeated_phrases || synth.news_ripples)) || [];
             const top = (FORGE_DATA.topHotRipples || ripples.slice(0,4)).slice(0,4);
-            countEl.textContent = `${items.length} items • ${top.length} HOT`;
+            // ENH Rule42: use site selector for top outputs + R42 badges
+            const rule42Top = (typeof selectTopRule42Site === 'function') ? selectTopRule42Site(items, 6) : top;
+            countEl.textContent = `${items.length} items • ${top.length} HOT • Rule42`;
             itemsEl.innerHTML = '';
             top.forEach((r, idx) => {
-                const hs = (r.hotScore || (typeof computeHotScore==='function' && items[idx] ? computeHotScore(items[idx], synth) : 0.72) * 100 | 0);
+                const baseItem = items[idx] || {};
+                const hs = (r.hotScore || (typeof computeHotScore==='function' ? computeHotScore(baseItem, synth) : 0.72) * 100 | 0);
+                const m = (baseItem._rule42Multi || hs/100);
+                const isR42 = !!baseItem.isRule42 || m > 0.74;
                 const phrase = r.phrase || (r.item && r.item.title ? r.item.title.slice(0,28) : 'live ripple');
                 const el = document.createElement('span');
-                el.className = 'cursor-pointer px-1.5 py-px bg-zinc-900 border border-orange-800/70 rounded hover:border-orange-400 hover:bg-orange-950 text-orange-300';
-                el.textContent = `${phrase.slice(0,22)}${phrase.length>22?'…':''} ${hs}%`;
-                el.title = `hotScore ${hs}% • click: live filter ripples + ASK`;
+                el.className = 'cursor-pointer px-1.5 py-px bg-zinc-900 border border-orange-800/70 rounded hover:border-orange-400 hover:bg-orange-950 text-orange-300' + (isR42 ? ' border-orange-500' : '');
+                el.textContent = `${phrase.slice(0,22)}${phrase.length>22?'…':''} ${hs}%${isR42?' R42':''}`;
+                el.title = `hotScore ${hs}% ${isR42?'• Rule of 42 high-signal':' '}• factors base+prov+cluster • click: live filter ripples + ASK`;
                 el.onclick = () => {
                     if (typeof highlightNewsBySignal === 'function') highlightNewsBySignal(r.phrase || phrase);
                     const f = document.getElementById('news-filter'); if (f) { f.value = (r.phrase || phrase).slice(0,18); if (typeof filterNewsCards==='function') filterNewsCards(); }
@@ -2582,6 +2612,14 @@
             // 5. Refresh desktop hot list (live-synced) + banner
             if (typeof renderJarvisHotList === 'function') setTimeout(renderJarvisHotList, 160);
             if (typeof updateActivationBanner === 'function') updateActivationBanner();
+            // ENH: Rule42 analyzation in ASK output (user-facing via console + future HUD; select enriches)
+            setTimeout(() => {
+                if (typeof selectTopRule42Site === 'function' && items.length) {
+                    const sel = selectTopRule42Site(items, 5);
+                    const topWhy = sel[0] ? `R42 top: ${ (sel[0].title||'').slice(0,32) } multi~${(sel[0]._rule42Multi||0).toFixed(2)}` : '';
+                    console.log('%c[RULE42 ASK ANALYZED]', 'color:#fb923c', topWhy, 'selected', sel.length);
+                }
+            }, 320);
 
             // Re-render everything for R2/poll synergy
             setTimeout(() => {
