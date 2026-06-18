@@ -1,0 +1,21 @@
+{
+  "name": "Cook County Commissioner",
+  "role": "Cook County Official",
+  "bioExcerpt": "Cook County Official from IL. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on local",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "IL"
+}

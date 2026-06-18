@@ -1,0 +1,33 @@
+{
+  "name": "Todd Gloria",
+  "role": "Mayor of San Diego",
+  "bioExcerpt": "Mayor of San Diego from CA, Democrat. Key figure in local, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in border policy",
+      "framingScore": 0.77,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "border"
+  ],
+  "state": "CA",
+  "party": "Democrat"
+}

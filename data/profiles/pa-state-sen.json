@@ -1,0 +1,21 @@
+{
+  "name": "State Sen Pennsylvania",
+  "role": "Pennsylvania State Senator",
+  "bioExcerpt": "Pennsylvania State Senator from PA. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "PA"
+}

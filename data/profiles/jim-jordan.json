@@ -1,0 +1,27 @@
+{
+  "name": "Jim Jordan",
+  "role": "U.S. Representative (OH-04, Republican)",
+  "bioExcerpt": "Key figure in congress, lawfare and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on congress",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "congress"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in congress",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "congress"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "lawfare"
+  ]
+}

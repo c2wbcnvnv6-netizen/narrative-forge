@@ -1,0 +1,56 @@
+name = "babylon-data-ai"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+account_id = "afc53bbf90b56b40af320de77a7cc091"  # real CF account (from wrangler whoami); or override with CLOUDFLARE_ACCOUNT_ID env
+
+# R2 binding for direct raw + processed writes (babylon-raw-data)
+[[r2_buckets]]
+binding = "RAW_BUCKET"
+bucket_name = "babylon-raw-data"
+
+# R2 binding for provenance-stamped analytics sinks (ckg-holo-analytics for ZDF/holo events, usage, live deltas)
+# Matches site r2-analytics.ts default + MCP confirmed bucket. Worker will append JSON events under analytics/ prefix.
+[[r2_buckets]]
+binding = "ANALYTICS_BUCKET"
+bucket_name = "ckg-holo-analytics"
+
+# Workers AI binding (core for maximized structured extraction)
+[ai]
+binding = "AI"
+
+# Optional Browser Rendering (for JS-heavy or protected pages)
+# [browser]
+# binding = "BROWSER"
+
+# Optional KV for fast state/dedup (manifests, last-seen)
+# [[kv_namespaces]]
+# binding = "STATE_KV"
+# id = "your-kv-namespace-id-here"
+
+# Cron for autonomous discovery (configure in dashboard too for reliability)
+# [triggers]
+# crons = ["0 4 * * *"]   # daily at 04:00 UTC — runs scheduled() for hub discovery + smart extract
+
+# Usage after deploy:
+# npx wrangler deploy
+# wrangler secret put FIRECRAWL_API_KEY   (optional, for hybrid Firecrawl in Worker if desired)
+#
+# Then call:
+# curl -X POST https://babylon-data-ai.<your>.workers.dev/extract \
+#   -H "Content-Type: application/json" \
+#   -d '{"url":"https://example.gov/doc","arena":"bureaucracy"}'
+#
+# Phase 2 /embed (for generate_embeddings.py to babylon-embeddings; uses Workers AI bge model):
+# curl -X POST https://babylon-data-ai.<your>.workers.dev/embed \
+#   -H "Content-Type: application/json" \
+#   -d '{"text":"sample narrative text here","arena":"lawfare"}'
+#
+# Sink for analytics (ZDF events etc, provenance stamped):
+# curl -X POST https://babylon-data-ai.<your>.workers.dev/sink \
+#   -H "Content-Type: application/json" \
+#   -d '{"type":"zdf_analytics_event","case":"case-zdf","hot":0.94,"r2_path":"..."}'
+#
+# From Python monitor: set BABYLON_AI_WORKER_URL env and it will POST automatically in smart_extract(). Also supports BABYLON_AI_WORKER_URL for /sink appends.
+
+# For full production: add durable objects/queues if high volume backpressure needed.
+# Bind the same R2 in GH Actions secrets for the Python side as before.

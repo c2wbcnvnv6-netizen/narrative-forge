@@ -1,0 +1,32 @@
+{
+  "name": "Staff to Mayor El Paso",
+  "role": "Staffer (Local)",
+  "bioExcerpt": "Staffer (Local) from TX. Key figure in local, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping local strategy",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping migration strategy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "migration"
+  ],
+  "state": "TX"
+}

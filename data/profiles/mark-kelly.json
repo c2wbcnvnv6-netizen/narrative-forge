@@ -1,0 +1,27 @@
+{
+  "name": "Mark Kelly",
+  "role": "U.S. Senator (AZ, Democrat)",
+  "bioExcerpt": "Key figure in migration, elections and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on migration",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "migration"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in migration",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "migration"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "migration",
+    "elections"
+  ]
+}

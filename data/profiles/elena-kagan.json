@@ -1,0 +1,26 @@
+{
+  "name": "Elena Kagan",
+  "role": "Associate Justice, U.S. Supreme Court",
+  "bioExcerpt": "Key figure in scotus and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on scotus",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "scotus"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in scotus",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "scotus"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "scotus"
+  ]
+}

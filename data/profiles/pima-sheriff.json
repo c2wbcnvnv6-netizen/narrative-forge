@@ -1,0 +1,43 @@
+{
+  "name": "Pima County Sheriff",
+  "role": "Pima County Sheriff",
+  "bioExcerpt": "Pima County Sheriff from AZ. Key figure in local, border, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on local",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Central to debates on border",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Central to debates on migration",
+      "framingScore": 0.76,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "border",
+    "migration"
+  ],
+  "state": "AZ"
+}

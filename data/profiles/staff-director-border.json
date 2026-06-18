@@ -1,0 +1,31 @@
+{
+  "name": "Staff Director Border Policy",
+  "role": "Staffer (Border Policy)",
+  "bioExcerpt": "Staffer (Border Policy). Key figure in border, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping border strategy",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping migration strategy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "border",
+    "migration"
+  ]
+}

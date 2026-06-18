@@ -1,0 +1,44 @@
+{
+  "name": "Dan Crenshaw",
+  "role": "U.S. Representative",
+  "bioExcerpt": "U.S. Representative from TX, Republican. Key figure in congress, elections, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on congress",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Central to debates on elections",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Central to debates on migration",
+      "framingScore": 0.76,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "elections",
+    "migration"
+  ],
+  "state": "TX",
+  "party": "Republican"
+}

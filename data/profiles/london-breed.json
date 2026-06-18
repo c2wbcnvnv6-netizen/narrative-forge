@@ -1,0 +1,22 @@
+{
+  "name": "London Breed",
+  "role": "Mayor of San Francisco",
+  "bioExcerpt": "Mayor of San Francisco from CA, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "CA",
+  "party": "Democrat"
+}

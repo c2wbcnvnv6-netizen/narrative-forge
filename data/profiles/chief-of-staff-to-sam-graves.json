@@ -1,0 +1,44 @@
+{
+  "name": "Chief of Staff to Sam Graves",
+  "role": "Staffer (Congress)",
+  "bioExcerpt": "Staffer (Congress) from MO, Republican. Key figure in congress, lawfare, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping congress strategy",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping lawfare strategy",
+      "framingScore": 0.76,
+      "keyPhrases": [
+        "lawfare",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Key operative shaping elections strategy",
+      "framingScore": 0.8,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "lawfare",
+    "elections"
+  ],
+  "state": "MO",
+  "party": "Republican"
+}

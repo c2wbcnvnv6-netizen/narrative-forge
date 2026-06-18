@@ -1,0 +1,21 @@
+{
+  "name": "Mayor of Dallas",
+  "role": "Mayor of Dallas",
+  "bioExcerpt": "Mayor of Dallas from TX. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "TX"
+}

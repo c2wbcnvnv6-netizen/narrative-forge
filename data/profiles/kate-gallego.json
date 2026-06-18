@@ -1,0 +1,33 @@
+{
+  "name": "Kate Gallego",
+  "role": "Mayor of Phoenix",
+  "bioExcerpt": "Mayor of Phoenix from AZ, Democrat. Key figure in local, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in border policy",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "border"
+  ],
+  "state": "AZ",
+  "party": "Democrat"
+}

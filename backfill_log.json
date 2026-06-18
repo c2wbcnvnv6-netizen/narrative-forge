@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-06-18T02:57:02.339654Z",
+  "mode": "backfill",
+  "level": "light",
+  "force": false,
+  "sources": "rss_news,court_documents",
+  "subagent": "BACKFILL-DEPLOYER-HEAVY",
+  "rate_limit": 0.1,
+  "status": "success",
+  "metrics_enabled": true,
+  "ingested_count": 0,
+  "downloads_count": 0
+}

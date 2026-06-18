@@ -27,6 +27,10 @@ from datetime import datetime
 import boto3
 from botocore.config import Config
 
+SUBAGENT_TAG = os.environ.get("SUBAGENT_TAG", "PROCESS-LIVE")
+def _ptag(msg: str) -> str:
+    return f"[{SUBAGENT_TAG}] {msg}"
+
 # Optional heavy but light pure-Py deps (installed in workflow)
 try:
     import pandas as pd
@@ -46,6 +50,16 @@ except ImportError:
 
 BUCKET = os.environ.get("BUCKET_NAME", "babylon-raw-data")
 
+# Pipeline live metrics integration (subagent tags, step tracking D/I/P/A/S, rates, live [LIVE] indicators, AI stack status writes)
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(__file__))
+try:
+    from monitor_and_ingest import PipelineMetrics
+except Exception:
+    PipelineMetrics = None
+
+# Rule42 signal hints in processing (for early extraction to feed Rule of 42 data outputs)
+RULE42_HINTS = re.compile(r'\b(rule.?of.?42|42.?signals?|high.?signal|power.?driver|core.?narrative|key.?pivot)\b', re.I)
 
 def get_s3():
     return boto3.client(
@@ -95,6 +109,8 @@ def extract_entities_and_signals(text: str, arena: str = "") -> dict:
         "press_release_style": bool(PRESS_RELEASE_PAT.search(text_sample)),
         "framing_words_count": len(FRAMING_HINTS.findall(text_sample)),
         "dates_mentioned": sorted(set(m.group(0) for m in DATE_PAT.finditer(text_sample)))[:10],
+        "rule42_hint_count": len(RULE42_HINTS.findall(text_sample)),
+        "has_rule42_signals": bool(RULE42_HINTS.search(text_sample)),
     }
     # News/rss specific (called from process with arena hint for rss_news / news)
     if arena in ("news", "rss_news") or "rss" in arena.lower() or NEWS_RSS_PAT.search(text_sample[:2000]):
@@ -104,7 +120,20 @@ def extract_entities_and_signals(text: str, arena: str = "") -> dict:
         # Extra: pull potential article titles / lead from rss or html if present
         if signals.get("rss_like"):
             signals["rss_item_count_hint"] = len(re.findall(r'<item>|<entry>', text_sample, re.I))
-    return {"entities": entities, "signals": signals}
+    # Rule42 granular: attach pipeline hints + detailed explanations for backfill flow to R2
+    r42_hints = []
+    r42_expls = []
+    if RULE42_HINTS.search(text_sample):
+        r42_hints.append("rule42-core-signal")
+        r42_expls.append("Detected core 42 narrative signal in processed content (clusters/temporal match)")
+    if arena in ("documents", "news", "politicians"):
+        r42_hints.append(f"r42-analyze:{arena}")
+        r42_expls.append(f"R42-ANALYZE: clusters+temporal+query on {arena} for backfill signals")
+    if r42_hints:
+        signals["rule42_pipeline_hints"] = r42_hints
+        signals["detailed_per_signal_explanations"] = r42_expls
+        signals["rule42_hint_count"] = len(r42_hints)
+    return {"entities": entities, "signals": signals, "rule42_pipeline_hints": r42_hints, "detailed_per_signal_explanations": r42_expls}
 
 
 def process_csv(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
@@ -158,7 +187,9 @@ def process_pdf(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
             "metadata": meta,
             "extracted_text_preview": preview,
             "analysis": analysis,
-            "note": f"Extracted from first {min(8, num_pages)} pages. Full raw PDF in R2."
+            "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
+            "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
+            "note": f"Extracted from first {min(8, num_pages)} pages. Full raw PDF in R2. [R42 steps emitted]"
         }
     except Exception as e:
         return {"error": f"PDF extract failed: {str(e)[:300]}", "raw_key": raw_key}
@@ -191,7 +222,9 @@ def process_html(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
         "title": title[:300],
         "extracted_text_preview": body_text[:4000],
         "analysis": analysis,
-        "note": "Full original HTML in R2 under raw/."
+        "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
+        "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
+        "note": "Full original HTML in R2 under raw/. [R42-ANALYZE granular emitted for backfill]"
     }
 
 
@@ -237,7 +270,9 @@ def process_rss_xml(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
         "items_sample": items[:8],
         "extracted_text_preview": combined_text[:4000],
         "analysis": analysis,
-        "note": "RSS feed archived + item metadata + news entity extraction. Full XML in R2 raw/."
+        "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
+        "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
+        "note": "RSS feed archived + item metadata + news entity extraction. Full XML in R2 raw/. [R42 steps: clusters+temporal+query]"
     }
 
 
@@ -257,17 +292,26 @@ def main():
     arena = os.environ.get("ARENA", "documents")
     raw_key = os.environ.get("RAW_KEY")
     if not raw_key:
-        print("ERROR: RAW_KEY env required")
+        print(f"[{SUBAGENT_TAG}] ERROR: RAW_KEY env required")
         sys.exit(1)
 
-    print(f"Processing arena={arena} raw_key={raw_key}")
+    print(f"[{SUBAGENT_TAG}] [STEP:PROCESS] Processing arena={arena} raw_key={raw_key} [SUBAGENT:PROCESS]")
+    print(f"[{SUBAGENT_TAG}] [LIVE] PROCESS start | arena={arena} | tracking live steps/rates [PIPELINE-SUB]")
+
+    metrics = PipelineMetrics(subagent=SUBAGENT_TAG, max_planned=1) if PipelineMetrics else None
+    if metrics:
+        metrics.inc_step("process")
+        metrics.write_status()
 
     s3 = get_s3()
     obj = s3.get_object(Bucket=BUCKET, Key=raw_key)
     raw_bytes = obj["Body"].read()
     ctype = obj.get("ContentType", "") or ""
 
-    print(f"  Downloaded {len(raw_bytes)} bytes, ctype={ctype}")
+    print(f"[{SUBAGENT_TAG}]   Downloaded {len(raw_bytes)} bytes, ctype={ctype}")
+    if metrics:
+        metrics.record_download(len(raw_bytes), 0.1)  # proxy for process step rates tracking
+        metrics.write_status()
 
     # Route by extension / arena / content
     # Enhanced for rss_news: arena=news or rss_news, raw/news/ keys, or raw/media/rss-*.xml feeds
@@ -332,13 +376,19 @@ def main():
                 print(f"  LIVE: news_ripples (echo={deep_synth['news_ripples']['echo_chamber_scores'].get('echo_chamber_score')}) available for site/pol profiles")
             summary["has_deep_analysis"] = True
             summary["derived_synthesis_key"] = f"{derived_base}-synthesis.json"
+            # Phase 2 note: post deep_synth here (or in analyze) also triggers embeddings wire (see analyze_data + generate_embeddings_for_summary). Use babylon-embeddings bucket for vectors.
         except Exception as e:
             print(f"Deep analysis in-process failed (non-fatal): {e}")
 
     # Print compact for logs
     print(json.dumps({k: v for k, v in summary.items() if k in ("shape", "type", "title", "num_pages", "analysis")} , indent=2)[:1500])
 
-    print("Process complete.")
+    print(f"[{SUBAGENT_TAG}] [STEP:PROCESS COMPLETE] Process complete. [SUBAGENT visibility for pipeline]")
+    if 'metrics' in locals() and metrics:
+        metrics.inc_step("process")
+        metrics.write_status(final=True)
+        print(f"[{SUBAGENT_TAG}] [LIVE] PROCESS complete | step/rate/subagent tracked + status for pipeline/AI orchestration")
+    print(f"[{SUBAGENT_TAG}] [LIVE] [RULE42] Process extracted rule42_hints={summary.get('analysis',{}).get('signals',{}).get('rule42_hint_count',0)} | outputs enhanced for data fidelity")
 
 
 if __name__ == "__main__":

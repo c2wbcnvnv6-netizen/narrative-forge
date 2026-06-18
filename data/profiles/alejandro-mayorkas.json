@@ -1,0 +1,27 @@
+{
+  "name": "Alejandro Mayorkas",
+  "role": "Secretary of Homeland Security",
+  "bioExcerpt": "Key figure in migration, bureaucracy and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on migration",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "migration"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in migration",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "migration"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "migration",
+    "bureaucracy"
+  ]
+}

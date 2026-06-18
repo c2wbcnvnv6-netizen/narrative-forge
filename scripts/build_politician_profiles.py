@@ -49,6 +49,11 @@ from botocore.config import Config
 
 BUCKET = os.environ.get("BUCKET_NAME", "babylon-raw-data")
 
+SUBAGENT_TAG = os.environ.get("SUBAGENT_TAG", "PROFILES")
+# Rule42 in profiles: attach high signal count/filter
+RULE42_PROFILE_CAP = 42
+print(f"[{SUBAGENT_TAG}] [LIVE] Profiles builder started [RULE42 enhanced outputs, worker analysis integration]")
+
 # Focus on elected/high-impact politicians (seed from extraction patterns + known elected)
 ELECTED_POLITICIANS = {
     "trump", "biden", "harris", "desantis", "newsom", "schumer", "mcconnell", "pelosi", "mccarthy",
@@ -183,6 +188,18 @@ def aggregate_profile(politician_name, all_data):
     elif "paxton" in name_lower: profile["known_roles"] = ["Texas Attorney General"]
     # Add more as data grows
 
+    # === RULE OF 42 enhancement for data outputs ===
+    rule42_for_pol = []
+    for sig in (profile.get("narrative_signals", {}).get("repeated_phrases", []) + list(profile.get("by_arena", {}).keys()))[:RULE42_PROFILE_CAP]:
+        rule42_for_pol.append({"signal": str(sig)[:80], "source": "profile_aggregate"})
+    profile["rule42"] = {
+        "cap": RULE42_PROFILE_CAP,
+        "high_signal_count": len(rule42_for_pol),
+        "signals": rule42_for_pol[:RULE42_PROFILE_CAP],
+        "note": "Rule of 42 filtered signals for this politician - feeds hot/archetype/ holo selectTop42"
+    }
+    print(f"[{SUBAGENT_TAG}] [LIVE] [RULE42] Profile for {name} enhanced with {len(rule42_for_pol)} rule42 signals")
+
     return profile
 
 def main():
@@ -248,6 +265,7 @@ def main():
 
     if profiles_built:
         print(f"NOTIFY: built {len(profiles_built)} individual politician profiles in {args.output_prefix}/")
+    print(f"[{SUBAGENT_TAG}] [LIVE] Profiles complete. {len(profiles_built)} updated with Rule42 + worker AI data. [AI-STACK]")
 
 if __name__ == "__main__":
     main()

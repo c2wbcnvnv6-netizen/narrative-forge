@@ -1,0 +1,22 @@
+{
+  "name": "Brandon Johnson",
+  "role": "Mayor of Chicago",
+  "bioExcerpt": "Mayor of Chicago from IL, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "IL",
+  "party": "Democrat"
+}

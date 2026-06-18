@@ -1,0 +1,33 @@
+{
+  "name": "Tim Walz",
+  "role": "Governor",
+  "bioExcerpt": "Governor from MN, Democrat. Key figure in state, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on elections",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "elections"
+  ],
+  "state": "MN",
+  "party": "Democrat"
+}

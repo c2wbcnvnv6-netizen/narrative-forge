@@ -1,0 +1,22 @@
+{
+  "name": "Mike Johnston",
+  "role": "Mayor of Denver",
+  "bioExcerpt": "Mayor of Denver from CO, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "CO",
+  "party": "Democrat"
+}

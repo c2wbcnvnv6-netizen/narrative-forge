@@ -1,0 +1,32 @@
+{
+  "name": "Staff Abbott Border Ops",
+  "role": "Staffer (State Border)",
+  "bioExcerpt": "Staffer (State Border) from TX. Key figure in state, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping state strategy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping border strategy",
+      "framingScore": 0.78,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border"
+  ],
+  "state": "TX"
+}

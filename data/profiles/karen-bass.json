@@ -1,0 +1,33 @@
+{
+  "name": "Karen Bass",
+  "role": "Mayor of Los Angeles",
+  "bioExcerpt": "Mayor of Los Angeles from CA, Democrat. Key figure in local, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.69,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in migration policy",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "migration"
+  ],
+  "state": "CA",
+  "party": "Democrat"
+}

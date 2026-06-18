@@ -21,7 +21,7 @@ Pretrained: data-fidelity.js PASS 691/11/hot/prov/Rule42/ZDF, benchmark-harness.
 
 **New spawn ID rec for continuous reg:** 019ecd57-611b-7991-a1ca-90fba64a6630-verifier (continuous E2E/visual reg + fidelity sustain, ZDF hot/no-idle).
 
-**Gaps closed:** cross-repo unit drift (mappers infer/compute/load fixed search_replace, 26/26), e2e expanded for task ZDF LIE 4D + ELON BUNDLE + deltas + filters. Max sustain.
+**Gaps closed:** cross-repo unit drift (mappers), e2e expanded for ZDF LIE 4D + ELON BUNDLE + deltas + filters. 
 
 Report: "E2E Full + Visual Reg completed" + pass counts + ZDF specifics. Paths: /Users/daboss/narrative-forge/tests/data-fidelity.js , /Users/daboss/narrative-forge/RUN_NOTES.md (this), narrative-forge tests/e2e/snapshots/ , reports updated via search_replace.
 

@@ -1,0 +1,33 @@
+{
+  "name": "Eric Adams",
+  "role": "Mayor of New York City",
+  "bioExcerpt": "Mayor of New York City from NY, Democrat. Key figure in local, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in elections policy",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "elections"
+  ],
+  "state": "NY",
+  "party": "Democrat"
+}

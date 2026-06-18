@@ -1,0 +1,27 @@
+{
+  "name": "Senior Counsel to Sen. Cruz",
+  "role": "Staffer (Congress)",
+  "bioExcerpt": "Key figure in media, elections and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on media",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "media"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in media",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "media"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "media",
+    "elections"
+  ]
+}

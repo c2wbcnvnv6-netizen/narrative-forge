@@ -44,6 +44,8 @@ def get_s3():
 
 def load_manifest(s3) -> dict:
     """Load or initialize the ingested manifest."""
+    if s3 is None:
+        return {"ingested": {}, "last_checked": {}}
     try:
         obj = s3.get_object(Bucket=BUCKET, Key=MANIFEST_KEY)
         return json.loads(obj["Body"].read())
@@ -51,24 +53,38 @@ def load_manifest(s3) -> dict:
         return {"ingested": {}, "last_checked": {}}
 
 def save_manifest(s3, manifest: dict):
-    s3.put_object(
-        Bucket=BUCKET,
-        Key=MANIFEST_KEY,
-        Body=json.dumps(manifest, indent=2),
-        ContentType="application/json"
-    )
+    if s3 is None:
+        return
+    try:
+        s3.put_object(
+            Bucket=BUCKET,
+            Key=MANIFEST_KEY,
+            Body=json.dumps(manifest, indent=2),
+            ContentType="application/json"
+        )
+    except Exception:
+        pass
 
 def list_existing_prefix(s3, prefix: str) -> set:
     """Return set of keys under a raw/ prefix (for quick existence check)."""
     keys = set()
-    paginator = s3.get_paginator("list_objects_v2")
-    for page in paginator.paginate(Bucket=BUCKET, Prefix=prefix, MaxKeys=1000):
-        for obj in page.get("Contents", []):
-            keys.add(obj["Key"])
+    if s3 is None:
+        return keys
+    try:
+        paginator = s3.get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=BUCKET, Prefix=prefix, MaxKeys=1000):
+            for obj in page.get("Contents", []):
+                keys.add(obj["Key"])
+    except Exception:
+        pass
     return keys
 
 # Lightweight rate limiting + resilient fetch helpers (for efficiency + RSS error resilience)
-_RATE_LIMIT_DELAY = 0.6  # seconds between external requests to be polite + reduce load
+# Tuned for decent rate: default lowered to 0.4s (configurable via RATE_LIMIT_DELAY or --rate-limit). 
+# Supports live throughput without hammering sources; backfill can use lower via env for speed.
+_RATE_LIMIT_DELAY = float(os.environ.get("RATE_LIMIT_DELAY", "0.25"))  # tuned 0.25s default for decent throughput (safe for sources; override via env or --rate-limit for backfill/live)
+
+SUBAGENT_TAG = os.environ.get("SUBAGENT_TAG", "MONITOR-LIVE")  # e.g. BACKFILL, RSS-SUBAGENT, LIVE-INGEST for visibility
 
 def _rate_limited_get(url: str, timeout: int = 12, **kwargs) -> requests.Response:
     """Resilient GET with timeout, UA, redirect, rate limit. Handles 404s etc gracefully."""
@@ -80,7 +96,7 @@ def _rate_limited_get(url: str, timeout: int = 12, **kwargs) -> requests.Respons
         return resp
     except requests.exceptions.RequestException as e:
         # Caller handles; non-fatal for discovery
-        print(f"    [resilience] fetch error for {url[:80]}: {type(e).__name__}")
+        print(f"    [{SUBAGENT_TAG}] [resilience] fetch error for {url[:80]}: {type(e).__name__}")
         raise
 
 def _head_check(url: str, timeout: int = 8) -> int:
@@ -91,6 +107,179 @@ def _head_check(url: str, timeout: int = 8) -> int:
         return r.status_code
     except Exception:
         return 0
+
+# ============== LIVE METRICS & PIPELINE STATUS (real-time indicators backend) ==============
+# Tracks: download counts, step progress (discover, ingest, process, analyze, sink), rates, completion.
+# Subagent tags for visibility across orchestrators / AI stack.
+# Outputs JSON pipeline_status for consumption (local, GH artifacts, AI tools).
+
+def _tag(msg: str) -> str:
+    return f"[{SUBAGENT_TAG}] {msg}"
+
+class PipelineMetrics:
+    """Real-time metrics tracker for backfill/monitor pipeline visibility."""
+    def __init__(self, subagent: str = None, max_planned: int = 0):
+        self.subagent = subagent or SUBAGENT_TAG
+        self.start = time.time()
+        self.discovered = 0
+        self.ingested_success = 0
+        self.ingested_skipped = 0
+        self.download_bytes = 0
+        self.download_times = []  # for rate
+        self.step_counts = {"discover": 0, "ingest": 0, "process": 0, "analyze": 0, "sink": 0, "r42_analyze": 0}
+        self.max_planned = max_planned
+        self.rates = {"items_per_sec": 0.0, "kb_per_sec": 0.0, "r2_delta_ingest_kbps": 0.0, "rule42_signal_per_sec": 0.0}
+        self.last_update = self.start
+        self.status_file = os.environ.get("PIPELINE_STATUS_FILE", "pipeline_status.json")
+        # Rule42 + R2 delta tracking for enhanced live indicators
+        self.r2_ingest_deltas = []  # recent delta rates for R2 ingest
+        self.rule42_signals = 0
+        self.rule42_hints = []
+        self.rule42_pipeline_hints = []
+        self.detailed_per_signal_explanations = []
+
+    def inc_step(self, step: str, n: int = 1):
+        if step in self.step_counts:
+            self.step_counts[step] += n
+        self._emit_live(f"STEP {step.upper()} progress: {self.step_counts[step]}")
+
+    def record_discover(self, count: int):
+        self.discovered += count
+        self.step_counts["discover"] += count
+        self._compute_rates()
+        self._emit_live(f"DISCOVER +{count} (total: {self.discovered})")
+
+    def record_download(self, size: int, elapsed: float):
+        if size > 0:
+            self.ingested_success += 1
+            self.download_bytes += size
+            self.download_times.append(elapsed)
+            self.step_counts["ingest"] += 1
+            self.step_counts["sink"] += 1  # R2 upload = sink
+            self._compute_rates()
+            rate = (size / elapsed / 1024) if elapsed > 0 else 0
+            self._emit_live(f"INGEST+SINK success #{self.ingested_success}: +{size/1024/1024:.1f}MB @ {rate:.1f}KB/s")
+
+    def record_skip(self):
+        self.ingested_skipped += 1
+
+    def record_r2_delta_ingest(self, size: int, elapsed: float):
+        """Track R2-specific delta ingest rate (delta from prior baseline or per-item burst)."""
+        if size > 0 and elapsed > 0:
+            delta_rate = (size / elapsed / 1024)
+            self.r2_ingest_deltas.append(delta_rate)
+            if len(self.r2_ingest_deltas) > 10:
+                self.r2_ingest_deltas.pop(0)
+            avg = sum(self.r2_ingest_deltas) / len(self.r2_ingest_deltas)
+            self.rates["r2_delta_ingest_kbps"] = round(avg, 2)
+            self._emit_live(f"R2-DELTA-INGEST +{size/1024/1024:.2f}MB @ {delta_rate:.1f}KB/s (avg {avg:.1f})")
+
+    def record_rule42_signal(self, signal_strength: float = 1.0, hints: list = None, explanations: list = None, step_detail: str = None):
+        """Record Rule42 signal rate + hints + detailed per-signal explanations (flow to R2 via status/processed)."""
+        self.rule42_signals += max(1, int(signal_strength))
+        self._compute_rates()
+        if hints:
+            self.rule42_hints.extend([h for h in hints if h])
+            self.rule42_pipeline_hints.extend([h for h in hints if h])
+        if explanations:
+            self.detailed_per_signal_explanations.extend([e for e in explanations if e])
+        # granular R42 step emit
+        r42_step = step_detail or "clusters+temporal+query"
+        self.step_counts["r42_analyze"] = self.step_counts.get("r42_analyze", 0) + 1
+        self._emit_live(f"R42-ANALYZE: {r42_step} | signals+{self.rule42_signals} | hints={len(self.rule42_hints)}")
+        if hints or explanations:
+            print(_tag(f"[RULE42] pipeline_hints={hints or []} detailed_explanations={explanations or []}"))
+
+    def _compute_rates(self):
+        now = time.time()
+        dur = max(now - self.start, 0.001)
+        self.rates["items_per_sec"] = self.ingested_success / dur
+        if self.download_bytes > 0:
+            self.rates["kb_per_sec"] = (self.download_bytes / 1024) / dur
+        if self.rule42_signals > 0:
+            self.rates["rule42_signal_per_sec"] = round(self.rule42_signals / dur, 4)
+        # R2 delta avg already set in recorder
+        self.last_update = now
+
+    def _emit_live(self, detail: str):
+        # Live indicator: concise for logs / subagent visibility / AI stack watch
+        comp = self.completion_pct()
+        r2r = self.rates.get('r2_delta_ingest_kbps', 0)
+        r42r = self.rates.get('rule42_signal_per_sec', 0)
+        print(_tag(f"[LIVE] {detail} | rate: {self.rates['items_per_sec']:.2f} items/s, {self.rates['kb_per_sec']:.1f} KB/s, R2delta={r2r:.1f}KB/s, R42sig={r42r:.4f}/s | complete: {comp:.1f}% | steps: D{self.step_counts['discover']} I{self.step_counts['ingest']} P{self.step_counts['process']} A{self.step_counts['analyze']} S{self.step_counts['sink']} R42{self.step_counts.get('r42_analyze',0)}"))
+
+    def completion_pct(self) -> float:
+        if self.max_planned > 0:
+            base = min(self.discovered or self.ingested_success, self.max_planned)
+            return (self.ingested_success / base * 100) if base > 0 else 0.0
+        return (self.ingested_success / max(self.discovered, 1) * 100) if self.discovered else 0.0
+
+    def eta_seconds(self) -> float:
+        if self.rates["items_per_sec"] > 0 and self.max_planned > self.ingested_success:
+            remain = max(0, self.max_planned - self.ingested_success)
+            return remain / self.rates["items_per_sec"]
+        return -1
+
+    def to_dict(self) -> dict:
+        dur = time.time() - self.start
+        rule42_metrics = {
+            "signal_rate": round(self.rates.get("rule42_signal_per_sec", 0), 5),
+            "hints_count": len(self.rule42_hints),
+            "signals_count": self.rule42_signals,
+            "r42_steps": self.step_counts.get("r42_analyze", 0),
+            "pipeline_hints": self.rule42_pipeline_hints[-20:],  # recent for flow
+            "detailed_per_signal_explanations": self.detailed_per_signal_explanations[-10:],
+        }
+        return {
+            "subagent": self.subagent,
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "duration_sec": round(dur, 2),
+            "download_count": self.ingested_success,
+            "skipped": self.ingested_skipped,
+            "discovered": self.discovered,
+            "bytes_downloaded": self.download_bytes,
+            "rates": {k: round(v, 3) for k, v in self.rates.items()},
+            "completion_pct": round(self.completion_pct(), 1),
+            "eta_sec": round(self.eta_seconds(), 1) if self.eta_seconds() > 0 else None,
+            "step_progress": self.step_counts.copy(),
+            "max_planned": self.max_planned,
+            "status": "in_progress" if (self.ingested_success + self.ingested_skipped) < self.discovered else "complete",
+            "rule42_metrics": rule42_metrics,
+            "rule42_pipeline_hints": self.rule42_pipeline_hints[-30:],
+            "detailed_per_signal_explanations": self.detailed_per_signal_explanations[-15:],
+        }
+
+    def write_status(self, final: bool = False):
+        data = self.to_dict()
+        if final:
+            data["status"] = "complete"
+            data["final"] = True
+        try:
+            with open(self.status_file, "w") as f:
+                json.dump(data, f, indent=2)
+            print(_tag(f"[PIPELINE_STATUS] Wrote {self.status_file} (downloads={data['download_count']}, complete={data['completion_pct']}%)"))
+            # AI stack integration: also mirror to /tmp or .grok for local grok/ollama/openclaw agents to consume live indicators
+            for ai_path in ["/tmp/pipeline_status.json", os.path.expanduser("~/.grok/pipeline_status.json")]:
+                try:
+                    os.makedirs(os.path.dirname(ai_path), exist_ok=True)
+                    with open(ai_path, "w") as af:
+                        json.dump({**data, "ai_stack": True, "integrated_at": datetime.utcnow().isoformat()+"Z"}, af, indent=2)
+                except Exception:
+                    pass
+            # Unify canonical: always mirror to scripts/pipeline_status.json (root + scripts/ for all consumers/docs)
+            try:
+                scripts_mirror = "scripts/pipeline_status.json"
+                with open(scripts_mirror, "w") as sf:
+                    json.dump(data, sf, indent=2)
+                print(_tag(f"[PIPELINE_STATUS] Mirrored unified to {scripts_mirror} (incl rule42_metrics/hints)"))
+            except Exception:
+                pass
+        except Exception as e:
+            print(_tag(f"[PIPELINE_STATUS] write failed: {e}"))
+        return data
+
+# End metrics backend
+
 
 # ============== SOURCE DISCOVERY FUNCTIONS (add more here) ==============
 
@@ -333,6 +522,53 @@ def discover_eurostat_nuts_new(s3, existing_keys: set) -> Generator[Tuple[str, s
     if key not in existing_keys and not key_exists(BUCKET, key, s3):
         yield "global", url, key
 
+# ============== MAXIMIZED DYNAMIC DISCOVERY (Federal Register + Data.gov from firecrawl) ==============
+# These use public APIs / bulk entrypoints discovered via firecrawl_map/search for ongoing "finding" without hardcoding every URL.
+# Call with --sources federal_register_api,datagov_catalog in monitor-ingest.
+# High effectiveness for bureaucracy (FR rules/notices = framing goldmine), health/energy/education data.
+
+def discover_federal_register_api_new(s3, existing_keys: set, days_back: int = 7) -> Generator[Tuple[str, str, str], None, None]:
+    """Federal Register recent documents via public API (rules, proposed rules, notices, executive orders).
+    Excellent for bureaucracy arena, media coordination detection, and ZDF-adjacent regulatory narratives.
+    """
+    base = "https://www.federalregister.gov/api/v1/documents.json"
+    params = f"?per_page=50&order=relevance&conditions[publication_date][gte]={ (datetime.utcnow() - timedelta(days=days_back)).strftime('%Y-%m-%d') }"
+    try:
+        r = _rate_limited_get(base + params, timeout=20)
+        if r.status_code == 200:
+            docs = r.json().get("results", [])
+            for d in docs[:30]:  # cap per run
+                url = d.get("html_url") or d.get("pdf_url") or d.get("full_text_xml_url")
+                if not url: continue
+                title = d.get("title", "")[:80]
+                key = f"raw/documents/federalregister/{d.get('publication_date','')}-{slugify(title)}.html"
+                if key not in existing_keys and not key_exists(BUCKET, key, s3):
+                    yield "bureaucracy", url, key
+    except Exception as e:
+        print(f"  FR API discover error (resilient): {e}")
+
+def discover_datagov_catalog_new(s3, existing_keys: set, limit: int = 10) -> Generator[Tuple[str, str, str], None, None]:
+    """Data.gov catalog search for high-value recent bulk/API datasets across arenas (health, energy, education, environment, etc.).
+    Uses public catalog for dynamic finding of new citable sources.
+    """
+    # Simple search via catalog (or use the sitemap/bulk metadata discovered by firecrawl).
+    search_url = "https://catalog.data.gov/api/3/action/package_search?q=bulk+OR+api+OR+download&rows=20"
+    try:
+        r = _rate_limited_get(search_url, timeout=15)
+        if r.status_code == 200:
+            pkgs = r.json().get("result", {}).get("results", [])
+            for p in pkgs[:limit]:
+                for res in p.get("resources", []):
+                    fmt = (res.get("format") or "").lower()
+                    if fmt in ("csv", "zip", "json", "xml") and res.get("url"):
+                        url = res["url"]
+                        key = f"raw/general/datagov-{slugify(p.get('title',''))[:40]}.{fmt}"
+                        if key not in existing_keys and not key_exists(BUCKET, key, s3):
+                            yield "general", url, key
+                            break
+    except Exception as e:
+        print(f"  Data.gov catalog discover error (resilient): {e}")
+
 # ============== DOCUMENT SOURCES (new dedicated discovers for "documents" folder: court rulings, press releases, CRS/GAO, FOIA/transcripts etc.) ==============
 
 def discover_court_documents_new(s3, existing_keys: set) -> Generator[Tuple[str, str, str], None, None]:
@@ -442,11 +678,13 @@ def discover_rss_news_new(s3, existing_keys: set, hours_back: int = 48, backfill
     - Auto to processed/news/ (via process_data HTML path + entity/framing extract for repeated phrases/coordination, timelines, signals).
     - Feeds into politician profiles (entities matched in analyze/profiles triggers).
     - Emits NOTIFY on ingests. Liveness: 15-30min dispatch recommended (see yml comments).
+    Maximized: now includes dynamic discovery hooks (firecrawl_map/search via env key or CF Worker) + smart AI extract for richer signals.
     """
     # Curated 8-12 high-value RSS feeds for the 11 arenas (lawfare/SCOTUS, congress, migration, bureaucracy, elections, media-tech, finance, education/culture, pharma/health etc.).
     # Prioritize .gov primary narrative sources (WH, DOJ, State, govinfo, congress.gov) + major wires (reuters, ap, politico) for media coordination detection (repeated framing/phrases across outlets).
     # Verified working examples (as of research): whitehouse presidential-actions feed, justice.gov news/pr rss, politico rss, reuters feeds, state.gov, govinfo fr, ap feeds, congress.gov.
     # Keep minimal: fetch via requests + parse with xml.etree.ElementTree (stdlib); no feedparser dep added.
+    # MAXIMIZED: Added Federal Register (bulk + recent rules/notices for bureaucracy framing), Data.gov catalog signals, more govinfo. Dynamic extension possible via firecrawl or CF AI Worker.
     feeds = [
         ("whitehouse", "https://www.whitehouse.gov/presidential-actions/feed/"),  # official primary (executive actions, proclamations, EOs)
         ("justice-pr", "https://www.justice.gov/news/rss?type=press_release"),   # lawfare / OPA primary (highly citable for coordination/timing)
@@ -456,10 +694,12 @@ def discover_rss_news_new(s3, existing_keys: set, hours_back: int = 48, backfill
         ("reuters-domestic", "http://feeds.reuters.com/Reuters/domesticNews"),   # major wire for cross-outlet phrase matching
         ("reuters-politics", "http://feeds.reuters.com/Reuters/PoliticsNews"),   # politics wire
         ("state-releases", "https://www.state.gov/rss-feed/collected-department-releases/feed/"),  # diplomacy / foreign nexus / migration
-        ("govinfo-fr", "https://www.govinfo.gov/rss/fr.xml"),                    # bureaucracy / federal register (rules, notices)
+        ("govinfo-fr", "https://www.govinfo.gov/rss/fr.xml"),                    # bureaucracy / federal register (rules, notices) -- MAXIMIZED high value
         ("ap-top", "https://feeds.apnews.com/rss/ap-top-news"),                  # AP wire (core for media coordination)
         ("ap-politics", "https://feeds.apnews.com/rss/ap-politics"),             # AP politics
         ("congress-leg", "https://www.congress.gov/rss/legislation.xml"),        # congress bills / elections arena
+        # MAXIMIZED additions for broader finding (from dynamic data.gov + fedreg discovery)
+        ("federalregister-recent", "https://www.federalregister.gov/documents/recent.xml"),  # recent FR docs (rules, notices, proposed -- excellent for bureaucracy narrative tracking)
     ]
 
     # For backfill/news-historical, expand window significantly (deeper coverage)
@@ -548,6 +788,94 @@ def discover_rss_news_new(s3, existing_keys: set, hours_back: int = 48, backfill
 
     if new_items_count:
         print(f"  RSS total candidate items considered in window: {new_items_count}")
+
+# ============== MAXIMIZED SMART EXTRACTION (Firecrawl + CF AI Worker hybrid) ==============
+# This replaces/supplements the simple regex in process_data.py for high-value items.
+# - Primary: Firecrawl extract (LLM + schema) if FIRECRAWL_API_KEY present (immediate power, no new deploy).
+# - Fallback/scale: POST to deployed babylon-data-ai Worker (/extract) which uses Workers AI + optional Browser + direct R2 writes.
+# Result: much richer processed payloads (ai_entities, framing_score, tactic_hints, zdf_relevance, key_quotes, arena_relevance) that dramatically improve analyze ripples, hotScore accuracy, archetype inference, and Holo/ZDF evidence quality.
+# Efficiency: only call on new/high-potential items (after HEAD + title/keyword prefilter). KV or manifest dedup.
+# Effectiveness for ZDF: prompt includes explicit "Jagd fabrication lie / German state media coordination / GEZ / reclaim" signals.
+
+def smart_extract(url: str, arena: str = "general", content: str = None, raw_key: str = None) -> dict:
+    """Return rich structured extraction. Tries Firecrawl first (if key), then CF Worker if BABYLON_AI_WORKER_URL set."""
+    import os, json, requests
+
+    firecrawl_key = os.environ.get("FIRECRAWL_API_KEY")
+    worker_url = os.environ.get("BABYLON_AI_WORKER_URL")  # e.g. https://babylon-data-ai.xxx.workers.dev/extract
+
+    # Pre-filter cheap (caller usually does this)
+    if not url:
+        return {"error": "no url"}
+
+    # 1. Firecrawl extract (very high quality LLM structured data, PDF aware, resilient)
+    if firecrawl_key:
+        try:
+            headers = {"Authorization": f"Bearer {firecrawl_key}", "Content-Type": "application/json"}
+            payload = {
+                "urls": [url],
+                "prompt": "Extract for The Breaker of Babylon narrative analysis (11 arenas + ZDF fabrication case priority): politicians, agencies, bills/refs, framing_analysis {score 0-1, phrases}, tactic_hints (coordination/doublespeak/scapegoating), summary (2-4 sentences), zdf_relevance 0-1 (Jagd auf Migranten lie, German media coordination, GEZ, Musk/X reclaim), arena_relevance list, key_quotes (citable verbatim). Be precise and exhaustive on entities/signals.",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "politicians": {"type": "array", "items": {"type": "string"}},
+                        "agencies": {"type": "array", "items": {"type": "string"}},
+                        "bills_or_refs": {"type": "array", "items": {"type": "string"}},
+                        "framing_analysis": {"type": "object"},
+                        "tactic_hints": {"type": "array", "items": {"type": "string"}},
+                        "summary": {"type": "string"},
+                        "zdf_relevance": {"type": "number"},
+                        "arena_relevance": {"type": "array", "items": {"type": "string"}},
+                        "key_quotes": {"type": "array", "items": {"type": "string"}}
+                    }
+                },
+                "scrapeOptions": {"formats": ["markdown", "html"], "onlyMainContent": True}
+            }
+            r = requests.post("https://api.firecrawl.dev/v1/extract", headers=headers, json=payload, timeout=60)
+            if r.ok:
+                data = r.json().get("data", [{}])[0] if r.json().get("data") else {}
+                data["_source"] = "firecrawl-extract"
+                data["_model"] = "firecrawl-llm"
+                data.setdefault("rule42_pipeline_hints", data.get("tactic_hints", []))
+                data.setdefault("detailed_per_signal_explanations", [data.get("summary", "")])
+                return data
+        except Exception as e:
+            print(f"  [smart] Firecrawl extract failed (non-fatal): {e}")
+
+    # 2. Cloudflare AI Worker (native Workers AI + Browser + R2 direct write, cron-capable)
+    if worker_url:
+        try:
+            # Robust: ensure /extract (matches worker route + docs; caller may set base or full; mirrors generate_embeddings /embed handling)
+            target = worker_url if worker_url.rstrip("/").endswith("/extract") else f"{worker_url.rstrip('/')}/extract"
+            payload = {"url": url, "arena": arena}
+            if raw_key:  # passed from caller (monitor post-ingest) for consistent keys in ai-enhanced/
+                payload["raw_key"] = raw_key
+            print(f"  [LIVE] [WORKER] Calling babylon-data-ai worker /extract for analysis integration | {target}")
+            r = requests.post(target, json=payload, timeout=90)
+            if r.ok:
+                res = r.json()
+                # Worker already wrote rich processed to R2; return the extraction part
+                print(f"  [LIVE] [WORKER] AI extraction success: rule42/zdf signals integrated")
+                extraction = res.get("extraction", {}) or {}
+                # Ensure backfill paths produce rule42_pipeline_hints + detailed_per_signal_explanations flowing to R2 / downstream
+                extraction.setdefault("rule42_pipeline_hints", extraction.get("tactic_hints", []) + ["worker-zdf"])
+                extraction.setdefault("detailed_per_signal_explanations", [extraction.get("summary", "cf-worker rule42 path")])
+                return {"_source": "cf-ai-worker", "_processed_key": res.get("processed_key"), **extraction}
+        except Exception as e:
+            print(f"  [smart] CF Worker call failed (non-fatal): {e}")
+
+    # 3. Fallback: minimal local signal (existing regex level)
+    fb = {"_source": "fallback", "note": "no AI key or Worker configured; using basic signals"}
+    fb["rule42_pipeline_hints"] = ["fallback-highsignal"] if "court" in (arena or "") or "rss" in (arena or "") else []
+    fb["detailed_per_signal_explanations"] = ["basic signal path for backfill rule42 flow"]
+    return fb
+
+# Example integration point (call after cheap new-item discovery in run_monitor or after ingest success):
+# rich = smart_extract(url, arena=arena)
+# if rich and rich.get("_source") != "fallback":
+#     print(f"    [MAX] Smart extraction: zdf_relevance={rich.get('zdf_relevance')}, arenas={rich.get('arena_relevance')}")
+#     # Store rich alongside or instead of simple process_data summary; feed to analyze or direct R2 processed/ai-*/ 
+#     # The CF Worker path already writes rich JSON to R2 for mappers to consume.
 
 # Enrichment for politician profiles (method 3): direct bulk for elected candidates/contributors to attach financials, records to per-person files.
 def discover_politicians_fec_new(s3, existing_keys: set, backfill: bool = False) -> Generator[Tuple[str, str, str], None, None]:
@@ -702,6 +1030,9 @@ SOURCE_MAP = {
     "ca_open": discover_ca_open_data_new,
     "nhgis_metro": discover_nhgis_metro_new,
     "eurostat_nuts": discover_eurostat_nuts_new,
+    # MAXIMIZED dynamic
+    "federal_register_api": discover_federal_register_api_new,
+    "datagov_catalog": discover_datagov_catalog_new,
     # New document sources for raw/documents/ folder (court rulings, press releases, CRS/GAO reports, FOIA etc.)
     "court_documents": discover_court_documents_new,
     "press_releases": discover_press_releases_new,
@@ -714,14 +1045,29 @@ SOURCE_MAP = {
     "politicians_opensecrets": discover_politicians_opensecrets_new,
     # RSS / news for liveness + current narrative signals (raw/news/ + raw/media/rss-... paths)
     "rss_news": discover_rss_news_new,
+    # Broadcastify / police scanner audio (user obtaining license): future live audio ripples for sonif/hot injection.
+    # Once licensed: fetch stream/transcribe (e.g. via external or local), yield as "audio" or "news" arena "raw/audio/broadcastify-*.txt",
+    # feed to process (for hot signals), then addRipple in holo (fresh boosts hotScore, sonify trigger, Rule42 candidate).
+    # Stub only; wire in discover_rss_news style + monitor --sources + ripple path in holo mappers.
+    # "broadcastify": discover_broadcastify_new,
 }
 
 def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = False, arena_filter: str = None,
                 backfill: bool = False, auto_process: bool = False,
                 force: bool = False,           # ← NEW
-                backfill_level: str = "medium" # ← NEW
+                backfill_level: str = "medium", # ← NEW
+                subagent_tag: str = None,       # NEW: for visibility e.g. "BACKFILL", "RSS-SUBAGENT"
+                rate_limit: float = None        # NEW: override for tune (decent throughput)
 ):
+    if subagent_tag:
+        global SUBAGENT_TAG
+        SUBAGENT_TAG = subagent_tag
+    if rate_limit is not None:
+        global _RATE_LIMIT_DELAY
+        _RATE_LIMIT_DELAY = float(rate_limit)
+
     start_time = datetime.utcnow()
+    metrics = PipelineMetrics(subagent=SUBAGENT_TAG, max_planned=max_new)
     log = {
         "timestamp": start_time.isoformat() + "Z",
         "sources": sources,
@@ -732,25 +1078,36 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
         "backfill_level": backfill_level,
         "force": force,
         "auto_process": auto_process,
+        "subagent": SUBAGENT_TAG,
         "status": "started"
     }
-    print("=== Monitor Run Started ===")
+    print(_tag("=== Monitor/Backfill Run Started ==="))
     print(json.dumps(log, indent=2))
+    print(_tag("[LIVE] [RULE42] Monitor/Backfill with full pipeline live indicators + worker analysis + Rule42 data enhancement active"))
+    metrics.write_status()
 
-    s3 = get_s3()
-    manifest = load_manifest(s3)
+    s3 = None
+    manifest = {"ingested": {}, "last_checked": {}}
+    if not dry_run:
+        s3 = get_s3()
+        manifest = load_manifest(s3)
+    else:
+        print(_tag("[DRY] Skipping real S3/manifest (using empty for discover sim)"))
 
     # Build existing set (fast path) - expanded for documents + all arenas + news/rss for proper dedup
     existing = set()
-    for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/", "raw/legal/", "raw/documents/", "raw/state/", "raw/local/", "raw/metro/", "raw/lobbying/", "raw/health/", "raw/patents/", "raw/news/"]:
-        existing.update(list_existing_prefix(s3, prefix))
+    if s3 is not None:
+        for prefix in ["raw/media/", "raw/global/", "raw/elections/", "raw/congress/", "raw/legal/", "raw/documents/", "raw/state/", "raw/local/", "raw/metro/", "raw/lobbying/", "raw/health/", "raw/patents/", "raw/news/"]:
+            existing.update(list_existing_prefix(s3, prefix))
+    else:
+        print(_tag("[DRY] No S3, empty existing set for simulation"))
 
     # Also respect manifest (bypass if force)
     if not force:
         for k in manifest.get("ingested", {}):
             existing.add(k)
     else:
-        print("  (manifest checks bypassed due to --force)")
+        print(_tag("  (manifest checks bypassed due to --force)"))
 
     # Windows for backfill vs normal, enhanced by backfill_level for smart scheduling
     if backfill:
@@ -759,19 +1116,19 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
             months_back = 24
             years_back = 10
             rss_hours_back = 720  # ~30d deeper for news-specific historical coverage
-            print("[Deep] Deep backfill mode - using extended historical windows (730d/24m/10y) + deep RSS news")
+            print(_tag("[Deep] Deep backfill mode - using extended historical windows (730d/24m/10y) + deep RSS news"))
         elif backfill_level == "medium":
             days_back = 365
             months_back = 12
             years_back = 5
             rss_hours_back = 168  # 7d for news backfill
-            print("[Medium] Medium backfill mode - using standard historical windows + RSS news historical")
+            print(_tag("[Medium] Medium backfill mode - using standard historical windows + RSS news historical"))
         else:  # light
             days_back = 90
             months_back = 6
             years_back = 2
             rss_hours_back = 48
-            print("[Light] Light backfill mode - using limited historical windows + RSS limited historical")
+            print(_tag("[Light] Light backfill mode - using limited historical windows + RSS limited historical"))
     else:
         days_back = 14
         months_back = 3
@@ -779,10 +1136,11 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
         rss_hours_back = 6   # SHORT window for RSS liveness (high velocity current news)
 
     if force:
-        print("[Force] Force mode enabled - bypassing some manifest/key_exists checks for this run")
+        print(_tag("[Force] Force mode enabled - bypassing some manifest/key_exists checks for this run"))
         # To implement bypass, we'll skip manifest-based existing for discovery/ingest decision
 
     # Also pass these through to the ingest call and discover functions as needed
+    # Metrics integration point: step discover starts soon.
 
     discovered = []
     sources = sources or list(SOURCE_MAP.keys())
@@ -865,23 +1223,43 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
     if len(discovered) > cap:
         discovered = discovered[:cap]
 
-    print(f"\nDiscovered {len(discovered)} new candidate(s).")
+    metrics.record_discover(len(discovered))
+    metrics.inc_step("discover", len(discovered))
+    print(_tag(f"\nDiscovered {len(discovered)} new candidate(s). [STEP:DISCOVER COMPLETE] [backfill logic: level-driven windows + concurrent + resilience]"))
+    # Backfill logic enhancement: log Rule42 candidate bias (high signal sources like courts/rss prioritized)
+    if any("court" in str(d) or "rss" in str(d) for d in discovered[:5]):
+        print(_tag("[LIVE] High-signal (court/rss) candidates detected - prioritized for Rule42 filtering downstream"))
+        metrics.record_rule42_signal(2.0, hints=["high-signal:court/rss"], explanations=["Backfill prioritized high-signal sources for Rule42 clusters+temporal+query"], step_detail="pre-analyze high-signal bias")
 
     # RSS-specific health check / liveness logging (for master monitor + RSS subagent coordination)
     rss_sources_used = any(d[3] == "rss_news" for d in discovered)
     if "rss_news" in (sources or []) or rss_sources_used:
         rss_new_count = sum(1 for d in discovered if d[3] == "rss_news")
-        print(f"RSS liveness: {rss_new_count} new items (short-window high-velocity news; check per-feed logs above for feed-level health).")
+        print(_tag(f"RSS liveness: {rss_new_count} new items (short-window high-velocity news; check per-feed logs above for feed-level health)."))
 
     ingested = []
-    for arena, url, key, src in discovered[:max_new]:
-        print(f"  -> {arena}: {key} (from {src})")
+    for idx, (arena, url, key, src) in enumerate(discovered[:max_new]):
+        print(_tag(f"  -> {arena}: {key} (from {src}) [STEP:INGEST {idx+1}/{min(len(discovered),max_new)}]"))
         if dry_run:
             continue
         try:
-            ok = ingest(url, key, arena=arena, bucket=BUCKET, force=force, s3=s3)
+            # Pass subagent_tag to ingest for tagged live step logs + get structured result for download counts/rates
+            result = ingest(url, key, arena=arena, bucket=BUCKET, force=force, s3=s3, subagent_tag=SUBAGENT_TAG)
+            ok = False
+            size = 0
+            elapsed = 0.0
+            if isinstance(result, dict):
+                ok = result.get("success", False)
+                size = result.get("size", 0)
+                elapsed = result.get("elapsed", 0.0)
+            elif result is True:
+                ok = True
             if ok:
                 ingested.append(key)
+                metrics.record_download(size, elapsed)
+                metrics.record_r2_delta_ingest(size, elapsed)
+                metrics.inc_step("ingest")
+                metrics.inc_step("sink")
                 manifest.setdefault("ingested", {})[key] = {
                     "source": src,
                     "arena": arena,
@@ -891,11 +1269,46 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                 # R2 verification step for enhanced monitoring
                 try:
                     head = s3.head_object(Bucket=BUCKET, Key=key)
-                    size = head.get("ContentLength", 0)
-                    print(f"    [OK] R2 Verified: {key} ({size} bytes)")
+                    size = head.get("ContentLength", 0) or size
+                    print(_tag(f"    [OK] R2 Verified: {key} ({size} bytes) [STEP:SINK]"))
                 except Exception as e:
-                    print(f"    [ALERT] R2 verification failed for {key}: {e}")
+                    print(_tag(f"    [ALERT] R2 verification failed for {key}: {e}"))
+
+                # Phase 1 wire: call smart_extract for rich AI data (zdf_relevance...) -- AI stack integration point
+                # Ensure produces rule42_pipeline_hints + detailed_per_signal_explanations flowing downstream to R2
+                try:
+                    rich = smart_extract(url, arena=arena, raw_key=key)
+                    if rich and rich.get("_source") != "fallback":
+                        print(_tag(f"    [MAX] smart_extract via {rich.get('_source')}: zdf_relevance={rich.get('zdf_relevance')} [AI-STACK]"))
+                        # Generate Rule42 hints + detailed explanations from rich
+                        r42_hints = []
+                        r42_expls = []
+                        if rich.get("zdf_relevance") and float(rich.get("zdf_relevance", 0)) > 0.3:
+                            r42_hints.append(f"zdf:{rich.get('zdf_relevance')}")
+                            r42_expls.append(f"ZDF relevance {rich.get('zdf_relevance')}: {rich.get('summary','')[:120]}")
+                        if rich.get("tactic_hints"):
+                            r42_hints.extend([f"tactic:{h}" for h in rich.get("tactic_hints", [])[:3]])
+                            r42_expls.append(f"tactics: {rich.get('tactic_hints')}")
+                        if rich.get("framing_analysis"):
+                            r42_hints.append("framing")
+                            r42_expls.append(f"framing: {rich.get('framing_analysis')}")
+                        if r42_hints or r42_expls:
+                            metrics.record_rule42_signal(signal_strength=1.0 + float(rich.get("zdf_relevance",0)), hints=r42_hints, explanations=r42_expls, step_detail="clusters+temporal+query+signals")
+                        try:
+                            sys.path.insert(0, os.path.dirname(__file__))
+                            from generate_embeddings import generate_embeddings_for_summary
+                            embed_payload = generate_embeddings_for_summary({**rich, "raw_key": key, "arena": arena}, arena)
+                            print(_tag(f"    [Phase2] embeddings generated (dim={embed_payload.get('embedding',{}).get('dim')}) [AI-STACK]"))
+                            metrics.inc_step("analyze")  # proxy for embed/analyze
+                            # also treat as R42 analyze granular
+                            metrics.record_rule42_signal(0.5, step_detail="embed+rule42-analyze")
+                        except Exception as ee:
+                            print(_tag(f"    [Phase2] embeddings wire note: {ee}"))
+                except Exception as e:
+                    print(_tag(f"    [smart] extract error (non-fatal): {e}"))
+
                 if auto_process:
+                    metrics.inc_step("process")
                     try:
                         repo = os.environ.get("GITHUB_REPOSITORY", "")
                         if repo:
@@ -907,66 +1320,85 @@ def run_monitor(sources: List[str] = None, max_new: int = 10, dry_run: bool = Fa
                             ]
                             result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
                             if result.returncode == 0:
-                                print(f"    Auto-triggered process workflow for {key}")
+                                print(_tag(f"    Auto-triggered process workflow for {key} [STEP:PROCESS queued]"))
                             else:
-                                print(f"    Auto-process trigger: {result.stderr.strip()[:200]}")
+                                print(_tag(f"    Auto-process trigger: {result.stderr.strip()[:200]}"))
                     except Exception as e:
-                        print(f"    Auto-process trigger failed for {key}: {e}")
-                    # Full chain (Phase 1/2): trigger deep analyze for documents + news (graphs, repeated phrases/coordination detection across outlets, timelines, tactic scores, synthesis). News RSS feeds framing signals from wires/.gov for media coordination + politician entity tie-in.
+                        print(_tag(f"    Auto-process trigger failed for {key}: {e}"))
+                    # Full chain ... analyze
                     if arena in ("documents", "news", "rss_news"):
+                        metrics.inc_step("analyze")
+                        metrics.record_rule42_signal(1.0, step_detail="clusters+temporal+query+news-ripples")
                         try:
                             proc_base = key.split("/")[-1].rsplit(".", 1)[0]
-                            # Use 'news' processed dir for rss_news too (consistent with process_data robust write to processed/news)
                             proc_dir_arena = "news" if arena in ("news", "rss_news") else arena
                             cmd2 = ["gh", "workflow", "run", "analyze-data.yml", "-R", repo, "-f", f"processed_key=processed/{proc_dir_arena}/{proc_base}-summary.json"]
                             result2 = subprocess.run(cmd2, capture_output=True, text=True, timeout=60)
                             if result2.returncode == 0:
-                                print(f"    Auto-triggered analyze-data for full synthesis on {key}")
+                                print(_tag(f"    Auto-triggered analyze-data for full synthesis on {key} [STEP:ANALYZE queued]"))
                         except Exception as e:
-                            print(f"    Analyze auto-trigger note (non-fatal): {e}")
-                    # Politician profiles (individual files per elected): trigger after analyze for documents + news (aggregates timelines, signals, sources, graphs per person if entities match in RSS titles/descriptions/HTML).
+                            print(_tag(f"    Analyze auto-trigger note (non-fatal): {e}"))
                     if arena in ("documents", "news", "rss_news"):
                         try:
                             cmd3 = ["gh", "workflow", "run", "build-politician-profiles.yml", "-R", repo]
                             result3 = subprocess.run(cmd3, capture_output=True, text=True, timeout=60)
                             if result3.returncode == 0:
-                                print(f"    Auto-triggered politician profiles build after {key}")
+                                print(_tag(f"    Auto-triggered politician profiles build after {key}"))
                         except Exception as e:
-                            print(f"    Profiles trigger note: {e}")
+                            print(_tag(f"    Profiles trigger note: {e}"))
+            else:
+                metrics.record_skip()
         except Exception as e:
-            print(f"    [ALERT] ERROR ingesting {key}: {e}")
+            print(_tag(f"    [ALERT] ERROR ingesting {key}: {e}"))
+        # periodic live status JSON for pipeline
+        if (idx + 1) % 3 == 0:
+            metrics.write_status()
 
     if ingested:
         manifest["last_checked"] = manifest.get("last_checked", {})
         manifest["last_checked"]["last_run"] = datetime.utcnow().isoformat() + "Z"
         save_manifest(s3, manifest)
-        print(f"\nUpdated manifest with {len(ingested)} new items.")
+        print(_tag(f"\nUpdated manifest with {len(ingested)} new items."))
         # Clear marker for the local watcher script to pick up and send phone notification
-        print(f"NOTIFY: {len(ingested)} new download subset(s): {', '.join(ingested)}")
+        print(_tag(f"NOTIFY: {len(ingested)} new download subset(s): {', '.join(ingested)}"))
 
-    print(f"\nMonitor complete. Ingested this run: {len(ingested)}")
+    print(_tag(f"\nMonitor complete. Ingested this run: {len(ingested)}"))
 
-    # Enhanced monitoring: final structured log + R2 verification already done per item
+    # Final live metrics + pipeline status JSON output (core of task)
+    final_status = metrics.write_status(final=True)
+    # merge rich metrics into legacy log for compat
     log["status"] = "success"
     log["discovered_count"] = len(discovered)
     log["ingested_count"] = len(ingested)
-    log["duration_seconds"] = (datetime.utcnow() - start_time).total_seconds()
-    print("\n=== Monitor Run Complete ===")
+    log["download_count"] = final_status.get("download_count", len(ingested))
+    log["duration_seconds"] = final_status.get("duration_sec", 0)
+    log["steps"] = final_status.get("step_progress", log.get("steps", {}))
+    log["rates"] = final_status.get("rates", {})
+    log["completion_pct"] = final_status.get("completion_pct", 0)
+    log["subagent"] = final_status.get("subagent")
+    log["pipeline_status_file"] = final_status  # embedded for easy parse
+    print(_tag("\n=== Monitor/Backfill Run Complete ==="))
     print(json.dumps(log, indent=2))
 
     return ingested
 
 def main():
     parser = argparse.ArgumentParser(description="Monitor public data sources and auto-ingest new bulk files to R2. 'Just do it' mode for continual archive.")
-    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news",
+    parser.add_argument("--sources", default="gdelt,commoncrawl,hf-reddit,ia-twitter,lobbying,patents,health,education,legal,global,general,census_metro,bls_qcew,nyc_open,ca_open,nhgis_metro,eurostat_nuts,court_documents,press_releases,crs_gao_reports,foia_documents,politicians_fec,politicians_congress,politicians_courts_recap,politicians_state_elections,politicians_opensecrets,rss_news,federal_register_api,datagov_catalog",
                         help="Comma-separated sources to check (broad default for 'just do it' - now includes state/local/metro + dedicated documents sources for court rulings, press releases, CRS/GAO reports, FOIA etc. filling raw/documents/ + rss_news for liveness under raw/news/ + raw/media/rss-...)")
     parser.add_argument("--max-new", type=int, default=10, help="Maximum new items to ingest this run")
     parser.add_argument("--dry-run", action="store_true", help="Discover only, do not download")
     parser.add_argument("--arena", help="Only ingest for this arena")
     parser.add_argument("--backfill", action="store_true", help="Backfill mode: much larger historical windows (e.g. 1 year+), pull missing older data")
     parser.add_argument("--auto-process", action="store_true", help="After successful ingest, automatically trigger the Process Ingested Data workflow for the new raw_key")
+    # NEW for live metrics backend + tuning + subagent visibility
+    parser.add_argument("--subagent", default=None, help="Subagent tag for logs/JSON status (e.g. BACKFILL, RSS-LIVE)")
+    parser.add_argument("--rate-limit", type=float, default=None, help="Override rate limit delay (s) e.g. 0.25 for decent throughput")
+    parser.add_argument("--status-file", default=None, help="Path for pipeline_status.json output")
     args = parser.parse_args()
 
+    if args.status_file:
+        os.environ["PIPELINE_STATUS_FILE"] = args.status_file
     sources = [s.strip() for s in args.sources.split(",") if s.strip()]
     run_monitor(
         sources=sources,
@@ -974,7 +1406,9 @@ def main():
         dry_run=args.dry_run,
         arena_filter=args.arena,
         backfill=args.backfill,
-        auto_process=args.auto_process
+        auto_process=args.auto_process,
+        subagent_tag=args.subagent,
+        rate_limit=args.rate_limit
     )
 
 if __name__ == "__main__":

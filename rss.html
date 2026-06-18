@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0503">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>RSS Ripples • The Rule of 42 • The Breaker of Babylon</title>
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22JARVIS%20RSS%20Ripples%22%2C%22short_name%22%3A%22JARVIS%20RSS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0503%22%2C%22theme_color%22%3A%22%23f97316%22%7D">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
+        .narrative-card { background: linear-gradient(145deg, #1c1917 0%, #0a0503 70%); border: 1px solid #451a03; transition: all 0.2s; }
+        .narrative-card:hover { transform: translateY(-2px); border-color: #f97316; }
+        .rss-live-stamp { font-size: 9px; font-weight: 900; letter-spacing: 1px; padding: 1px 6px; background: #431407; color: #fed7aa; border: 1px solid #ff6b35; border-radius: 3px; }
+        .signal-badge { font-size: 10px; font-weight: 700; padding: 1px 8px; border-radius: 9999px; letter-spacing: 0.5px; border: 1px solid; }
+
+        /* UNIFIED LIQUID GLASS THEMING (for rss.html consistency) */
+        .liquid-glass{background:rgba(28,25,23,.72);border:1px solid rgba(249,115,22,.35);backdrop-filter:blur(12px)saturate(1.15);box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 1px 0 rgba(254,215,170,.12);transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;--mx:50;--my:20}
+        .liquid-glass::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(249,115,22,.06)0%,transparent 50%,rgba(254,215,170,.04)100%);pointer-events:none;mix-blend-mode:screen}
+        .liquid-glass::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at calc(var(--mx)*1%) calc(var(--my)*1%),rgba(254,215,170,.35)0%,rgba(249,115,22,.18)18%,transparent 42%);pointer-events:none;mix-blend-mode:screen;transition:background 80ms linear}
+        .liquid-glass.refract{filter:url(#liquid-glass-refract)}.liquid-glass.glass-hot{border-color:rgba(249,115,22,.65);filter:url(#liquid-glass-refract) brightness(1.1)saturate(1.25)}
+        .glass-btn{background:rgba(28,25,23,.65);border:1px solid rgba(249,115,22,.4);backdrop-filter:blur(8px);transition:all .15s cubic-bezier(.4,0,.2,1)}
+        .glass-btn:hover{border-color:#f97316}
+        @media (prefers-reduced-motion:reduce){.liquid-glass,.glass-btn{transition:none}.liquid-glass::after,.glass-hot{background:none!important;filter:none!important;animation:none!important}}
+        .high-contrast{background:#000!important;color:#fff!important}.high-contrast .liquid-glass,.high-contrast .narrative-card{background:#000!important;border:2px solid #fff!important}
+        .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    </style>
+</head>
+<body class="bg-[#0a0503] text-amber-100 min-h-screen">
+    <!-- Unified Liquid Glass SVG (consistent) -->
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;"><defs><filter id="liquid-glass-refract" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" seed="42" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="blurred"/><feSpecularLighting in="blurred" surfaceScale="2.5" specularConstant="0.65" specularExponent="16" lighting-color="#fed7aa" result="spec"><fePointLight x="-60" y="-100" z="70"/></feSpecularLighting><feComposite in="spec" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/></filter></defs></svg>
+    <header class="border-b border-orange-900/40 bg-[#0a0503]/95 backdrop-blur-lg">
+        <div class="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-600 via-red-700 to-amber-600 flex items-center justify-center text-white text-2xl font-black">J</div>
+                <div>
+                    <div class="font-display text-3xl tracking-[-2px] font-semibold">RSS RIPPLES</div>
+                    <div class="text-[10px] text-orange-500/80 -mt-1 font-mono tracking-[3px]">THE RULE OF 42 • THE BREAKER OF BABYLON</div>
+                </div>
+            </div>
+            <a href="index.html" class="px-4 py-1.5 text-xs font-bold rounded-2xl border border-orange-700 hover:bg-orange-950 text-orange-300">← BACK TO NEURAL MAP (ASK JARVIS)</a>
+        </div>
+    </header>
+
+    <div class="max-w-[1280px] mx-auto px-6 pt-6 pb-20">
+        <div class="mb-6">
+            <span class="text-3xl font-display tracking-tight text-orange-300">Live RSS Ripples — The Raw Material</span>
+            <span class="ml-3 text-xs px-3 py-1 rounded-full bg-red-900/60 border border-red-800 text-red-300 font-bold">RULE OF 42 • FEED THE MAP • REAL R2 DATA</span>
+        </div>
+
+        <div class="mb-4 flex items-center gap-3 text-xs">
+            <input id="rss-filter" type="text" placeholder="Filter ripples (title/source/phrase)..." onkeyup="filterRSSCards()" class="bg-zinc-950 border border-orange-900 text-sm rounded-2xl px-4 py-1.5 w-72 placeholder:text-orange-900/70 focus:outline-none focus:border-orange-700">
+            <button onclick="renderRSSFeed(true)" class="px-3 py-1 border border-orange-800 rounded-2xl hover:bg-zinc-900 text-orange-300">REFRESH</button>
+            <button onclick="simulateR2FetchForRSS()" class="px-3 py-1 border border-orange-800 rounded-2xl hover:bg-zinc-900 text-orange-300">SYNC R2</button>
+        </div>
+
+        <div class="mb-3 text-xs text-orange-400/80 max-w-2xl">Rule of 42: The feed is the full noise. Return to the Neural Map and ASK JARVIS to extract only the signals that repeat and frame power.</div>
+
+        <div id="rss-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    </div>
+
+    <script>
+        let FORGE_DATA = {};
+        const EMBEDDED_SAMPLE = {
+            "meta": { "last_rss_poll": "2026-06-15T02:32Z", "source": "R2 + RSS liveness subagent", "total_items": 12, "R2_bucket": "babylon-raw-data" },
+            "newsItems": [
+                {"id":"rss-justice-001","title":"Coordinated Law Enforcement Actions Results in Arrests of Seven Men in Connection with Fraudulent COVID-19 Relief Loan Applications","source":"justice-pr","pubDate":"2026-06-12T12:00:00Z","excerpt":"LAS VEGAS – As a result of coordinated law enforcement actions in three states, seven men have been arrested and indicted in connection with submitting fraudulent COVID-19 relief loan applications...","link":"https://www.justice.gov/usao-nv/pr/coordinated-law-enforcement-actions-results-arrests-seven-men-connection-fraudulent","arena":"legal","signals":{"framingScore":0.68,"repeatedPhrases":["coordinated law enforcement actions"],"tags":["coordination","fraud","arrests"],"loadedLanguage":0.42}},
+                {"id":"media-border-002","title":"Border Funding Bill Hits 'Humanitarian Implementation Hiccups' Amid Pharma-Adjacent Amendments","source":"legacy-media-nyt","pubDate":"2026-06-13T18:22:00Z","excerpt":"Negotiations over supplemental border security funding have encountered repeated humanitarian implementation hiccups, with critics pointing to last-minute pharma-adjacent health infrastructure riders that could reshape DHS allocation flows.","link":"#","arena":"migration","signals":{"framingScore":0.71,"repeatedPhrases":["humanitarian implementation hiccups","pharma-adjacent health infrastructure"],"tags":["border-funding","ripples","media-whitewash"],"loadedLanguage":0.65}},
+                {"id":"crs-border-003","title":"Congressional Research Service: Analysis of FY2026 Border Security Supplemental and NGO Funding Mechanisms","source":"crs-reports","pubDate":"2026-06-11T09:15:00Z","excerpt":"This report examines proposed increases in border enforcement funding alongside NGO operational support. Key sections address potential duplication with existing HHS programs and questions around 'humanitarian implementation' metrics.","link":"#","arena":"congress","signals":{"framingScore":0.55,"repeatedPhrases":["humanitarian implementation"],"tags":["crs","funding","ngo"],"loadedLanguage":0.31}},
+                {"id":"wh-press-004","title":"White House Briefing: Administration Highlights Record Cross-Border Encounters and New Enforcement Tools","source":"whitehouse-press","pubDate":"2026-06-14T14:05:00Z","excerpt":"Officials today underscored the need for congressional action on border funding to address what they described as unsustainable humanitarian pressures at the southwest border.","link":"#","arena":"executive","signals":{"framingScore":0.82,"repeatedPhrases":["humanitarian pressures"],"tags":["whitehouse","enforcement"],"loadedLanguage":0.58}},
+                {"id":"fox-border-005","title":"Exclusive: Internal Memos Reveal Coordinated Messaging on 'Hiccups' Narrative Across Outlets","source":"fox-news","pubDate":"2026-06-13T22:40:00Z","excerpt":"Documents obtained show legacy outlets aligning on downplaying border funding shortfalls using identical phrasing seen in recent CRS and DOJ releases — raising coordination questions.","link":"#","arena":"media","signals":{"framingScore":0.89,"repeatedPhrases":["humanitarian implementation hiccups"],"tags":["coordination","echo","media"],"loadedLanguage":0.77}},
+                {"id":"gao-border-006","title":"GAO Report Flags Waste in DHS Contractor Awards Tied to Border Infrastructure","source":"gao-reports","pubDate":"2026-06-10T11:30:00Z","excerpt":"Auditors highlight billions in awards to contractors with pharma supply chain ties, echoing earlier warnings on program duplication and lack of outcome metrics for humanitarian components.","link":"#","arena":"oversight","signals":{"framingScore":0.49,"repeatedPhrases":["pharma-adjacent","humanitarian components"],"tags":["gao","waste","contractors"],"loadedLanguage":0.38}},
+                {"id":"rss-doj-update-007","title":"Justice Department Announces Additional Indictments in Multi-State Immigration Fraud Network","source":"justice-pr","pubDate":"2026-06-14T16:55:00Z","excerpt":"Federal prosecutors in multiple districts unsealed charges today against operators exploiting border-related aid programs, part of ongoing efforts to safeguard taxpayer funds.","link":"#","arena":"legal","signals":{"framingScore":0.73,"repeatedPhrases":["coordinated","safeguard taxpayer funds"],"tags":["doj","fraud","border-aid"],"loadedLanguage":0.51}}
+            ]
+        };
+
+        async function loadRSSData() {
+            try {
+                const res = await fetch('./data/news-sample.json');
+                if (res.ok) {
+                    const json = await res.json();
+                    FORGE_DATA = { ...EMBEDDED_SAMPLE, ...json };
+                } else {
+                    FORGE_DATA = EMBEDDED_SAMPLE;
+                }
+            } catch (e) {
+                FORGE_DATA = EMBEDDED_SAMPLE;
+            }
+            renderRSSFeed();
+        }
+
+        function renderRSSFeed(refresh = false) {
+            const container = document.getElementById('rss-cards');
+            if (!container) return;
+            container.innerHTML = '';
+            let items = FORGE_DATA.newsItems || EMBEDDED_SAMPLE.newsItems;
+            const filter = (document.getElementById('rss-filter') || {}).value || '';
+            if (filter) {
+                const q = filter.toLowerCase();
+                items = items.filter(it => 
+                    (it.title || '').toLowerCase().includes(q) || 
+                    (it.source || '').toLowerCase().includes(q) || 
+                    ((it.signals && it.signals.repeatedPhrases || []).join(' ').toLowerCase().includes(q))
+                );
+            }
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'narrative-card p-4 rounded-2xl border border-orange-900/60';
+                const signals = item.signals || {};
+                const phrases = (signals.repeatedPhrases || []).slice(0,2).map(p => `<span class="signal-badge text-orange-300 border-orange-700">${p}</span>`).join('');
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="text-xs uppercase tracking-widest text-orange-400">${item.source} • ${new Date(item.pubDate).toLocaleDateString()}</div>
+                        <div class="rss-live-stamp">R2 LIVE</div>
+                    </div>
+                    <div class="font-semibold text-sm mb-2">${item.title}</div>
+                    <div class="text-xs text-orange-200/80 line-clamp-3 mb-2">${item.excerpt}</div>
+                    <div class="flex flex-wrap gap-1 mb-2">${phrases}</div>
+                    <div class="text-xs text-orange-400">framing: ${(signals.framingScore || 0).toFixed(2)}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterRSSCards() {
+            renderRSSFeed();
+        }
+
+        async function simulateR2FetchForRSS() {
+            try {
+                const res = await fetch('./data/news-sample.json');
+                if (res.ok) {
+                    const fresh = await res.json();
+                    FORGE_DATA = { ...FORGE_DATA, ...fresh };
+                }
+            } catch(e) {}
+            renderRSSFeed(true);
+        }
+
+        function signalBadge(text) {
+            return `<span class="signal-badge text-orange-300 border-orange-700">${text}</span>`;
+        }
+
+        window.onload = loadRSSData;
+
+        // Unified Liquid Glass init + error boundary + PWA ready (added for consistency across previews)
+        function initGlassAndBoundary() {
+            document.addEventListener('mousemove', e => document.querySelectorAll('.liquid-glass,.narrative-card').forEach(el => {
+                const r = el.getBoundingClientRect(); el.style.setProperty('--mx', ((e.clientX-r.left)/Math.max(1,r.width))*100); el.style.setProperty('--my', ((e.clientY-r.top)/Math.max(1,r.height))*100);
+            }));
+            document.querySelectorAll('.narrative-card').forEach(el => el.classList.add('liquid-glass','refract'));
+        }
+        function showGlobalErrorRSS(m){ const b = document.createElement('div'); b.style.cssText='position:fixed;bottom:8px;left:8px;background:#1c1917;border:1px solid #7f1d1d;color:#fda4af;padding:4px 8px;border-radius:8px;font-size:10px;z-index:300'; b.innerHTML = 'ErrorBoundary: '+m+' <button onclick="this.parentNode.remove()" style="text-decoration:underline">x</button>'; document.body.appendChild(b); setTimeout(()=>b.parentNode&&b.parentNode.removeChild(b),8000); }
+        window.addEventListener('error', e=>showGlobalErrorRSS(e.message||'UI')); window.addEventListener('unhandledrejection',()=>showGlobalErrorRSS('network safe'));
+        setTimeout(initGlassAndBoundary, 380);
+    </script>
+</body>
+</html>

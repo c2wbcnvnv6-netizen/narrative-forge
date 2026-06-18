@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# [WATCH] Pipeline area: live indicators, backfill coordination, Rule42 data watch [SUBAGENT:PIPELINE]
 """
 Local watcher for the data pipeline on macOS.
 

@@ -1,0 +1,32 @@
+{
+  "name": "Border Policy Staff Cuellar District",
+  "role": "Staffer (District)",
+  "bioExcerpt": "Staffer (District) from TX. Key figure in border, congress and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping border strategy",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping congress strategy",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "border",
+    "congress"
+  ],
+  "state": "TX"
+}

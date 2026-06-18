@@ -1,0 +1,27 @@
+{
+  "name": "Legislative Assistant to Sen. Kelly",
+  "role": "Staffer (Congress)",
+  "bioExcerpt": "Key figure in pharma, elections and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on pharma",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "pharma"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in pharma",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "pharma"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "pharma",
+    "elections"
+  ]
+}

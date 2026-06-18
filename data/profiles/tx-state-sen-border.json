@@ -1,0 +1,33 @@
+{
+  "name": "TX State Sen Border",
+  "role": "Texas State Senator (Border District)",
+  "bioExcerpt": "Texas State Senator (Border District) from TX, Republican. Key figure in state, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on border",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border"
+  ],
+  "state": "TX",
+  "party": "Republican"
+}

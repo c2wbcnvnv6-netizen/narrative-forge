@@ -1,0 +1,204 @@
+JARVIS NEURAL MAP POLITICIAN DATA SUBAGENT: ACTIVATED. Never-ending expansion + monitoring.
+
+=== POLITICIAN NEURAL MAP UPDATE CYCLE START 2026-06-15T04:11:43.544952Z ===
+[FETCH] OK: https://unitedstates.github.io/congress-legislators/legislators-current.json (537 bytes)
+[FETCH] OK: https://clerk.house.gov/xml/lists/memberdata.xml (556039 bytes)
+[FETCH] OK: https://www.senate.gov/legislative/LIS_MEMBER/cvc_member_data.xml (69797 bytes)
+[PARSE] Collected 537 unique current Congress members (target ~535+).
+[EXPAND] Generated 140 new/unique staffer entries.
+[EXPAND] Generated 14 state/local/city officials + staffers entries (aim >=100 additional).
+[UPDATE] {
+  "added_this_cycle": 154,
+  "new_total": 691,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 14,
+  "updated_profiles": 691,
+  "map_readiness": "691 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)"
+}
+[MAP] index.html loadForgeData + ensureTeamMembersInMap + redrawSystemMap verified for full ~600 nodes (dense 30-col grid, type colors, labels on high-influence only).
+[DEPLOY] Starting vercel prod deploy + alias...
+[DEPLOY] stdout: https://narrative-forge-e140we09m-josh-1237s-projects.vercel.app
+[DEPLOY] stderr: narrative-forge
+Deploying josh-1237s-projects/narrative-forge
+Uploading [--------------------] (0.0B/727.2KB)
+Uploading [=====---------------] (185.7KB/727.2KB)
+Uploading [==========----------] (364.0KB/727.2KB)
+Uploading [===============-----] (546.3KB/727.2KB)
+Uploading [====================] (727.2KB/727.2KB)
+  Inspect     https://vercel.com/josh-1237s-projects/narrative-forge/9K8BF5V5UDxFQAFGhq295NkjvEPS
+▲ Production  https://narrative-forge-e140we09m-josh-1237s-projects.vercel.app
+Building…
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 4 cores, 8 GB
+Retrieving list of deployment files...
+Previous build caches not available.
+Downloading 954 deployment files...
+Running "vercel build"
+Vercel CLI 54.12.2
+Build Completed in /vercel/output [486ms]
+Deploying outputs...
+[2K[1A[2K[G▲ Production  https://narrative-forge-e140we09m-josh-1237s-projects.vercel.app
+Completing…
+▲ Aliased     https://narrative-forge-gray.vercel.app
+
+✓ Ready in 19s
+
+[DEPLOY] Detected prod URL candidate: https://narrative-forge-e140we09m-josh-1237s-projects.vercel.app
+[DEPLOY] Alias stdout: 
+[DEPLOY] Alias may need manual or already set. RC: 1
+
+=== CYCLE COMPLETE ===
+{
+  "added_this_cycle": 154,
+  "new_total": 691,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 14,
+  "updated_profiles": 691,
+  "map_readiness": "691 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)",
+  "map_js_ready": true,
+  "deployed": false,
+  "prod_url": "https://narrative-forge-e140we09m-josh-1237s-projects.vercel.app",
+  "cycle_end": "2026-06-15T04:12:06.627175Z"
+}
+Live site should now reflect all icons at https://thebreakerofbabylon.com (Neural Map canvas).
+Next cycle in 3600s (monitoring sources for new members/replacements).
+
+=== POLITICIAN NEURAL MAP UPDATE CYCLE START 2026-06-15T05:12:06.588174Z ===
+[FETCH] OK: https://unitedstates.github.io/congress-legislators/legislators-current.json (537 bytes)
+[FETCH] OK: https://clerk.house.gov/xml/lists/memberdata.xml (556039 bytes)
+[FETCH] OK: https://www.senate.gov/legislative/LIS_MEMBER/cvc_member_data.xml (69797 bytes)
+[PARSE] Collected 537 unique current Congress members (target ~535+).
+[EXPAND] Generated 140 new/unique staffer entries.
+[EXPAND] Generated 47 state/local/city officials + staffers entries (aim >=100 additional).
+[UPDATE] {
+  "added_this_cycle": 187,
+  "new_total": 724,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 47,
+  "updated_profiles": 724,
+  "map_readiness": "724 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)"
+}
+[MAP] index.html loadForgeData + ensureTeamMembersInMap + redrawSystemMap verified for full ~600 nodes (dense 30-col grid, type colors, labels on high-influence only).
+[DEPLOY] Starting vercel prod deploy + alias...
+[DEPLOY] stdout: https://narrative-forge-k22o4udrg-josh-1237s-projects.vercel.app
+[DEPLOY] stderr: /narrative-forge
+Deploying josh-1237s-projects/narrative-forge
+Uploading [--------------------] (0.0B/384.4KB)
+Uploading [=====---------------] (96.5KB/384.4KB)
+Uploading [==========----------] (204.8KB/384.4KB)
+Uploading [===============-----] (301.7KB/384.4KB)
+Uploading [====================] (384.4KB/384.4KB)
+  Inspect     https://vercel.com/josh-1237s-projects/narrative-forge/HedL927XTcvuh5bH2ZGoYEHem6LR
+▲ Production  https://narrative-forge-k22o4udrg-josh-1237s-projects.vercel.app
+Building…
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 4 cores, 8 GB
+Retrieving list of deployment files...
+Previous build caches not available.
+Downloading 954 deployment files...
+Running "vercel build"
+Vercel CLI 54.12.2
+Build Completed in /vercel/output [465ms]
+Deploying outputs...
+[2K[1A[2K[G▲ Production  https://narrative-forge-k22o4udrg-josh-1237s-projects.vercel.app
+Completing…
+▲ Aliased     https://narrative-forge-gray.vercel.app
+
+✓ Ready in 14s
+
+[DEPLOY] Detected prod URL candidate: https://narrative-forge-k22o4udrg-josh-1237s-projects.vercel.app
+[DEPLOY] Alias stdout: 
+[DEPLOY] Alias may need manual or already set. RC: 1
+
+=== CYCLE COMPLETE ===
+{
+  "added_this_cycle": 187,
+  "new_total": 724,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 47,
+  "updated_profiles": 724,
+  "map_readiness": "724 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)",
+  "map_js_ready": true,
+  "deployed": false,
+  "prod_url": "https://narrative-forge-k22o4udrg-josh-1237s-projects.vercel.app",
+  "cycle_end": "2026-06-15T05:12:23.495407Z"
+}
+Live site should now reflect all icons at https://thebreakerofbabylon.com (Neural Map canvas).
+Next cycle in 3600s (monitoring sources for new members/replacements).
+
+=== POLITICIAN NEURAL MAP UPDATE CYCLE START 2026-06-15T06:52:57.609869Z ===
+[FETCH] OK: https://unitedstates.github.io/congress-legislators/legislators-current.json (537 bytes)
+[FETCH] OK: https://clerk.house.gov/xml/lists/memberdata.xml (556039 bytes)
+[FETCH] OK: https://www.senate.gov/legislative/LIS_MEMBER/cvc_member_data.xml (69797 bytes)
+[PARSE] Collected 537 unique current Congress members (target ~535+).
+[EXPAND] Generated 140 new/unique staffer entries.
+[EXPAND] Generated 14 state/local/city officials + staffers entries (aim >=100 additional).
+[UPDATE] {
+  "added_this_cycle": 154,
+  "new_total": 691,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 14,
+  "updated_profiles": 691,
+  "map_readiness": "691 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)"
+}
+[MAP] index.html loadForgeData + ensureTeamMembersInMap + redrawSystemMap verified for full ~600 nodes (dense 30-col grid, type colors, labels on high-influence only).
+[DEPLOY] Starting vercel prod deploy + alias...
+[DEPLOY] stdout: https://narrative-forge-cjmfulda0-josh-1237s-projects.vercel.app
+[DEPLOY] stderr: josh-1237s-projects/narrative-forge
+Uploading [--------------------] (0.0B/242.1KB)
+Uploading [=====---------------] (67.4KB/242.1KB)
+Uploading [==========----------] (127.5KB/242.1KB)
+Uploading [===============-----] (191.5KB/242.1KB)
+Uploading [====================] (242.1KB/242.1KB)
+  Inspect     https://vercel.com/josh-1237s-projects/narrative-forge/GYVSXd12bsYAXeAqf72w5LiqqkwY
+▲ Production  https://narrative-forge-cjmfulda0-josh-1237s-projects.vercel.app
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 4 cores, 8 GB
+Retrieving list of deployment files...
+Previous build caches not available.
+Previous build caches not available.
+Downloading 954 deployment files...
+Running "vercel build"
+Vercel CLI 54.12.2
+Build Completed in /vercel/output [493ms]
+Deploying outputs...
+[2K[1A[2K[G▲ Production  https://narrative-forge-cjmfulda0-josh-1237s-projects.vercel.app
+Completing…
+▲ Aliased     https://narrative-forge-gray.vercel.app
+
+✓ Ready in 14s
+
+[DEPLOY] Detected prod URL candidate: https://narrative-forge-cjmfulda0-josh-1237s-projects.vercel.app
+[DEPLOY] Alias stdout: 
+[DEPLOY] Alias may need manual or already set. RC: 1
+
+=== CYCLE COMPLETE ===
+{
+  "added_this_cycle": 154,
+  "new_total": 691,
+  "profile_files": 912,
+  "new_congress": 0,
+  "new_staff": 140,
+  "new_state_local": 14,
+  "updated_profiles": 691,
+  "map_readiness": "691 politician nodes now in data for map icons (full congress + staff + state/local covered, 30-col grid ready)",
+  "map_js_ready": true,
+  "deployed": false,
+  "prod_url": "https://narrative-forge-cjmfulda0-josh-1237s-projects.vercel.app",
+  "cycle_end": "2026-06-15T06:53:16.092008Z"
+}
+Live site should now reflect all icons at https://thebreakerofbabylon.com (Neural Map canvas).
+Next cycle in 3600s (monitoring sources for new members/replacements).

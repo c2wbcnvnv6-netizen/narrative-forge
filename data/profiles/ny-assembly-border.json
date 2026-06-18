@@ -1,0 +1,33 @@
+{
+  "name": "New York State Assembly Border Policy",
+  "role": "NY State Assemblymember",
+  "bioExcerpt": "NY State Assemblymember from NY, Democrat. Key figure in state, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on migration",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "migration"
+  ],
+  "state": "NY",
+  "party": "Democrat"
+}

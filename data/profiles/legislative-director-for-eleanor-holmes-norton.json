@@ -1,0 +1,44 @@
+{
+  "name": "Legislative Director for Eleanor Holmes Norton",
+  "role": "Staffer (Congress)",
+  "bioExcerpt": "Staffer (Congress) from DC, Democrat. Key figure in congress, lawfare, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping congress strategy",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping lawfare strategy",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "lawfare",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Key operative shaping elections strategy",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "lawfare",
+    "elections"
+  ],
+  "state": "DC",
+  "party": "Democrat"
+}

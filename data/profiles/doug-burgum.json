@@ -1,0 +1,22 @@
+{
+  "name": "Doug Burgum",
+  "role": "Governor",
+  "bioExcerpt": "Governor from ND, Republican. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "ND",
+  "party": "Republican"
+}

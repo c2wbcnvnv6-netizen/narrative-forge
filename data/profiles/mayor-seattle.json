@@ -1,0 +1,22 @@
+{
+  "name": "Mayor of Seattle",
+  "role": "Mayor of Seattle",
+  "bioExcerpt": "Mayor of Seattle from WA, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "WA",
+  "party": "Democrat"
+}

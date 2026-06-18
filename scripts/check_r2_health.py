@@ -65,6 +65,7 @@ def head_exists(s3, key: str) -> bool:
         return False
 
 def main():
+    print("[R2-HEALTH] [LIVE] Pipeline health check running [SUBAGENT:MONITOR] [Rule42 data areas included]")
     parser = argparse.ArgumentParser(description="R2 health + RSS/news liveness checks")
     parser.add_argument("--rss", action="store_true", help="Focus/enhance RSS-specific checks (raw/news/ + raw/media/rss-*)")
     parser.add_argument("--liveness-hours", type=int, default=1, help="Window for liveness (default 1h for RSS 30min cron)")
@@ -205,6 +206,7 @@ def main():
     }, indent=2))
 
     print("\nHealth check complete. For Cloudflare: cross-ref R2 UI bucket objects under raw/news/ and raw/media/ .")
+    print("[R2-HEALTH] [LIVE] [RULE42] Health includes raw/ for pipeline data + processed/derived with rule42 blocks. AI stack coordinated.")
     print("If RSS liveness=0 recently (esp. last 30min): dispatch rss-monitor.yml or monitor-ingest.yml -f sources=rss_news -f max_new=5 -f auto_process=true manually or wait for next 30min cron.")
     print("R2 verifier coordination: news paths active/pending; first 'R2 Verified: raw/news/...' expected post successful RSS dispatch+ingest.")
 

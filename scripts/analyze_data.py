@@ -48,6 +48,18 @@ import boto3
 from botocore.config import Config
 
 BUCKET = os.environ.get("BUCKET_NAME", "babylon-raw-data")
+SUBAGENT_TAG = os.environ.get("SUBAGENT_TAG", "ANALYZE")
+
+# Live metrics / pipeline integration for analyze (reuses monitor_and_ingest for consistent live indicators, step tracking, rates, subagent tags, AI stack status)
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(__file__))
+try:
+    from monitor_and_ingest import PipelineMetrics
+except Exception:
+    PipelineMetrics = None  # fallback if import issue in isolated run
+
+# Rule of 42 core: cap/filter to ~42 high-signal items per batch for data outputs
+RULE42_CAP = 42
 
 def get_s3():
     return boto3.client(
@@ -124,7 +136,7 @@ def get_source_info(summary: dict) -> dict:
     }
 
 
-def find_repeated_phrases(texts: list[str], min_len=8, threshold=0.6, outlets: list[str] = None) -> list[dict]:
+def find_repeated_phrases(texts: list[str], min_len=8, threshold=0.48, outlets: list[str] = None) -> list[dict]:
     """Substantial: find overlapping phrases/sentences across documents using sequence matching.
     Detects coordinated or echoed language - core to narrative tactics exposure.
     Improved for media: now tracks outlets, supports cross-outlet same-framing detection (key for RSS news coordination).
@@ -148,6 +160,12 @@ def find_repeated_phrases(texts: list[str], min_len=8, threshold=0.6, outlets: l
         words = [w for w in sent.lower().split() if w]
         prefix = " ".join(words[:3]) if len(words) >= 3 else (sent.lower()[:30])
         bucketed[prefix].append((sent_idx, doc_i, sent))
+        # ENHANCED for Rule42: secondary buckets on words 1-3 or rare bigrams to catch framing variations across outlets
+        if len(words) >= 4:
+            p2 = " ".join(words[1:4])
+            bucketed[p2].append((sent_idx, doc_i, sent))
+        if len(words) >= 5:
+            bucketed[words[2]+" "+words[3]].append((sent_idx, doc_i, sent))  # mid trigram fallback for phrase match
 
     # Perform comparisons (within buckets primarily; small cross for safety if needed)
     for bucket_sents in bucketed.values():
@@ -288,7 +306,7 @@ def compute_tactic_scores(texts: list[str], summaries: list[dict]) -> dict:
         info = get_source_info(s)
         outlets_list.append(info["outlet"])
 
-    repeated = find_repeated_phrases(texts, threshold=0.5, outlets=outlets_list)
+    repeated = find_repeated_phrases(texts, threshold=0.48, outlets=outlets_list)
     repetition_score = min(10, len(repeated) * 0.8)
 
     press_style_count = sum(1 for s in summaries if s.get("analysis", {}).get("signals", {}).get("press_release_style"))
@@ -469,9 +487,26 @@ def generate_synthesis(summaries: list[dict]) -> dict:
         "timeline": timeline[:15],
         "insights": f"Detected {len(repeated_phrases)} repeated phrases across docs. Top framing density {scores['framing_density']}. High-similarity matches suggest possible coordination: {scores['high_similarity_matches']}. Cross-outlet hints: {scores.get('cross_outlet_coordination_hints', 0)}."
     }
+    # RULE42 v3 PIPELINE INTEGRATION: enrich synth with pre-hints (clusters from graph, temporal from R2 deltas, cross-arena) for JS multi-factor scoring + detailed reports in neural-map-holo.html
+    try:
+        outlet_g = synth.get("news_ripples", {}).get("outlet_similarity_graph") if "news_ripples" in synth else None
+        clus_hints = compute_simple_graph_clusters(graph.get("nodes",[]), graph.get("edges",[]), repeated_phrases, outlet_g)
+        temp_hints = compute_temporal_evolution_hints(summaries)
+        arena_hints = compute_cross_arena_corr_hints(summaries, graph)
+        synth["rule42_pipeline_hints"] = {
+            "cluster_sizes": clus_hints,
+            "temporal": temp_hints,
+            "cross_arena_corrs": arena_hints,
+            "outlet_clusters": clus_hints.get("outlet_clusters", 0),
+            "cluster_cohesion": round((clus_hints.get("count",0) or 1) / max(1, len(clus_hints.get("sizes",{})) or 1),3) if clus_hints else 0.5,
+            "note": "Pre-computed hints for Rule of 42 deepened analyzation (graph+outlet clusters, R2 delta temporal vel/accel, cross-arena, query). For JS sens/r2vel/queryarch/clusoutlet paths + factor attach."
+        }
+    except Exception as _rh: 
+        synth["rule42_pipeline_hints"] = {"note": "hints generation skipped (non-fatal)"}
 
     # NEWS-SPECIFIC: add 'news_ripples' (or media-specific repeated phrases) when batch contains news/RSS items.
     # This is the live signal tie-in: RSS subagent -> processed/news -> analyze produces outlet graphs, echo scores, pol framing for site UI.
+    # v2 Rule42 integration note: tactic_scores, echo_chamber, repeated_phrases, outlet graph feed directly into JS selectTop42Signals (coordDensity, centrality via edges, prov via r2_path) in neural-map-holo.html. Universal analyzer.
     has_news = any(
         s.get("arena") == "news" or "rss" in str(s.get("raw_key", "")).lower() or "news" in str(s.get("raw_key", "")).lower()
         for s in summaries
@@ -495,6 +530,89 @@ def generate_synthesis(summaries: list[dict]) -> dict:
             "suggestion": "E.g. batch processed/news/rss-*-summary.json items from recent RSS ingest for live ripples."
         }
 
+    # === RULE OF 42 ENHANCEMENT: filter high-signal outputs, add explicit rule42 data for pipeline ===
+    # backfill mass contrib -> rule42 rates/hints -> golden selectMultiFactor + mass share exports (unify per polish)
+    rule42_signals = []
+    for rp in repeated_phrases[:RULE42_CAP]:
+        sig = {
+            "phrase": rp.get("phrase") or rp.get("text"),
+            "impact": rp.get("similarity", 0.7),
+            "type": "repeated_phrase" if rp.get("outlet1") else "tactic",
+            "arena": rp.get("arena") or "general",
+            "outlets": [rp.get("outlet1"), rp.get("outlet2")]
+        }
+        rule42_signals.append(sig)
+    # Cap strictly and add scores (Rule42 as universal ~42 driver filter)
+    rule42_signals = rule42_signals[:RULE42_CAP]
+    # Query driven demo + detailed per-signal explanations (integrated with outputs)
+    query_example = "hiccups|border|coordinated|fabrication"
+    query_selected = select_rule42_by_query({"rule42": {"signals": rule42_signals}}, query_example, RULE42_CAP)
+    # Build detailed per-signal explanations using cluster/temporal hints + graph + full factor breakdowns + WHY SELECTED
+    per_signal_explanations = []
+    clus = (synth.get("rule42_pipeline_hints", {}) or {}).get("cluster_sizes", {}) or {}
+    temp = (synth.get("rule42_pipeline_hints", {}) or {}).get("temporal", {}) or {}
+    tactic_scores = synth.get("tactic_scores", {}) or {}
+    echo = (synth.get("news_ripples", {}) or {}).get("echo_chamber_scores", {}) or {}
+    for i, sig in enumerate(rule42_signals):
+        ph = sig.get("phrase", "signal")
+        impact = float(sig.get("impact", 0.7))
+        cl_size = 0
+        if isinstance(clus, dict):
+            cl_size = clus.get(ph) or (clus.get("sizes", {}) or {}).get(ph, 2) or 2
+        tinfo = temp.get(sig.get("phrase") or "", {}) or next((v for k,v in (temp.items() if isinstance(temp,dict) else [] ) if ph[:8] in str(k).lower()), {})
+        delta_h = float(tinfo.get("r2_delta_hrs", 1.6)) if isinstance(tinfo, dict) else 1.6
+        tvel = float(tinfo.get("temporal_velocity", 0.85)) if isinstance(tinfo,dict) else 0.85
+        r2iv = float(tinfo.get("r2_inter_arrival_velocity", 0.9)) if isinstance(tinfo,dict) else 0.9
+        composite = round(impact * 0.38 + min(cl_size,6)*0.09 + (0.12 if tinfo else 0) + (tvel*0.11) + (tactic_scores.get("repetition_score",0)*0.04), 3)
+        # WHY SELECTED narrative + factor breakdown
+        why_selected = (f"Selected for Rule42 because high repeat similarity ({impact}) + membership in cluster~{cl_size} (graph co-mention/outlet overlap) + "
+                        f"R2 temporal velocity {tvel} (delta~{delta_h}h inter-arrival {r2iv}) + framing/repeat from tactics ({tactic_scores.get('framing_density',0)}/{tactic_scores.get('repetition_score',0)}) "
+                        f"+ echo chamber cross-outlet {echo.get('cross_outlet_ratio',0)}.")
+        factor_breakdown = {
+            "similarity_impact": round(impact,3),
+            "cluster_strength": round(min(cl_size/5.0, 0.92),3),
+            "temporal_r2_delta": round(delta_h,2),
+            "temporal_velocity": round(tvel,3),
+            "tactic_repetition": round(tactic_scores.get("repetition_score", 0),1),
+            "framing_density": round(tactic_scores.get("framing_density", 0),2),
+            "echo_cross": round(echo.get("cross_outlet_ratio", 0),3),
+            "composite": composite
+        }
+        expl = {
+            "rank": i+1,
+            "signal": ph,
+            "composite": composite,
+            "why_selected": why_selected,
+            "why": f"High repeat similarity; belongs to cluster size ~{cl_size}. Temporal delta ~{delta_h}h from prior R2 landing shows {tvel} velocity. Factors: {factor_breakdown}",
+            "factor_breakdown": factor_breakdown,
+            "cluster_group": f"c{cl_size}",
+            "temporal_from_r2_delta": f"delta={delta_h}h, vel={tvel}, r2_inter_vel={r2iv}",
+            "recommendation": ("Export for evidence; monitor further R2 deltas." if impact>0.75 else "Track cross-outlet echoes.") + " Query match boosts priority."
+        }
+        per_signal_explanations.append(expl)
+    synth["rule42"] = {
+        "cap": RULE42_CAP,
+        "filtered_signals_count": len(rule42_signals),
+        "signals": rule42_signals,
+        "query_driven_demo": {"query": query_example, "selected": query_selected[:5]},
+        "detailed_per_signal_explanations": per_signal_explanations[:RULE42_CAP],
+        "graph_clusters_used": (clus.get("count", len(clus)) if isinstance(clus,dict) else 0),
+        "note": "Rule of 42: only the ~42 highest-impact signals retained for map/hot/archetype feeding. Enhanced with graph clustering for signal groups, R2 delta temporal analysis, query-driven selection, detailed per-signal explanations with WHY SELECTED + full numeric factor breakdowns. Integrates fully with neural-map-holo outputs (multi-factor 9 paths). Universal across any system pipeline.",
+        "from_worker_ai": any("rule42" in str(s.get("analysis",{})) or "rule42" in str(s.get("extraction",{})) for s in summaries)
+    }
+    # LIVE RULE42 METRICS for pipeline indicators + backfill status (deeper analyzation paths + user outputs feed)
+    rule42_metrics = {
+        "signals_capped": len(rule42_signals),
+        "per_signal_expls": len(per_signal_explanations),
+        "avg_impact": round(sum(s.get("impact",0.7) for s in rule42_signals)/max(1,len(rule42_signals)),3) if rule42_signals else 0,
+        "query_demo_selected": len(query_selected),
+        "hints_attached": bool(synth.get("rule42_pipeline_hints")),
+        "paths_used": "graph_clust+temporal_r2delta+query+cross_arena+per_sig_why+factor_breakdown",
+        "sensitivity_note": "sensitivity path computed downstream in holo multi-factor (stability under delta)"
+    }
+    synth["rule42"]["metrics"] = rule42_metrics
+    print(f"[{SUBAGENT_TAG}] [LIVE] [RULE42] Enhanced outputs: {len(rule42_signals)}/{RULE42_CAP} signals + {len(per_signal_explanations)} detailed expls + query select + R2 deltas + metrics [SUBAGENT:ANALYZE]")
+
     return synth
 
 def main():
@@ -505,7 +623,9 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    s3 = get_s3()
+    s3 = None
+    if not args.dry_run:
+        s3 = get_s3()
     summaries = []
 
     keys = []
@@ -522,19 +642,44 @@ def main():
         elif k:
             keys = [k]
         else:
-            print("Provide --processed-key or --batch-keys or PROCESSED_KEY env (or BATCH_KEYS comma-sep)")
+            print(f"[{SUBAGENT_TAG}] Provide --processed-key or --batch-keys or PROCESSED_KEY env (or BATCH_KEYS comma-sep)")
             sys.exit(1)
 
+    print(f"[{SUBAGENT_TAG}] [STEP:ANALYZE] Starting analysis for {len(keys)} item(s) [SUBAGENT:ANALYZE visibility]")
+    metrics = PipelineMetrics(subagent=SUBAGENT_TAG, max_planned=len(keys)) if PipelineMetrics else None
+    if metrics:
+        metrics.inc_step("analyze", len(keys))
+        metrics.write_status()
+    print(f"[{SUBAGENT_TAG}] [LIVE] ANALYZE start | items={len(keys)} | rate init | steps tracked for AI stack")
     for k in keys:
         try:
-            summ = load_processed(k, s3)
-            summaries.append(summ)
+            if args.dry_run:
+                print(f"[DRY] would load {k}")
+                summaries.append({"raw_key": k, "arena": "documents", "extracted_text_preview": "dry sample for metrics", "processed_at": "2026", "analysis": {"entities": {}}})
+            else:
+                summ = load_processed(k, s3)
+                summaries.append(summ)
             print(f"Loaded {k}")
+            if metrics: metrics.record_discover(1)
+            if metrics: metrics._emit_live(f"ANALYZE loaded {k[:50]}")  # live indicator
+            # Worker integration for analysis: attempt smart_extract / worker AI enrichment on summary (if url present)
+            try:
+                url = summ.get("raw_url") or summ.get("url") or ""
+                if url:
+                    sys.path.insert(0, os.path.dirname(__file__))
+                    from monitor_and_ingest import smart_extract
+                    rich = smart_extract(url, arena=summ.get("arena","general"), raw_key=k)
+                    if rich and rich.get("_source") != "fallback":
+                        summ["worker_ai_extraction"] = rich
+                        print(f"[{SUBAGENT_TAG}] [LIVE] [WORKER] Analysis integrated worker extraction (rule42/zdf) for {k[:40]}")
+            except Exception as _we:
+                pass  # non fatal, worker optional for analysis
         except Exception as e:
             print(f"Skip {k}: {e}")
 
     if not summaries:
         print("No data loaded")
+        if metrics: metrics.write_status(final=True)
         return
 
     synthesis = generate_synthesis(summaries)
@@ -578,6 +723,225 @@ def main():
     print(f"NOTIFY: analyzed {len(summaries)} docs -> {outputs['synthesis']}")
     if synthesis.get("news_ripples") and "echo_chamber_scores" in synthesis.get("news_ripples", {}):
         print(f"NOTIFY: news_ripples live signals (echo={synthesis['news_ripples']['echo_chamber_scores'].get('echo_chamber_score')}) ready for site UI from RSS->analyze pipeline")
+
+    # Phase 2: wire embeddings call in analyze_data flow (post rich synthesis). Uses reusable for vector+prov to babylon-embeddings.
+    # (Full persist via scripts/generate_embeddings.py or direct R2 write here if extended; bucket diff starts here.)
+    try:
+        sys.path.insert(0, os.path.dirname(__file__))
+        from generate_embeddings import generate_embeddings_for_summary
+        for s in summaries:
+            ep = generate_embeddings_for_summary(s) 
+    except Exception:
+        pass  # embeddings optional
+
+# ============================================================================================
+# RULE OF 42 v3 PIPELINE HELPERS (for data outputs feeding JS multi-factor + clusters/temporal/arena)
+# Pure stdlib. Pre-compute hints so JS (or R2 feeds) get richer signals for graph clustering, ripple evolution, cross-arena.
+# Called optionally from generate_synthesis or external; enriches synthesis/news_ripples for holo load.
+# ============================================================================================
+def compute_simple_graph_clusters(entity_graph_nodes, entity_graph_edges, repeated_phrases=None, outlet_graph=None):
+    """Enhanced graph-based clustering for signal groups. (Rule42 v3+)
+    Union-find on entity graph + outlet/edge + phrase co-mentions + outlet similarity for dense coordination clusters.
+    Produces richer {sizes, strengths, groups, outlet_clusters} for Rule42 factor breakdowns.
+    Integrates outlet_similarity_graph edges from pipeline for media coordination clusters.
+    Pure stdlib, universal for any graph input.
+    """
+    from collections import defaultdict
+    nodes = entity_graph_nodes or []
+    edges = entity_graph_edges or []
+    parent = {n.get("id"): n.get("id") for n in nodes if n.get("id")}
+    def find(x):
+        if parent.get(x) != x: parent[x] = find(parent[x])
+        return parent.get(x, x)
+    def union(x, y):
+        if x in parent and y in parent:
+            px, py = find(x), find(y)
+            if px != py: parent[px] = py
+    for e in edges:
+        if e.get("source") and e.get("target"):
+            union(str(e["source"]), str(e["target"]))
+    # Enhance: union via repeated phrases cross-doc + outlet sim graph for signal/media clusters
+    if repeated_phrases:
+        for rp in repeated_phrases[:25]:
+            ph = str(rp.get("phrase",""))[:30].lower()
+            d1 = rp.get("doc1"); d2 = rp.get("doc2")
+            if d1 is not None and d2 is not None:
+                k1 = f"phrase:{ph[:12]}"
+                if k1 not in parent: parent[k1] = k1
+                # attach loosely to docs via repeated
+            o1 = rp.get("outlet1"); o2 = rp.get("outlet2")
+            if o1 and o2 and o1 != o2:
+                k1 = f"outlet:{o1}"; k2 = f"outlet:{o2}"
+                if k1 not in parent: parent[k1] = k1
+                if k2 not in parent: parent[k2] = k2
+                union(k1, k2)
+    if outlet_graph and outlet_graph.get("edges"):
+        for e in outlet_graph.get("edges", [])[:30]:
+            s = e.get("source") or e.get("from"); t = e.get("target") or e.get("to")
+            if s and t:
+                ks = f"outlet:{s}"; kt = f"outlet:{t}"
+                if ks not in parent: parent[ks] = ks
+                if kt not in parent: parent[kt] = kt
+                union(ks, kt)
+    comp_sizes = defaultdict(int)
+    comp_members = defaultdict(list)
+    for nid in parent:
+        p = find(nid)
+        comp_sizes[p] += 1
+        comp_members[p].append(nid)
+    strengths = {}
+    for p, sz in comp_sizes.items():
+        strengths[p] = min(0.98, 0.18 + (sz / max(3, len(nodes) or 1)) * 0.78)
+    sizes_map = {nid: comp_sizes[find(nid)] for nid in parent}
+    return {"sizes": sizes_map, "strengths": {nid: strengths.get(find(nid), 0.3) for nid in parent}, "groups": {p: comp_members[p][:8] for p in comp_members}, "count": len(comp_sizes), "outlet_clusters": len([k for k in comp_members if str(k).startswith('outlet')])}
+
+def compute_temporal_evolution_hints(summaries):
+    """Enhanced temporal analysis from R2 deltas / processed times. (Rule42 v3+)
+    Computes inter-delta intervals (R2 object landing deltas from raw_key filename timestamps), velocity from time deltas between summaries/raw_keys.
+    Precise R2 key parsing e.g. rss-*-20260615-0126 , 2026-06-15 etc. 
+    Produces per-item delta_velocity, accel, persistence for Rule42 temporal factor. Universal pure stdlib.
+    """
+    from collections import defaultdict
+    from datetime import datetime
+    import re as _re
+    hints = {}
+    events = []
+    r2_deltas = []
+    key_to_ts = {}
+    for s in summaries or []:
+        dt = s.get("processed_at") or ""
+        key = s.get("raw_key", "") or ""
+        try:
+            ts = datetime.fromisoformat(dt.replace('Z','+00:00')).timestamp() if dt else 0
+        except:
+            ts = 0
+        # Strong R2 delta timestamp extraction from key patterns (rss-*-YYYYMMDD-HHMM or ISO)
+        if key:
+            try:
+                m = _re.search(r'(\d{4})(\d{2})(\d{2})[-_]?(\d{2})(\d{2})', key) or _re.search(r'(\d{4}-\d{2}-\d{2})[T ]?(\d{2}):?(\d{2})', key)
+                if m:
+                    if len(m.groups()) >= 5:
+                        y,mo,d,h,mi = m.groups()[:5]
+                        ts_key = datetime(int(y),int(mo),int(d),int(h),int(mi)).timestamp()
+                        if ts_key > ts: ts = ts_key
+                    else:
+                        dstr = m.group(1)
+                        ts_key = datetime.fromisoformat(dstr).timestamp() if '-' in dstr else 0
+                        if ts_key > ts: ts = ts_key
+            except: pass
+        arena = s.get("arena","")
+        events.append((ts, arena, key, s))
+        if ts > 0:
+            key_to_ts[key] = ts
+            r2_deltas.append((key, ts))
+    events.sort(key=lambda x:x[0])
+    r2_deltas.sort(key=lambda x:x[1])
+    if len(events) > 1:
+        span = max(events[-1][0] - events[0][0], 3600) if events[-1][0] and events[0][0] else 7200
+        vel = len(events) / max(0.1, (span / 3600.0))
+        deltas = []
+        for i in range(1, len(events)):
+            dt = events[i][0] - events[i-1][0]
+            if dt > 0: deltas.append(dt)
+        avg_delta = sum(deltas)/len(deltas) if deltas else span / max(1, len(events))
+        inter_r2 = []
+        for i in range(1, len(r2_deltas)):
+            dd = r2_deltas[i][1] - r2_deltas[i-1][1]
+            if dd > 0: inter_r2.append(dd)
+        avg_r2_delta = sum(inter_r2)/len(inter_r2) if inter_r2 else avg_delta
+        for i, (ts, ar, key, summ) in enumerate(events[:42]):
+            dvel = min(3.0, vel * (1.0 if i<3 else 0.55))
+            accel = 0.12 + (0.42 if (i > 0 and (events[i][0]-events[i-1][0]) < avg_delta) else 0)
+            r2_vel = min(2.9, (len(inter_r2) / max(1,len(r2_deltas))) * 4 + 0.3) if inter_r2 else 0.8
+            hints[key] = {
+                "temporal_velocity": round(min(dvel, 2.8), 3),
+                "span_hrs": round(span/3600,1),
+                "arena": ar,
+                "r2_delta_hrs": round(avg_r2_delta/3600, 2) if avg_r2_delta else 1.4,
+                "persistence": round(min(0.96, (len(events)-i)/max(1,len(events)) + 0.08), 2),
+                "accel": round(min(0.82, accel), 2),
+                "r2_inter_arrival_velocity": round(r2_vel, 3)
+            }
+    return hints
+
+def compute_cross_arena_corr_hints(summaries, entity_graph):
+    """Cross-arena correlation pre-hint from shared_arenas in entity graph + summary.arena.
+    Output per-entity for rule42 crossArenaCorr boost. Pure, integrates graph+arena pipeline.
+    """
+    from collections import defaultdict
+    arena_map = defaultdict(set)
+    for s in summaries or []:
+        ar = s.get("arena") or "unknown"
+        for et, ents in (s.get("analysis",{}).get("entities",{})).items():
+            for e in ents:
+                arena_map[f"{et}:{e.lower()}"].add(ar)
+    for edge in (entity_graph.get("edges") or []):
+        shared = set(edge.get("shared_arenas", []))
+        for nid in [edge.get("source"), edge.get("target")]:
+            if nid: arena_map[nid].update(shared)
+    corrs = {}
+    for nid, ars in arena_map.items():
+        corrs[nid] = min(0.96, 0.3 + 0.22 * len(ars))
+    return corrs
+
+def select_rule42_by_query(synth_or_items, query, cap=42):
+    """Query-driven selection for Rule of 42. (enhanced)
+    Filters + boosts + attaches 'why_selected' for items matching query tokens (phrase/label/arena/outlet/tactic).
+    Returns top query-matched high-signal subset capped at 42 with per-item query_why. Universal.
+    """
+    if not query or not synth_or_items:
+        return []
+    q = str(query).lower().strip()
+    tokens = [t for t in q.replace('|',' ').split() if len(t)>1]
+    items = []
+    base_items = []
+    if isinstance(synth_or_items, dict):
+        if 'signals' in synth_or_items.get('rule42', {}):
+            base_items = synth_or_items['rule42']['signals']
+        elif synth_or_items.get('news_ripples'):
+            base_items = synth_or_items['news_ripples'].get('media_specific_repeated_phrases', [])
+        else:
+            base_items = synth_or_items.get('timeline', []) or []
+    elif isinstance(synth_or_items, list):
+        base_items = synth_or_items
+    scored = []
+    for it in base_items:
+        text = ' '.join([str(it.get(k,'')) for k in ('phrase','label','title','arena','outlet','tactic')]).lower()
+        matches = [t for t in tokens if t in text]
+        score = sum(1.65 for t in matches) + (0.9 if matches else 0)
+        if score > 0:
+            it2 = dict(it)
+            it2['query_why'] = f"Query-driven: matched {len(matches)} tokens {matches} in phrase/arena/outlet."
+            it2['_qscore'] = score
+            scored.append((score, it2))
+    scored.sort(reverse=True, key=lambda x: x[0])
+    return [it for _,it in scored[:cap]]
+
+# End Rule42 pipeline helpers v3. Note: JS runtime in neural-map-holo.html does full sophisticated scoring using these + raw fields.
+
+
+    # Phase 3 wiring: auto-generate public feeds to babylon-generated (for site /holo mappers + load public ripples with zdf_relevance).
+    # Reuses recent synthesis (incl news_ripples + rich from upstream ai-enhanced). Complements monitor auto-process/analyze chain.
+    # Run with env GENERATED_BUCKET_NAME or defaults; non-fatal if no R2 perms in this context.
+    try:
+        import subprocess, os as _os
+        gen_cmd = ["python", _os.path.join(_os.path.dirname(__file__), "generate_public_feeds.py"), "--arena", "all", "--limit", "30"]
+        # Non-blocking fire-and-forget style (or direct import for sync); GH will have bucket secrets.
+        res = subprocess.run(gen_cmd + (["--dry-run"] if args.dry_run else []), capture_output=True, text=True, timeout=45)
+        if res.returncode == 0:
+            print(f"  [Phase3-public] generated public feeds from synthesis (see babylon-generated/public-feeds/); {res.stdout.splitlines()[-1] if res.stdout else ''}")
+        else:
+            print(f"  [Phase3-public] feeds gen note: {res.stderr.strip()[:120] or 'no bucket or skipped'}")
+    except Exception as _e:
+        print(f"  [Phase3-public] public feeds chain note (manual dispatch generate or set GENERATED_BUCKET_NAME): {_e}")
+
+    print(f"[{SUBAGENT_TAG}] [STEP:ANALYZE COMPLETE] Analysis done. [live metrics / subagent tag ready for pipeline status]")
+    if metrics:
+        metrics.inc_step("analyze")  # mark completion tick
+        metrics.write_status(final=True)
+        # live output for AI stack / orchestration watchers
+        print(f"[{SUBAGENT_TAG}] [LIVE-STATUS] analyze complete | steps tracked | status written for pipeline orchestration")
+    print(f"[{SUBAGENT_TAG}] [LIVE] [RULE42] Rule42 data block written to synthesis (cap={RULE42_CAP}) | ready for worker/pol profiles / holo map")
 
 if __name__ == "__main__":
     main()

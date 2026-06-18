@@ -1,0 +1,22 @@
+{
+  "name": "Ron Nirenberg",
+  "role": "Mayor of San Antonio",
+  "bioExcerpt": "Mayor of San Antonio from TX, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "TX",
+  "party": "Democrat"
+}

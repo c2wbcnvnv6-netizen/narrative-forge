@@ -166,3 +166,54 @@ You are doing great. One micro-step at a time.
 When you finish Step 3 (the test run), come back and tell me the result (or paste any short output) and we pick A/B/C or the very next concrete thing.
 
 — The pipeline team (ready when you are)
+
+## Catalog Summaries from Data Field (Live from narrative-forge/data/ + R2 Pipeline)
+
+Real runtime data catalogs powering the holographic neural map (politicians-index.json, news-synthesis.json, profiles/*.json, news-sample.json). These are generated/updated by scripts/update_politicians_neural_map.py (691+ Congress + staff + state/local from unitedstates/congress-legislators + clerk/senate XMLs, deduped, with mediaFraming), process/analyze (news_ripples, outlet graphs, tactic_scores), and R2 live feeds (rss_news subagent + monitor). Used in holo.html / loadAndParseGraphData for nodes (politician/ripple/case/media), archetype inference, hotScore (framing*0.35 + echo*0.25 + 0.2 + 0.2), Rule of 42 cap, provenance (r2_path).
+
+**Politicians Index Catalog (data/politicians-index.json):**
+- count: 691 (as of 2026-06-15T06:53:00Z generated)
+- Schema per entry: {name, slug (bioguide e.g. C000127), profile: "data/profiles/<slug>.json", mentions: number (default 50+), arenas: string[] e.g. ["congress","elections"], state: e.g. "WA", party: "Democrat"|"Republican"|"Independent", role: "U.S. Senator" | staffer/governor etc.}
+- Sample entries:
+  - Maria Cantwell (C000127, WA, Democrat, U.S. Senator) — arenas: congress, elections; profile: data/profiles/C000127.json
+  - Amy Klobuchar (K000367, MN, Democrat, U.S. Senator)
+  - Bernard Sanders (S000033, VT, Independent, U.S. Senator)
+  - Sheldon Whitehouse (W000802, ... ) + 687 more (includes ORIGINAL_TEAM_SLUGS preserved like donald-j-trump, joe-biden, john-roberts, kamala-harris, aoc, jim-jordan, ted-cruz, clarence-thomas, elena-kagan, ... + expanded staffers, state AGs, mayors, local).
+- Arenas coverage (from NARRATIVE_ARENAS + dynamic): congress, elections, migration, border, pharma, lawfare, state, local, media, bureaucracy. Full in prod (no 200 cap).
+- Update cycle: scripts/update_politicians_neural_map.py (infinite bg, hourly, sources 3 XML/JSON, deploys to vercel thebreakerofbabylon.com).
+- R2 tie: profiles/ + index land via pipeline; used for 200+ nodes in self-contained (full 691 R3F).
+
+**News Synthesis Ripples Catalog (data/news-synthesis.json):**
+- meta: {source: "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB", generated, feeds_active:20, liveness_note, last_activation, rss_liveness: {whitehouse:30, justice:25}, R2:"babylon-raw-data confirmed MCP", updated_by, KEEP_IT_ON notes}
+- news_ripples.media_specific_repeated_phrases[] (Rule of 42 spine, top ~42): 
+  - {phrase: "humanitarian implementation hiccups", outlets: ["legacy-media-nyt","fox-news","crs-reports","gao-reports"], similarity:0.82, liveness:"whitehouse:30 justice:25"}
+  - {phrase: "national security presidential memorandum", outlets:["whitehouse","reuters","ap-news"], similarity:0.76, liveness:...}
+  - {phrase: "presidential actions 2026-06", outlets:["whitehouse","legacy-media-nyt","politico-congress"], similarity:0.69, ...}
+  - + more from high framing/echo (20+ feeds: reuters, ap, nyt, wsj, bbc, cnn, guardian, whitehouse, justice etc.)
+- news_ripples.outlet_similarity_graph: {nodes: ["justice-pr","legacy-media-nyt","fox-news","whitehouse","politico-congress",...], edges: [...] for coordination viz}
+- tactic_scores, repeated phrases for coordination detection (analyze_data.py output).
+- Used: ripples -> nodes (type:'ripple', value=similarity, archetype via infer, sources from outlets, signals.tactic, provenance r2:processed/derived/...-synthesis.json); hotScore calc; links from outlet graph + echoEdges.
+- Liveness: 30min rss-monitor.yml feeds raw/news/ + raw/media/rss-*.xml; process -> analyze auto-chains; 341+ articles verified in R2 health.
+
+**Profiles Catalog (data/profiles/*.json ~914 files):**
+- Per slug (e.g. C000127.json for Maria Cantwell): {name, role, bioExcerpt (narrative-tailored), mediaFraming: [{source e.g. "legacy-media-nyt"|"fox-news"|"politico"|"cnn"|"wsj"|"msnbc", frame, framingScore:0.68+, keyPhrases:[]}], signalsFromNews: arenas[] }
+- Built in update_politicians_neural_map.py (build_media_framing for plausible + preserve rich for ORIGINAL_TEAM); used in load for sources + signals.mentions/arena.
+- HotScore / Rule42 applied at map load time from these + synthesis.
+- R2: raw + processed tie-in for full provenance in userData (for evidence panels, citations).
+
+**news-sample.json & Pre-viz:**
+- mediaNodesForMap + echoEdges for initial graph seeds (influence, type media/politician).
+- Enriched proxy from R2 news counts.
+
+**Usage in Mappers (for R3F port / SWR live):**
+- loadAndParseGraphData() in holo (fetch 3 files or R2 proxy via SWR): politicians -> pol nodes (inferArchetype on arenas/signals), ripples slice(42) + hot calc, sample edges, filter Rule42 top + cases, add hotScore/isRule42.
+- inferArchetype(arenas, signals, phrase): regex to 11 (hiccups/pressures/coordinated implementation -> haman; border/humanitarian -> pharaoh; funding/waste/pharma -> judas; coordinated/law -> goliath; media/legacy/framing -> nimrod; etc. default wisemen).
+- ARCHETYPES + ARCHETYPE_PARAMS (11 detailed biblical profiles + shader params: scaleMult, distortionAmp/Freq, particleDensity, pulseFreq, rimTint, wireDensity, motif) from subagent reports.
+- Hot formula exact: framing*0.35 + echo*0.25 + fresh*0.2 + repeats*0.2 (from preview-4 + subagent mapping).
+- All nodes carry: id, label, type, value, archetype, sources[] (title,url,excerpt,r2_path), arenas, signals, provenance, hotScore, isRule42.
+- Links: {source,target,value,phrase?}.
+- R2 live: check_r2_health.py --rss verifies counts/last-hour; MCP r2_buckets; SWR revalidate on NOTIFY or interval for "live data".
+
+This catalog closes the loop from sources (DATA_SOURCES) -> ingest/process/analyze (DATA_PROCESSING) -> map data (here) for visuals + synthesis. Expand discovers for more state/local to grow 691+.
+
+(End of catalog; cross-ref neural-map-holo-guts.md, holo.html, scripts/ for full mappers + R3F port. Use in first ingest follow-ups for arena-specific analysis.)

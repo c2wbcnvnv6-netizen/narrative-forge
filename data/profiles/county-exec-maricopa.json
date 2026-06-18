@@ -1,0 +1,32 @@
+{
+  "name": "County Executive Maricopa",
+  "role": "Maricopa County Executive",
+  "bioExcerpt": "Maricopa County Executive from AZ. Key figure in local, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on local",
+      "framingScore": 0.69,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Central to debates on elections",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "elections"
+  ],
+  "state": "AZ"
+}

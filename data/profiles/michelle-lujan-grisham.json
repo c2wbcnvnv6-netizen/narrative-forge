@@ -1,0 +1,33 @@
+{
+  "name": "Michelle Lujan Grisham",
+  "role": "Governor",
+  "bioExcerpt": "Governor from NM, Democrat. Key figure in state, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on border",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border"
+  ],
+  "state": "NM",
+  "party": "Democrat"
+}

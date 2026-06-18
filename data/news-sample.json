@@ -33,7 +33,7 @@
     "R2_media_rss_count": 4,
     "babylon_raw_data_status": "GREEN (MCP + test-r2 27520861006)",
     "activation_note": "FULL ACTIVATION LIVE X=166 Y=7 | CF hits active | JARVIS NEURAL MAP art live",
-    "last_activation": "2026-06-15T03:11:04Z",
+    "last_activation": "2026-06-15T16:12:29Z",
     "rss_liveness": {
       "whitehouse": 30,
       "justice": 25
@@ -42,7 +42,7 @@
     "R2": "babylon-raw-data confirmed MCP",
     "KEEP_IT_ON": "X=163 Y=6 full system artistic live",
     "last_art_max": "2026-06-15T02:46:54Z",
-    "last_art_max_cycle": "2026-06-15T03:11:04Z"
+    "last_art_max_cycle": "2026-06-15T16:12:29Z"
   },
   "newsItems": [
     {

@@ -1,0 +1,27 @@
+{
+  "name": "Samuel Alito",
+  "role": "Associate Justice, U.S. Supreme Court",
+  "bioExcerpt": "Key figure in lawfare, scotus and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on lawfare",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "lawfare"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in lawfare",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "lawfare"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "lawfare",
+    "scotus"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Oscar Leeser",
+  "role": "Mayor of El Paso",
+  "bioExcerpt": "Mayor of El Paso from TX, Democrat. Key figure in local, migration, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in migration policy",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Local voice in border policy",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "migration",
+    "border"
+  ],
+  "state": "TX",
+  "party": "Democrat"
+}

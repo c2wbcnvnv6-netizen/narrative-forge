@@ -1,0 +1,32 @@
+{
+  "name": "Councilmember Tucson",
+  "role": "Tucson City Council",
+  "bioExcerpt": "Tucson City Council from AZ. Key figure in local, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Local voice in migration policy",
+      "framingScore": 0.78,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local",
+    "migration"
+  ],
+  "state": "AZ"
+}

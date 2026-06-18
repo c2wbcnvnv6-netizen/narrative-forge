@@ -1,0 +1,33 @@
+{
+  "name": "Josh Shapiro",
+  "role": "Governor",
+  "bioExcerpt": "Governor from PA, Democrat. Key figure in state, lawfare and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on lawfare",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "lawfare",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "lawfare"
+  ],
+  "state": "PA",
+  "party": "Democrat"
+}

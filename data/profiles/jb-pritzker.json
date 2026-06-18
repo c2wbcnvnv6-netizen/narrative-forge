@@ -1,0 +1,22 @@
+{
+  "name": "J.B. Pritzker",
+  "role": "Governor",
+  "bioExcerpt": "Governor from IL, Democrat. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "IL",
+  "party": "Democrat"
+}

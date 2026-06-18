@@ -1,0 +1,27 @@
+{
+  "name": "Joe Biden",
+  "role": "President of the United States",
+  "bioExcerpt": "Key figure in bureaucracy, migration and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on bureaucracy",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "bureaucracy"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in bureaucracy",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "bureaucracy"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "bureaucracy",
+    "migration"
+  ]
+}

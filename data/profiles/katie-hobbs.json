@@ -1,0 +1,33 @@
+{
+  "name": "Katie Hobbs",
+  "role": "Governor",
+  "bioExcerpt": "Governor from AZ, Democrat. Key figure in state, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on border",
+      "framingScore": 0.76,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border"
+  ],
+  "state": "AZ",
+  "party": "Democrat"
+}

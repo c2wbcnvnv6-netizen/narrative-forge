@@ -1,0 +1,27 @@
+{
+  "name": "Kamala Harris",
+  "role": "Vice President",
+  "bioExcerpt": "Key figure in elections, migration and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on elections",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "elections"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in elections",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "elections"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "elections",
+    "migration"
+  ]
+}

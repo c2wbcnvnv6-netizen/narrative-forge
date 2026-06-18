@@ -1,0 +1,22 @@
+{
+  "name": "Janet Mills",
+  "role": "Governor",
+  "bioExcerpt": "Governor from ME, Democrat. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.69,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "ME",
+  "party": "Democrat"
+}

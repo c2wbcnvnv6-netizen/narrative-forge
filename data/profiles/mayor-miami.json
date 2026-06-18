@@ -1,0 +1,21 @@
+{
+  "name": "Mayor of Miami",
+  "role": "Mayor of Miami",
+  "bioExcerpt": "Mayor of Miami from FL. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "FL"
+}

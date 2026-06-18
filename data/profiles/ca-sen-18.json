@@ -1,0 +1,22 @@
+{
+  "name": "California State Senator 18",
+  "role": "California State Senator",
+  "bioExcerpt": "California State Senator from CA, Democrat. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "CA",
+  "party": "Democrat"
+}

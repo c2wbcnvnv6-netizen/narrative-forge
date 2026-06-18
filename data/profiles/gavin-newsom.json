@@ -1,0 +1,27 @@
+{
+  "name": "Gavin Newsom",
+  "role": "Governor",
+  "bioExcerpt": "Key figure in state, migration and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on state",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "state"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in state",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "state"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "migration"
+  ]
+}

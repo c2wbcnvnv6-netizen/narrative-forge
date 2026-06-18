@@ -1,0 +1,33 @@
+{
+  "name": "Kathy Hochul",
+  "role": "Governor",
+  "bioExcerpt": "Governor from NY, Democrat. Key figure in state, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.71,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on elections",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "elections"
+  ],
+  "state": "NY",
+  "party": "Democrat"
+}

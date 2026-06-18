@@ -1,0 +1,22 @@
+{
+  "name": "Florida State Rep District 1",
+  "role": "Florida State Representative",
+  "bioExcerpt": "Florida State Representative from FL, Republican. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "FL",
+  "party": "Republican"
+}

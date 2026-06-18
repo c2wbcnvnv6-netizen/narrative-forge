@@ -1,0 +1,44 @@
+{
+  "name": "Greg Abbott",
+  "role": "Governor",
+  "bioExcerpt": "Governor from TX, Republican. Key figure in state, border, migration and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on border",
+      "framingScore": 0.78,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "State-level leader on migration",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "migration",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border",
+    "migration"
+  ],
+  "state": "TX",
+  "party": "Republican"
+}

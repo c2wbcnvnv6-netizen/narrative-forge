@@ -1,0 +1,27 @@
+{
+  "name": "Ron DeSantis",
+  "role": "Governor",
+  "bioExcerpt": "Key figure in elections, education and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on elections",
+      "framingScore": 0.75,
+      "keyPhrases": [
+        "elections"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in elections",
+      "framingScore": 0.82,
+      "keyPhrases": [
+        "elections"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "elections",
+    "education"
+  ]
+}

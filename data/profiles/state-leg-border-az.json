@@ -1,0 +1,33 @@
+{
+  "name": "State Legislator Border Security Lead",
+  "role": "Arizona State Legislator",
+  "bioExcerpt": "Arizona State Legislator from AZ, Republican. Key figure in state, border and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on border",
+      "framingScore": 0.77,
+      "keyPhrases": [
+        "border",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "border"
+  ],
+  "state": "AZ",
+  "party": "Republican"
+}

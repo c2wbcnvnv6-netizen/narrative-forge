@@ -1,0 +1,27 @@
+{
+  "name": "Matt Gaetz",
+  "role": "U.S. Representative (FL-01, Republican)",
+  "bioExcerpt": "Key figure in congress, media and related policy areas.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on congress",
+      "framingScore": 0.72,
+      "keyPhrases": [
+        "congress"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Exposing issues in congress",
+      "framingScore": 0.79,
+      "keyPhrases": [
+        "congress"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "media"
+  ]
+}

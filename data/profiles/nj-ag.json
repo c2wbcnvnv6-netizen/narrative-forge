@@ -1,0 +1,32 @@
+{
+  "name": "New Jersey AG",
+  "role": "Attorney General",
+  "bioExcerpt": "Attorney General from NJ. Key figure in state, lawfare and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on state",
+      "framingScore": 0.69,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Central to debates on lawfare",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "lawfare",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "lawfare"
+  ],
+  "state": "NJ"
+}

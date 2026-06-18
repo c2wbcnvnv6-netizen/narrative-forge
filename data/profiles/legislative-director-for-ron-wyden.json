@@ -1,0 +1,44 @@
+{
+  "name": "Legislative Director for Ron Wyden",
+  "role": "Staffer (Congress)",
+  "bioExcerpt": "Staffer (Congress) from OR, Democrat. Key figure in congress, lawfare, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Key operative shaping congress strategy",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Key operative shaping lawfare strategy",
+      "framingScore": 0.77,
+      "keyPhrases": [
+        "lawfare",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "politico",
+      "frame": "Key operative shaping elections strategy",
+      "framingScore": 0.81,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "lawfare",
+    "elections"
+  ],
+  "state": "OR",
+  "party": "Democrat"
+}

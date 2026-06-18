@@ -1,0 +1,22 @@
+{
+  "name": "Sylvester Turner",
+  "role": "Mayor of Houston (former)",
+  "bioExcerpt": "Mayor of Houston (former) from TX, Democrat. Key figure in local and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Local voice in local policy",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "local",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "local"
+  ],
+  "state": "TX",
+  "party": "Democrat"
+}

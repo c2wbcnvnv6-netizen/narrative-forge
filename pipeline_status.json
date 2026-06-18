@@ -1,0 +1,45 @@
+{
+  "subagent": "UNIFY-TEST",
+  "timestamp": "2026-06-18T03:08:06.241899Z",
+  "duration_sec": 0.0,
+  "download_count": 1,
+  "skipped": 0,
+  "discovered": 10,
+  "bytes_downloaded": 1024,
+  "rates": {
+    "items_per_sec": 1000.0,
+    "kb_per_sec": 1000.0,
+    "r2_delta_ingest_kbps": 10.0,
+    "rule42_signal_per_sec": 5000.0
+  },
+  "completion_pct": 10.0,
+  "eta_sec": null,
+  "step_progress": {
+    "discover": 10,
+    "ingest": 1,
+    "process": 0,
+    "analyze": 0,
+    "sink": 1,
+    "r42_analyze": 1
+  },
+  "max_planned": 0,
+  "status": "in_progress",
+  "rule42_metrics": {
+    "signal_rate": 5000.0,
+    "hints_count": 1,
+    "signals_count": 5,
+    "r42_steps": 1,
+    "pipeline_hints": [
+      "test-hint"
+    ],
+    "detailed_per_signal_explanations": [
+      "test-expl"
+    ]
+  },
+  "rule42_pipeline_hints": [
+    "test-hint"
+  ],
+  "detailed_per_signal_explanations": [
+    "test-expl"
+  ]
+}

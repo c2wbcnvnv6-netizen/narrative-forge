@@ -1,0 +1,33 @@
+{
+  "name": "Gretchen Whitmer",
+  "role": "Governor",
+  "bioExcerpt": "Governor from MI, Democrat. Key figure in state, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.69,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "State-level leader on elections",
+      "framingScore": 0.73,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state",
+    "elections"
+  ],
+  "state": "MI",
+  "party": "Democrat"
+}

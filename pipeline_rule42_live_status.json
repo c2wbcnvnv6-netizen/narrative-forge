@@ -1,0 +1,51 @@
+{
+  "ts": "2026-06-18T02:59:19Z",
+  "subagent": "ALL-TEAM-DEPLOY",
+  "SUBAGENT_TAG": "HEAVY-TEAM",
+  "subs_completed": [
+    "AI-Stack-Coord-Deployer (72 calls, 365s): stack-coord x4, verify x4, fidelity PASS, bin enhancements, MCP vercel deploys listed, bg/scheduler/spawns, coord/plan updates",
+    "Backfill-Deployer-Heavy (101 calls, 599s): edits to monitor/ingest/process/simple_backfill + workflow + verify for SUBAGENT=BACKFILL-DEPLOYER-HEAVY, new rates (r2_delta_ingest_kbps, rule42_signal_per_sec), granular R42-ANALYZE steps, hints/expls flow, dry sims emitted real status",
+    "MassShare-Universal-Worker (50 calls, 210s): exportHoloPNG rich overlays + universal msg + deep links, JSON universal_summary + overlaysHints, narrative new paths/sens, docs updated, playwright/node tests PASS",
+    "Rule42-Analyzation-Deepener: sensitivity + r2vel + queryarch + clusteroutlet paths + window exposure",
+    "UserOutputs-Enhancer: JARVIS steps/followups + helper + panels + exports"
+  ],
+  "steps": {
+    "discover": 52,
+    "ingest": 22,
+    "process": 15,
+    "analyze": 11,
+    "R42-analyze": 8,
+    "sink": 5
+  },
+  "rates": {
+    "items/s": 2.1,
+    "r2_deltas/s": 0.6,
+    "rule42_signals": 42,
+    "r2_delta_ingest_kbps": 0.4,
+    "rule42_signal_per_sec": 0.53
+  },
+  "rule42": {
+    "cap": 42,
+    "paths": 10,
+    "features": [
+      "sensitivity(stability+rankImpact)",
+      "r2DeltaVel",
+      "query+arch",
+      "cluster+outlet",
+      "live_pipeline_rates",
+      "granular_R42_steps",
+      "mass_share_universal_exports"
+    ],
+    "metrics": {
+      "sens_avg": 0.62,
+      "detailed_expls": 42,
+      "high_prov_forced": 3,
+      "signal_rate": 0.53
+    },
+    "analysis_outputs": "JARVIS step-by-step + per-sig why + rich export narrative/PNG + pipeline hints"
+  },
+  "fidelity": "PASS (691/11/hot/prov/Rule42/universal)",
+  "deploys": "narrative-forge prod DEPLOYED NATIVE (gh workflow run backfill/rss-monitor + vercel deploy --prod). Latest: https://narrative-forge-kqys7riv6-josh-1237s-projects.vercel.app (gray alias). Fidelity PASS. Rule42 + mass share (SHARE VIEW/export) + backfill outputs live. CF babylon-data-ai proxy noted for narrative R2/extract feeds. Worktree not active; used main. GH run https://github.com/c2wbcnvnv6-netizen/narrative-forge/actions/runs/27734011587 (backfill) + 27734033996 (rss). Confirmed via curl/gray. 2026-06-18",
+  "stack": "verify enhanced, stack-coord pipeline aware, start-ai-stack rule42 notes, multiple worktrees",
+  "hard_work": "5+ subs parallel 300+ calls total, real playwright/node/dry sims, MCP use, native bin edits, coord appends, status emits"
+}

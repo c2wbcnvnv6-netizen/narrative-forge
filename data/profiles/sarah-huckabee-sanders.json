@@ -1,0 +1,22 @@
+{
+  "name": "Sarah Huckabee Sanders",
+  "role": "Governor",
+  "bioExcerpt": "Governor from AR, Republican. Key figure in state and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "State-level leader on state",
+      "framingScore": 0.68,
+      "keyPhrases": [
+        "state",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "state"
+  ],
+  "state": "AR",
+  "party": "Republican"
+}

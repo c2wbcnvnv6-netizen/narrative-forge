@@ -1,0 +1,33 @@
+{
+  "name": "Julie Fedorchak",
+  "role": "U.S. Representative",
+  "bioExcerpt": "U.S. Representative from ND, Republican. Key figure in congress, elections and related policy areas per JARVIS Neural Map.",
+  "mediaFraming": [
+    {
+      "source": "legacy-media-nyt",
+      "frame": "Central to debates on congress",
+      "framingScore": 0.7,
+      "keyPhrases": [
+        "congress",
+        "policy",
+        "narrative"
+      ]
+    },
+    {
+      "source": "fox-news",
+      "frame": "Central to debates on elections",
+      "framingScore": 0.74,
+      "keyPhrases": [
+        "elections",
+        "policy",
+        "narrative"
+      ]
+    }
+  ],
+  "signalsFromNews": [
+    "congress",
+    "elections"
+  ],
+  "state": "ND",
+  "party": "Republican"
+}

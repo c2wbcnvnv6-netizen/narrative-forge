@@ -1,0 +1,34 @@
+{
+  "name": "narrative-forge",
+  "version": "1.0.0",
+  "description": "Narrative Forge - The 11-domain interactive truth engine exposing legacy media, political, bureaucratic, legal, financial, cultural, and health systems tactics through thought bridges, graphs, flowcharts, memes, and public data synthesis. Built with PHP/Composer backend + modern JS frontend.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/data-fidelity.js && echo 'Data fidelity OK'",
+    "test:benchmark": "echo 'FULL PERF SUITE: Open tests/benchmark-harness.html (or ?auto param / serve) for automated 100/500/1k/10k + FPS/memory/drawCalls (renderer.info) + Spector + WebGPU notes. Or: npx http-server -p 8080 . && open http://localhost:8080/tests/benchmark-harness.html'",
+    "test:perf": "npm run test:benchmark && echo 'Also run Playwright for e2e perf observers: npm run test:e2e -- --grep=\"FPS|perf|stress\"'",
+    "test:e2e": "npx playwright test",
+    "test:e2e:headed": "npx playwright test --headed",
+    "test:install-browsers": "npx playwright install --with-deps",
+    "test:all": "npm run test && npm run test:perf && npm run test:e2e"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c2wbcnvnv6-netizen/narrative-forge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/c2wbcnvnv6-netizen/narrative-forge/issues"
+  },
+  "homepage": "https://github.com/c2wbcnvnv6-netizen/narrative-forge#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.60.0"
+  }
+}

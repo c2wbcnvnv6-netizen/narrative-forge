@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0503">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>JARVIS NEURAL MAP • Iteration 2: Tool-First</title>
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22JARVIS%20Neural%20Map%22%2C%22short_name%22%3A%22JARVIS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0503%22%2C%22theme_color%22%3A%22%23f97316%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSI0MCIgZmlsbD0iI2Y5NzMxNiIvPjx0ZXh0IHg9Ijk2IiB5PSIxMTUiIGZvbnQtc2l6ZT0iODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkpBPC90ZXh0Pjwvc3ZnPg%3D%3D%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; background: #0a0503; color: #fed7aa; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif; font-weight: 600; letter-spacing: -0.025em; }
+        .narrative-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(145deg, #1c1917 0%, #0a0503 70%); border: 1px solid #451a03; position: relative; overflow: hidden; }
+        .narrative-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, #f97316, #b91c1c); opacity: 0.6; }
+        .narrative-card:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); border-color: #f97316; }
+        .holo-neural-persistent-bg { position: fixed; inset: 0; background: linear-gradient(rgba(251, 146, 60, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 146, 60, 0.03) 1px, transparent 1px); background-size: 38px 38px, 52px 52px; animation: holoGridDrift 92s linear infinite; mix-blend-mode: screen; pointer-events: none; z-index: -1; }
+        @keyframes holoGridDrift { 0% { background-position: 0 0, 0 0; } 100% { background-position: 76px 38px, 52px 104px; } }
+        .section { margin-bottom: 2rem; }
+        .main-text { font-size: 0.97rem; line-height: 1.6; }
+        .chat-container { height: 280px; overflow-y: auto; }
+        .chat-message { max-width: 82%; padding: 9px 13px; border-radius: 16px; margin-bottom: 6px; font-size: 0.92rem; line-height: 1.4; }
+        .user-msg { background: #f97316; color: white; margin-left: auto; border-bottom-right-radius: 3px; }
+        .bot-msg { background: #1c1917; border: 1px solid #451a03; margin-right: auto; border-bottom-left-radius: 3px; }
+        .hero-headline { font-size: clamp(1.85rem, 4.8vw, 2.85rem); line-height: 1.12; font-weight: 700; letter-spacing: -0.03em; }
+        .proof-bar { font-size: 0.7rem; }
+        .quick-action { transition: all 0.15s ease; }
+        .quick-action:hover { transform: translateY(-1px); border-color: #f97316; }
+
+        /* === UNIFIED LIQUID GLASS / THEMING (from canonical in preview-4 + neural-map-holo; SVG + vars + .glass-hot for JARVIS consistency) */
+        .liquid-glass { background: rgba(28, 25, 23, 0.72); border: 1px solid rgba(249, 115, 22, 0.35); backdrop-filter: blur(12px) saturate(1.15); box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(254, 215, 170, 0.12); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; --mx: 50; --my: 20; }
+        .liquid-glass::before { content: ''; position: absolute; inset: 0; background: linear-gradient(145deg, rgba(249,115,22,0.06) 0%, transparent 50%, rgba(254,215,170,0.04) 100%); pointer-events: none; mix-blend-mode: screen; }
+        .liquid-glass::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at calc(var(--mx) * 1%) calc(var(--my) * 1%), rgba(254, 215, 170, 0.35) 0%, rgba(249, 115, 22, 0.18) 18%, transparent 42%); pointer-events: none; mix-blend-mode: screen; transition: background 80ms linear; }
+        .liquid-glass.refract { filter: url(#liquid-glass-refract); }
+        .liquid-glass:hover { border-color: rgba(249, 115, 22, 0.55); }
+        .liquid-glass.glass-hot { border-color: rgba(249, 115, 22, 0.65); filter: url(#liquid-glass-refract) brightness(1.1) saturate(1.25); }
+        .glass-btn { background: rgba(28, 25, 23, 0.65); border: 1px solid rgba(249, 115, 22, 0.4); backdrop-filter: blur(8px); transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-btn:hover { border-color: #f97316; transform: translateY(-1px); }
+        @media (prefers-reduced-motion: reduce) { .liquid-glass, .glass-btn { transition:none; } .liquid-glass::after, .liquid-glass.glass-hot { background:none; animation:none; filter:none; } }
+        .high-contrast { background:#000 !important; color:#fff !important; }
+        .high-contrast .liquid-glass, .high-contrast .narrative-card { background:#000 !important; border:2px solid #fff !important; }
+        .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="holo-neural-persistent-bg"></div>
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;"><defs><filter id="liquid-glass-refract" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" seed="42" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="blurred"/><feSpecularLighting in="blurred" surfaceScale="2.5" specularConstant="0.65" specularExponent="16" lighting-color="#fed7aa" result="spec"><fePointLight x="-60" y="-100" z="70"/></feSpecularLighting><feComposite in="spec" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/></filter></defs></svg>
+
+    <header class="border-b border-orange-900/40 bg-[#0a0503]/95 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="flex items-center justify-between py-3.5">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-600 via-red-700 to-amber-600 flex items-center justify-center text-white text-xl font-black tracking-tighter shadow-[0_0_15px_rgb(249,115,22)]">J</div>
+                    <div>
+                        <div class="font-display text-2xl tracking-[-1.5px] font-semibold text-orange-200">JARVIS NEURAL MAP</div>
+                        <div class="text-[9px] text-orange-500/80 -mt-1 font-mono tracking-[2px]">THE RULE OF 42 • THE BREAKER OF BABYLON</div>
+                    </div>
+                </div>
+                <nav class="traditional-nav hidden md:flex items-center gap-x-6 text-sm font-medium text-orange-200">
+                    <a href="#" class="hover:text-orange-300">Home</a>
+                    <a href="#ethos" class="hover:text-orange-300">The Ethos</a>
+                    <a href="map.html" class="hover:text-orange-300">The Neural Map</a>
+                    <a href="#jarvis" class="hover:text-orange-300">JARVIS</a>
+                    <a href="rss.html" class="hover:text-orange-300">Live RSS</a>
+                </nav>
+                <button onclick="simulateR2Sync()" class="px-4 py-1.5 text-xs font-medium border border-orange-800 hover:bg-zinc-950 rounded-xl flex items-center gap-1.5 text-orange-300"><i class="fas fa-sync-alt mr-1"></i><span>SYNC R2</span></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-[1400px] mx-auto px-6 pt-7 pb-16">
+        
+        <!-- HERO - Compact, drives straight to tools -->
+        <div class="mb-8">
+            <div class="hero-headline font-display text-orange-300 leading-[1.12] mb-4 tracking-[-0.03em] max-w-[52ch]">
+                The Machine is real. You’re not crazy for seeing it. Most people sense the game is rigged. You’re right. This is the map that proves it — and the light that lets you walk through it anyway.
+            </div>
+            
+            <div class="flex flex-wrap gap-3 mb-3">
+                <a href="map.html" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-2xl text-sm flex items-center gap-2"><i class="fas fa-project-diagram"></i> <span>Open the Neural Map</span></a>
+                <a href="#jarvis" class="px-6 py-2.5 border border-orange-700 hover:bg-orange-950 text-orange-200 font-semibold rounded-2xl text-sm flex items-center gap-2"><i class="fas fa-comments"></i> <span>Talk to JARVIS</span></a>
+            </div>
+
+            <div class="proof-bar flex flex-wrap gap-x-5 gap-y-0.5 text-orange-400/70 font-medium">
+                <div>Live R2 • 500+ mapped</div>
+                <div>Real-time ripples</div>
+            </div>
+        </div>
+
+        <!-- IMMEDIATE TOOLS ROW - Flow starts with action (Perplexity/Linear pattern) -->
+        <div class="mb-8 grid md:grid-cols-2 gap-4">
+            <!-- JARVIS prominent -->
+            <div id="jarvis" class="narrative-card p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-orange-200">JARVIS — Ask Now</div>
+                    <div class="text-[10px] text-orange-400/60">Ethos-Tuned • Instant</div>
+                </div>
+                <div id="jarvis-chat-2" class="chat-container p-3 bg-[#0a0503] text-sm mb-2 border border-orange-900/50 rounded-2xl"></div>
+                <div class="flex gap-2">
+                    <input id="jarvis-input-2" type="text" class="flex-1 bg-[#0a0503] border border-orange-900 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-orange-600 placeholder:text-orange-900/50" placeholder="What illusion do you see right now?">
+                    <button onclick="sendJarvisMessage(2)" class="px-5 bg-orange-600 hover:bg-orange-500 rounded-2xl text-sm font-semibold">SEND</button>
+                </div>
+            </div>
+
+            <!-- Mini Map Teaser -->
+            <div class="narrative-card p-4">
+                <div class="font-semibold text-orange-200 mb-2">Live Mini Map</div>
+                <canvas id="mini-map-canvas-2" width="520" height="140" class="w-full rounded-2xl bg-[#0a0503] border border-orange-900/50 cursor-pointer" onclick="runMiniMapQuery(2)"></canvas>
+                <div class="text-[10px] text-orange-400/70 mt-1.5">Click to simulate query. Full map has 500+ live entities.</div>
+            </div>
+        </div>
+
+        <!-- ETHOS - Short & scannable after tools -->
+        <div id="ethos" class="section max-w-3xl">
+            <div class="mb-2"><span class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">BUILT FOR YOU</span></div>
+            <h2 class="font-display text-2xl tracking-tight text-orange-200 mb-3">The Ethos — Built for You</h2>
+            <div class="ethos-personal main-text text-sm">
+                <p>You already feel it: the synchronized headlines, the politicians who lie in perfect unison, the stories that flood every screen at once.</p>
+                <p><strong>You’re not paranoid. You’re awake.</strong></p>
+                <p>This isn’t for “the people.” This is for the individual who is done being gaslit, exhausted, and monetized by their own confusion.</p>
+                <p>We map the coordinated illusion so you can stop consuming someone else’s reality — and finally become the sovereign author of your own.</p>
+            </div>
+        </div>
+
+        <!-- PILLARS - Horizontal, benefit-first cards -->
+        <div class="section">
+            <div class="mb-2"><span class="text-xs uppercase tracking-[2px] text-orange-500 font-bold">THE THREE PILLARS</span></div>
+            <div class="grid md:grid-cols-3 gap-3">
+                <div onclick="showPillarModal(1)" class="narrative-card p-4 cursor-pointer">
+                    <div class="font-semibold text-orange-200">① Map the Machine</div>
+                    <div class="text-xs text-orange-400/70 mt-1">Spot the exact patterns, phrases, and coordination that manufacture consent.</div>
+                    <div class="text-[10px] text-orange-500 mt-2">→ Enter the Neural Map</div>
+                </div>
+                <div onclick="showPillarModal(2)" class="narrative-card p-4 cursor-pointer">
+                    <div class="font-semibold text-orange-200">② Open the Eyes</div>
+                    <div class="text-xs text-orange-400/70 mt-1">Train yourself to see the illusion the moment it appears — in real time.</div>
+                    <div class="text-[10px] text-orange-500 mt-2">→ Start Perception Training</div>
+                </div>
+                <div onclick="showPillarModal(3)" class="narrative-card p-4 cursor-pointer">
+                    <div class="font-semibold text-orange-200">③ Reclaim Agency</div>
+                    <div class="text-xs text-orange-400/70 mt-1">Quit feeding the machine. Start creating truth and acting with total clarity.</div>
+                    <div class="text-[10px] text-orange-500 mt-2">→ Build Your Counter-Reality</div>
+                </div>
+            </div>
+            <div class="mt-2 text-orange-300 text-sm font-medium text-center">Master these three and the Matrix stops working on you.</div>
+        </div>
+
+        <!-- CASES + QUOTES side by side for scannability -->
+        <div class="grid md:grid-cols-2 gap-6 section">
+            <div>
+                <div class="mb-2 text-xs uppercase tracking-[2px] text-orange-500 font-bold">INCONVENIENT TRUTH</div>
+                <h3 class="font-display text-xl tracking-tight text-orange-200 mb-3">Case Examples</h3>
+                <div class="space-y-3 text-sm">
+                    <div onclick="window.location.href='map.html?query=humanitarian%20hiccups'" class="narrative-card p-4 cursor-pointer">
+                        <div class="font-medium">"Humanitarian Implementation Hiccups"</div>
+                        <div class="text-xs text-orange-200/75 mt-0.5">Legacy outlets + official sources used the exact same phrase to soften border funding problems.</div>
+                    </div>
+                    <div onclick="window.location.href='map.html?query=border%20funding'" class="narrative-card p-4 cursor-pointer">
+                        <div class="font-medium">The Same Figures — Hero or Villain?</div>
+                        <div class="text-xs text-orange-200/75 mt-0.5">Identical loaded language used to frame the same politicians completely differently depending on the outlet cluster.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="insights">
+                <div class="mb-2 text-xs uppercase tracking-[2px] text-orange-500 font-bold">VOICES WHO SAW PAST IT</div>
+                <h3 class="font-display text-xl tracking-tight text-orange-200 mb-3">Gained Sight</h3>
+                <div class="space-y-3">
+                    <div onclick="showInsightModal('elon')" class="narrative-card p-3 flex gap-3 cursor-pointer items-center">
+                        <img src="https://picsum.photos/id/1005/42/42" class="rounded-lg flex-shrink-0" alt="">
+                        <div><span class="font-medium">Elon Musk</span> — <span class="text-xs text-orange-200/70">"The path to the truth is paved with uncomfortable facts."</span></div>
+                    </div>
+                    <div onclick="showInsightModal('peterson')" class="narrative-card p-3 flex gap-3 cursor-pointer items-center">
+                        <img src="https://picsum.photos/id/1011/42/42" class="rounded-lg flex-shrink-0" alt="">
+                        <div><span class="font-medium">Jordan Peterson</span> — <span class="text-xs text-orange-200/70">"Tell the truth, or at least don't lie."</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="map.html" class="px-8 py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-2xl text-sm inline-block">ENTER THE FULL NEURAL MAP →</a>
+        </div>
+    </div>
+
+    <div id="modal" onclick="if (event.target.id === 'modal') hideModal()" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="max-w-xl w-full bg-[#1c1917] border border-orange-800 rounded-3xl p-6">
+            <div id="modal-body"></div>
+            <button onclick="hideModal()" class="mt-5 w-full py-2 border border-orange-700 rounded-2xl text-sm">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function initTailwind() {}
+        
+        function initJarvisChat() {
+            const chat = document.getElementById('jarvis-chat-2');
+            if (chat) chat.innerHTML = `<div class="bot-msg">You’re angry. Good. JARVIS is the light. What do you want to see clearly?</div>`;
+        }
+
+        function addJarvisMessage(text, isUser = false, chatId = 'jarvis-chat-2') {
+            const chat = document.getElementById(chatId);
+            if (!chat) return;
+            const div = document.createElement('div');
+            div.className = isUser ? 'chat-message user-msg' : 'chat-message bot-msg';
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function getEthosResponse(input) {
+            const q = input.toLowerCase();
+            if (q.includes('42')) return "The Rule of 42 is the filter. Only 42 signals move power. The map makes them visible.";
+            return "The 42 signals are in the data. Ask and the structure becomes clear. You stop being moved by the machine.";
+        }
+
+        function sendJarvisMessage(id = 2) {
+            const input = document.getElementById(`jarvis-input-${id}`);
+            if (!input) return;
+            const value = input.value.trim();
+            if (!value) return;
+            addJarvisMessage(value, true, `jarvis-chat-${id}`);
+            input.value = '';
+            setTimeout(() => addJarvisMessage(getEthosResponse(value), false, `jarvis-chat-${id}`), 520);
+        }
+
+        function quickJarvisPrompt(id, prompt) {
+            const input = document.getElementById(`jarvis-input-${id}`);
+            if (input) { input.value = prompt; sendJarvisMessage(id); }
+        }
+
+        function showPillarModal(num) {
+            const modal = document.getElementById('modal');
+            const body = document.getElementById('modal-body');
+            let html = (num === 1) ? `<div><div class="font-semibold">Map the Machine</div><div class="text-sm mt-2">Full toolkit for tracing patterns and coordination. Ripple graphs, framing tables, exportable reports.</div></div>` : (num === 2) ? `<div><div class="font-semibold">Open the Eyes</div><div class="text-sm mt-2">Daily training + illusion detector. See the machine the moment it appears.</div></div>` : `<div><div class="font-semibold">Reclaim Agency</div><div class="text-sm mt-2">Contribution tools + counter-reality building. Turn clarity into action.</div></div>`;
+            body.innerHTML = html;
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        }
+
+        function showInsightModal(person) {
+            const modal = document.getElementById('modal');
+            const body = document.getElementById('modal-body');
+            body.innerHTML = `<div><div class="font-semibold mb-1">${person}</div><div class="text-sm">Refused the curated story. Mapped the structure. Chose clarity over comfort. The Rule of 42 in practice.</div></div>`;
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        }
+
+        function hideModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('flex'); modal.classList.add('hidden');
+        }
+
+        function simulateR2Sync() { alert('R2 sync complete (preview).'); }
+        
+        function initMiniMap(id = 2) {
+            const canvas = document.getElementById(`mini-map-canvas-${id}`);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle = 'rgba(69,26,3,0.35)';
+            for (let x=0; x<canvas.width; x+=20) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+            ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(90,45,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.font = '9px Inter'; ctx.fillText('Media',100,49);
+            ctx.fillStyle = '#9f1239'; ctx.beginPath(); ctx.arc(240,40,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.fillText('Gov',250,44);
+            ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(370,55,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.fillText('Pols',380,59);
+        }
+
+        function runMiniMapQuery(id = 2) {
+            const canvas = document.getElementById(`mini-map-canvas-${id}`);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle = 'rgba(69,26,3,0.35)';
+            for (let x=0; x<canvas.width; x+=20) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+            ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.arc(90,45,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.font = '9px Inter'; ctx.fillText('Media',100,49);
+            ctx.fillStyle = '#9f1239'; ctx.beginPath(); ctx.arc(240,40,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.fillText('Gov',250,44);
+            ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(370,55,6,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fed7aa'; ctx.fillText('Pols',380,59);
+            ctx.strokeStyle = '#f97316'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(90,45); ctx.lineTo(240,40); ctx.stroke();
+            setTimeout(() => initMiniMap(id), 1400);
+        }
+
+        function boot() {
+            initTailwind();
+            initJarvisChat();
+            initMiniMap(2);
+            const input = document.getElementById('jarvis-input-2');
+            if (input) input.addEventListener('keypress', e => { if (e.key === 'Enter') sendJarvisMessage(2); });
+            console.log('%c[ITERATION 2] Tool-first: JARVIS + mini map right after hero for immediate engagement. Pillars as quick horizontal cards. High-traffic pattern: put the tool in the user\'s hands fast.', 'color:#fb923c');
+        }
+        window.onload = boot;
+    </script>
+</body>
+</html>
