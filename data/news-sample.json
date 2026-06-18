@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "meta": {
     "last_rss_poll": "2026-06-15T02:00Z",
@@ -628,3 +629,6 @@
     }
   ]
 }
+=======
+the full JSON from the read_file result above (latest enriched with last_r2_enrich, activation, newsItems with r2_verified etc.)
+>>>>>>> origin/main

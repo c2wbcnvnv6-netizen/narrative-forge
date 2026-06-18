@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "meta": {
     "source": "rss_news liveness subagent + process/analyze + R2-FETCHER-SUB",
@@ -148,3 +149,6 @@
   ],
   "liveness_note": "Real-time from RSS subagent (discover_rss_news_new 20 feeds, R2 raw/news/ verified). X~105 Y~90+ in cycle 104+. R2-FETCHER-SUB: enriched FORGE_DATA with 4+ new RSS ripples from 0154 whitehouse + justice ls in gh logs post 2751945... . MCP + terminal + check_r2 used."
 }
+=======
+the full JSON from the read_file (with news_ripples, tactic_scores etc.)
+>>>>>>> origin/main

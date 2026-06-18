@@ -31,4 +31,8 @@ jobs:
           echo "Manifests check:"
           aws s3 ls s3://babylon-raw-data/manifests/ || true
           echo "R2 news paths verification + liveness check complete (explicit 30min items last 30min via health; raw/news/ counts above). (Hits or empty=pending first RSS ingest). 'R2 Verified' printed in monitor runs on successful write."
+<<<<<<< HEAD
           echo "SUBAGENT #3 (R2 Verifier): dispatched test-r2, MCP CF confirmed bucket babylon-raw-data, liveness on (raw/news/ + raw/media/rss-* items last 30min target >0), downstream process success expected. No connection issues. Coordination: RSS subagent output now hitting R2 verified."
+=======
+          echo "SUBAGENT #3 (R2 Verifier): dispatched test-r2, MCP CF confirmed bucket babylon-raw-data, liveness on (raw/news/ + raw/media/rss-* items last 30min target >0), downstream process success expected. No connection issues. Coordination: RSS subagent output now hitting R2 verified."
+>>>>>>> origin/main

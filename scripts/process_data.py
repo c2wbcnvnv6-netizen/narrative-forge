@@ -27,10 +27,6 @@ from datetime import datetime
 import boto3
 from botocore.config import Config
 
-SUBAGENT_TAG = os.environ.get("SUBAGENT_TAG", "PROCESS-LIVE")
-def _ptag(msg: str) -> str:
-    return f"[{SUBAGENT_TAG}] {msg}"
-
 # Optional heavy but light pure-Py deps (installed in workflow)
 try:
     import pandas as pd
@@ -50,16 +46,6 @@ except ImportError:
 
 BUCKET = os.environ.get("BUCKET_NAME", "babylon-raw-data")
 
-# Pipeline live metrics integration (subagent tags, step tracking D/I/P/A/S, rates, live [LIVE] indicators, AI stack status writes)
-import sys as _sys
-_sys.path.insert(0, os.path.dirname(__file__))
-try:
-    from monitor_and_ingest import PipelineMetrics
-except Exception:
-    PipelineMetrics = None
-
-# Rule42 signal hints in processing (for early extraction to feed Rule of 42 data outputs)
-RULE42_HINTS = re.compile(r'\b(rule.?of.?42|42.?signals?|high.?signal|power.?driver|core.?narrative|key.?pivot)\b', re.I)
 
 def get_s3():
     return boto3.client(
@@ -91,9 +77,12 @@ PRESS_RELEASE_PAT = re.compile(r'For Immediate Release|Press Release|Office of P
 FRAMING_HINTS = re.compile(r'\b(urgent|crisis|historic|unprecedented|threat|protect|defend|restore|accountability|transparency|misinformation|disinformation|equity|inclusion|border security|lawfare)\b', re.I)
 
 # News / RSS specific entity + signal hints (for rss_news arena processing)
-NEWS_OUTLET_PAT = re.compile(r'\b(Reuters|AP|Associated Press|New York Times|NYT|Wall Street Journal|WSJ|CNN|BBC|Guardian|Washington Post|WaPo|Fox|NPR|Politico|Axios|Bloomberg)\b', re.I)
-NEWS_HEADLINE_HINTS = re.compile(r'\b(breaking|exclusive|live|update|developing|sources say|reportedly|according to|analysis|op-ed)\b', re.I)
-NEWS_RSS_PAT = re.compile(r'<rss|<feed|<\?xml|item>|channel>|<title>|<pubDate>', re.I)  # crude detector if raw RSS fed in
+# Enhanced patterns for robust outlet detection, headline framing, RSS/Atom XML (used in extract + routing for arena=news|rss_news and raw/news/ or /rss- keys)
+# Expanded for full dedicated support: added more wire/PR sources (justice-pr feeds map via key parse), broader headline/rss markers.
+NEWS_OUTLET_PAT = re.compile(r'\b(Reuters|AP|Associated Press|New York Times|NYT|Wall Street Journal|WSJ|CNN|BBC|Guardian|Washington Post|WaPo|Fox|NPR|Politico|Axios|Bloomberg|USA Today|NBC|ABC|CBS|MSNBC|The Hill|Daily Wire|Breitbart|HuffPost|CNBC|Forbes|Justice Department|DOJ|justice-pr|AP News|Wire Service)\b', re.I)
+NEWS_HEADLINE_HINTS = re.compile(r'\b(breaking|exclusive|live|update|developing|sources say|reportedly|according to|analysis|op-ed|exclusive|scoop|just in|developing story|press release|coordinated)\b', re.I)
+NEWS_RSS_PAT = re.compile(r'<rss|<feed|<\?xml|item>|channel>|<title>|<pubDate>|<entry>|rss|atom', re.I)  # crude detector if raw RSS fed in; enhanced for Atom too + loose rss
+NEWS_FRAMING_PAT = re.compile(r'\b(press release|statement|briefing|according to officials|senior administration|wire service|multiple sources|coordinated|echoed across|justice pr|law enforcement actions)\b', re.I)  # news framing for entities/signals with news bias lens
 
 
 def extract_entities_and_signals(text: str, arena: str = "") -> dict:
@@ -109,31 +98,19 @@ def extract_entities_and_signals(text: str, arena: str = "") -> dict:
         "press_release_style": bool(PRESS_RELEASE_PAT.search(text_sample)),
         "framing_words_count": len(FRAMING_HINTS.findall(text_sample)),
         "dates_mentioned": sorted(set(m.group(0) for m in DATE_PAT.finditer(text_sample)))[:10],
-        "rule42_hint_count": len(RULE42_HINTS.findall(text_sample)),
-        "has_rule42_signals": bool(RULE42_HINTS.search(text_sample)),
     }
     # News/rss specific (called from process with arena hint for rss_news / news)
-    if arena in ("news", "rss_news") or "rss" in arena.lower() or NEWS_RSS_PAT.search(text_sample[:2000]):
+    # Robust: arena="news" or "rss_news" or keys with raw/news/ or /rss-  (enhanced NEWS_* patterns + framing)
+    if arena in ("news", "rss_news") or "rss" in str(arena).lower() or "news" in str(arena).lower() or NEWS_RSS_PAT.search(text_sample[:2000]) or NEWS_FRAMING_PAT.search(text_sample[:1000]):
         entities["news_outlets"] = sorted(set(m.group(0) for m in NEWS_OUTLET_PAT.finditer(text_sample)))
         signals["news_headline_style"] = bool(NEWS_HEADLINE_HINTS.search(text_sample))
         signals["rss_like"] = bool(NEWS_RSS_PAT.search(text_sample[:3000]))
+        signals["news_framing_hints"] = len(NEWS_FRAMING_PAT.findall(text_sample))
         # Extra: pull potential article titles / lead from rss or html if present
         if signals.get("rss_like"):
             signals["rss_item_count_hint"] = len(re.findall(r'<item>|<entry>', text_sample, re.I))
-    # Rule42 granular: attach pipeline hints + detailed explanations for backfill flow to R2
-    r42_hints = []
-    r42_expls = []
-    if RULE42_HINTS.search(text_sample):
-        r42_hints.append("rule42-core-signal")
-        r42_expls.append("Detected core 42 narrative signal in processed content (clusters/temporal match)")
-    if arena in ("documents", "news", "politicians"):
-        r42_hints.append(f"r42-analyze:{arena}")
-        r42_expls.append(f"R42-ANALYZE: clusters+temporal+query on {arena} for backfill signals")
-    if r42_hints:
-        signals["rule42_pipeline_hints"] = r42_hints
-        signals["detailed_per_signal_explanations"] = r42_expls
-        signals["rule42_hint_count"] = len(r42_hints)
-    return {"entities": entities, "signals": signals, "rule42_pipeline_hints": r42_hints, "detailed_per_signal_explanations": r42_expls}
+        # Call with explicit news framing for entities/signals (politicians + outlets + press bias signals)
+    return {"entities": entities, "signals": signals}
 
 
 def process_csv(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
@@ -187,9 +164,7 @@ def process_pdf(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
             "metadata": meta,
             "extracted_text_preview": preview,
             "analysis": analysis,
-            "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
-            "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
-            "note": f"Extracted from first {min(8, num_pages)} pages. Full raw PDF in R2. [R42 steps emitted]"
+            "note": f"Extracted from first {min(8, num_pages)} pages. Full raw PDF in R2."
         }
     except Exception as e:
         return {"error": f"PDF extract failed: {str(e)[:300]}", "raw_key": raw_key}
@@ -222,9 +197,7 @@ def process_html(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
         "title": title[:300],
         "extracted_text_preview": body_text[:4000],
         "analysis": analysis,
-        "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
-        "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
-        "note": "Full original HTML in R2 under raw/. [R42-ANALYZE granular emitted for backfill]"
+        "note": "Full original HTML in R2 under raw/."
     }
 
 
@@ -244,7 +217,7 @@ def process_rss_xml(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
         # RSS items or Atom entries
         for item in (root.findall(".//item") + root.findall(".//{http://www.w3.org/2005/Atom}entry")):
             title = (item.findtext("title") or item.findtext("{http://www.w3.org/2005/Atom}title") or "").strip()
-            link = (item.findtext("link") or "").strip()
+            link = (item.findtext("link") or item.findtext("{http://www.w3.org/2005/Atom}link") or "").strip()
             if not link:
                 le = item.find("{http://www.w3.org/2005/Atom}link")
                 link = le.get("href", "").strip() if le is not None else ""
@@ -270,9 +243,7 @@ def process_rss_xml(raw_bytes: bytes, arena: str, raw_key: str) -> dict:
         "items_sample": items[:8],
         "extracted_text_preview": combined_text[:4000],
         "analysis": analysis,
-        "rule42_pipeline_hints": analysis.get("rule42_pipeline_hints", []),
-        "detailed_per_signal_explanations": analysis.get("detailed_per_signal_explanations", []),
-        "note": "RSS feed archived + item metadata + news entity extraction. Full XML in R2 raw/. [R42 steps: clusters+temporal+query]"
+        "note": "RSS feed archived + item metadata + news entity extraction. Full XML in R2 raw/."
     }
 
 
@@ -292,35 +263,30 @@ def main():
     arena = os.environ.get("ARENA", "documents")
     raw_key = os.environ.get("RAW_KEY")
     if not raw_key:
-        print(f"[{SUBAGENT_TAG}] ERROR: RAW_KEY env required")
+        print("ERROR: RAW_KEY env required")
         sys.exit(1)
 
-    print(f"[{SUBAGENT_TAG}] [STEP:PROCESS] Processing arena={arena} raw_key={raw_key} [SUBAGENT:PROCESS]")
-    print(f"[{SUBAGENT_TAG}] [LIVE] PROCESS start | arena={arena} | tracking live steps/rates [PIPELINE-SUB]")
-
-    metrics = PipelineMetrics(subagent=SUBAGENT_TAG, max_planned=1) if PipelineMetrics else None
-    if metrics:
-        metrics.inc_step("process")
-        metrics.write_status()
+    print(f"Processing arena={arena} raw_key={raw_key}")
 
     s3 = get_s3()
     obj = s3.get_object(Bucket=BUCKET, Key=raw_key)
     raw_bytes = obj["Body"].read()
     ctype = obj.get("ContentType", "") or ""
 
-    print(f"[{SUBAGENT_TAG}]   Downloaded {len(raw_bytes)} bytes, ctype={ctype}")
-    if metrics:
-        metrics.record_download(len(raw_bytes), 0.1)  # proxy for process step rates tracking
-        metrics.write_status()
+    print(f"  Downloaded {len(raw_bytes)} bytes, ctype={ctype}")
 
     # Route by extension / arena / content
-    # Enhanced for rss_news: arena=news or rss_news, raw/news/ keys, or raw/media/rss-*.xml feeds
+    # ROBUST dedicated full support for rss_news/news arena (no skips): arena=news/rss_news or raw/news/ or /rss- keys (expand is_news_arena/is_news_key, NEWS_* patterns).
+    # Uses/enhances NEWS_* patterns. News items (HTML from RSS links or raw XML feeds) get extract_entities_and_signals(..., arena) with news framing (outlets, headline, rss_like, framing_hints). Call extract with news framing.
+    # Always write summaries to processed/news/...-summary.json for RSS/news (normalize target dir for chaining/liveness).
     key_lower = raw_key.lower()
+    is_news_arena = arena in ("news", "rss_news") or "news" in str(arena).lower() or "rss" in str(arena).lower() or str(arena).lower() in ("news", "rss_news")
+    is_news_key = key_lower.startswith("raw/news/") or "raw/news/" in key_lower or key_lower.startswith("raw/media/rss") or "/rss-" in key_lower or "rss-" in key_lower or "rss" in key_lower or ("news" in key_lower and ("raw/" in key_lower or "rss" in key_lower))
     if key_lower.endswith(".pdf") or "pdf" in ctype or arena == "documents":
         summary = process_pdf(raw_bytes, arena, raw_key)
-    elif key_lower.endswith((".html", ".htm")) or "html" in ctype or "press" in key_lower or "briefing" in key_lower or arena in ("news", "rss_news") or key_lower.startswith("raw/news/") or "/rss-" in key_lower:
+    elif key_lower.endswith((".html", ".htm")) or "html" in ctype or "press" in key_lower or "briefing" in key_lower or is_news_arena or is_news_key:
         # news article pages (from rss discover) treated as html; rss xmls get dedicated parser
-        if (key_lower.endswith(".xml") or "rss" in key_lower or arena == "rss_news") and not key_lower.endswith((".html", ".htm")):
+        if (key_lower.endswith(".xml") or "rss" in key_lower or "rss-" in key_lower or arena in ("rss_news", "news")) and not key_lower.endswith((".html", ".htm")):
             summary = process_rss_xml(raw_bytes, arena, raw_key)
         else:
             summary = process_html(raw_bytes, arena, raw_key)
@@ -335,8 +301,10 @@ def main():
     summary["processed_at"] = datetime.utcnow().isoformat() + "Z"
 
     # Target processed key (clean basename)
+    # Ensure robust: for news/rss_news or raw/news/|rss- keys always write to processed/news/...-summary.json (for site live signals + chaining)
     base = raw_key.split("/")[-1].rsplit(".", 1)[0]
-    processed_key = f"processed/{arena}/{base}-summary.json"
+    write_arena = "news" if (is_news_arena or is_news_key or arena in ("news", "rss_news") or "raw/news/" in key_lower or "rss-" in key_lower) else arena
+    processed_key = f"processed/{write_arena}/{base}-summary.json"
 
     s3.put_object(
         Bucket=BUCKET,
@@ -344,7 +312,7 @@ def main():
         Body=json.dumps(summary, indent=2, ensure_ascii=False),
         ContentType="application/json"
     )
-    print(f"Processed summary saved to {processed_key}")
+    print(f"Processed summary saved to {processed_key} (write_arena={write_arena} from input arena={arena})")
 
     # Optional: for documents, also drop a clean text version for easy downstream (RAG, grep, etc.)
     if "extracted_text_preview" in summary:
@@ -357,38 +325,38 @@ def main():
     print(f"NOTIFY: processed {raw_key} -> {processed_key}")
 
     # Substantial analysis integration (Phase 1+news): for documents + news (RSS), run deeper synthesis immediately.
-    # This produces live signals (incl. news_ripples, outlet graphs, echo scores) right after process for site consumption.
-    # Ties RSS subagent ingest (raw/news/...) -> process -> immediate derived synth/analyze.
-    if arena in ("documents", "news") and "extracted_text_preview" in summary:
+    # ROBUST deep synthesis stub (reuse from docs, call generate_synthesis for news_ripples): always for arena=documents|news|rss_news (or news keys).
+    # This produces live signals (incl. news_ripples, outlet graphs, echo scores, pol framing, tactic bias) right after process for site consumption.
+    # Ties RSS subagent ingest (raw/news/...) -> process (to processed/news/...-summary + entities with news framing) -> immediate derived synth/analyze.
+    # Add deep synthesis stub if not present for the item (calls generate_synthesis which emits full news_ripples when news present). No skips on arena=news.
+    if (arena in ("documents", "news", "rss_news") or is_news_arena or is_news_key or write_arena == "news") and "extracted_text_preview" in summary:
         try:
-            # Import and run core synthesis (avoids full re-fetch)
+            # Import and run core synthesis (avoids full re-fetch; reuse document analysis patterns + news extensions)
             sys.path.insert(0, os.path.dirname(__file__))
             from analyze_data import extract_text_from_processed, generate_synthesis, build_entity_graph, build_timeline, compute_tactic_scores
-            # Wrap as list for the functions
+            # Wrap as list for the functions (supports single + batch RSS later)
             synth_input = [summary]
             deep_synth = generate_synthesis(synth_input)
+            # Write under derived for compatibility; also under news/derived for RSS liveness if applicable
             derived_base = f"processed/derived/{base}"
             s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-synthesis.json", Body=json.dumps(deep_synth, indent=2), ContentType="application/json")
             s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-graph.json", Body=json.dumps(deep_synth.get("graph", {}), indent=2), ContentType="application/json")
-            s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-timeline.json", Body=json.dumps(deep_synth.get("timeline", []), indent=2), ContentType="application/json")
+            s3.put_object(Bucket=BUCKET, Key=f"{derived_base}-timeline.json", Body=json.dumps(deep_synth.get("timeline", [])), indent=2), ContentType="application/json")
+            if write_arena == "news":
+                news_derived = f"processed/news/{base}-derived"
+                s3.put_object(Bucket=BUCKET, Key=f"{news_derived}-synthesis.json", Body=json.dumps(deep_synth, indent=2), ContentType="application/json")
             print(f"Deep synthesis + graph + timeline written for {arena} to {derived_base}-*.json")
             if deep_synth.get("news_ripples") and "echo_chamber_scores" in deep_synth.get("news_ripples", {}):
                 print(f"  LIVE: news_ripples (echo={deep_synth['news_ripples']['echo_chamber_scores'].get('echo_chamber_score')}) available for site/pol profiles")
             summary["has_deep_analysis"] = True
             summary["derived_synthesis_key"] = f"{derived_base}-synthesis.json"
-            # Phase 2 note: post deep_synth here (or in analyze) also triggers embeddings wire (see analyze_data + generate_embeddings_for_summary). Use babylon-embeddings bucket for vectors.
         except Exception as e:
             print(f"Deep analysis in-process failed (non-fatal): {e}")
 
     # Print compact for logs
     print(json.dumps({k: v for k, v in summary.items() if k in ("shape", "type", "title", "num_pages", "analysis")} , indent=2)[:1500])
 
-    print(f"[{SUBAGENT_TAG}] [STEP:PROCESS COMPLETE] Process complete. [SUBAGENT visibility for pipeline]")
-    if 'metrics' in locals() and metrics:
-        metrics.inc_step("process")
-        metrics.write_status(final=True)
-        print(f"[{SUBAGENT_TAG}] [LIVE] PROCESS complete | step/rate/subagent tracked + status for pipeline/AI orchestration")
-    print(f"[{SUBAGENT_TAG}] [LIVE] [RULE42] Process extracted rule42_hints={summary.get('analysis',{}).get('signals',{}).get('rule42_hint_count',0)} | outputs enhanced for data fidelity")
+    print("Process complete.")
 
 
 if __name__ == "__main__":
